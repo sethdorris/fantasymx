@@ -13,10 +13,13 @@ var session = require ("express-session");
 var KnexSessionStore = require("connect-session-knex")(session);
 var Vue = require('vue');
 var app = express();
+var template = fs.readFileSync(path.join(__dirname, '..', '/index.html'), 'utf-8');
 
 const { createBundleRenderer } = require('vue-server-renderer')
-const renderer = createBundleRenderer(path.join(__dirname, '..', 'build/vue-ssr-server-bundle.json'), {
-  template: fs.readFileSync(path.join(__dirname, '..', '/index.html'))
+const bundle = require("../build/vue-ssr-server-bundle.json");
+const renderer = createBundleRenderer(bundle, {
+  template: template,
+  runInNewContext: false
 })
 
 var knex = Knex({
@@ -55,6 +58,7 @@ app.get('/', function (req, res) {
       if (err.code === 404) {
         res.status(404).end('Page not found')
       } else {
+        console.log(html)
         console.log(err)
         res.status(500).end('Internal Server Error')
       }
