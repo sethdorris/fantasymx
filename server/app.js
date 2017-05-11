@@ -14,6 +14,7 @@ var KnexSessionStore = require("connect-session-knex")(session);
 var Vue = require('vue');
 var app = express();
 var template = fs.readFileSync(path.join(__dirname, '..', '/index.html'), 'utf-8');
+var api  = require('./db');
 
 const { createBundleRenderer } = require('vue-server-renderer')
 const bundle = require("../build/vue-ssr-server-bundle.json");
@@ -47,27 +48,33 @@ app.use(session({
 app.use(bodyParser.json());
 app.use("/build", express.static(path.join(__dirname, "..", "build")));
 
-app.get('/', function (req, res) {
+app.get('*', function (req, res) {
   const context = {
-    username: "",
-    isLoggedIn: false,
     url: req.url
   }
-  renderer.renderToString(context, (err, html) => {
+
+    renderer.renderToString(context, (err, html) => {
     if (err) {
       if (err.code === 404) {
         res.status(404).end('Page not found')
       } else {
-        console.log(html)
-        console.log(err)
         res.status(500).end('Internal Server Error')
       }
     } else {
-      console.log(html);
+      if (req.session.hasOwnProperty('userId')) {
+        api.getUsernameByUserId(req.sesssion.userId).then(user => {
+          console.log(user.rows[0])
+          context.username = user.rows[0].username;
+          context.isLoggedIn = true;
+        })
+      } else {
+        context.username = "Guest";
+        context.isLoggedIn = false;
+      }
       res.end(html)
     }
   })
-});
+})
 
 app.post('/register', function (req, res) {
   Promise.try(() => {
@@ -88,6 +95,7 @@ app.post('/register', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
+  console.log("hit")
     pool.query('SELECT * FROM users WHERE username = $1', [req.body.username]).then( (users) => {
       if (users.length === 0) {
         throw new AuthenticationError("User does not exist");

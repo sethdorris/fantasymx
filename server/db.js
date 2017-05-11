@@ -22,3 +22,7 @@ module.exports.query = function (text, values, callback) {
 module.exports.connect = function (callback) {
   return pool.connect(callback);
 };
+
+module.exports.getUsernameByUserId = function (userId) {
+  return pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+}
