@@ -1,9 +1,9 @@
 <template>
-<div>
+<div id="app">
   <div class="nav">
-    hi {{ username }}
-    <router-link to='/register' v-if:!isLoggedIn>Register</router-link>
-    <router-link to='/login' v-if:!isLoggedIn>Login</router-link>
+    hi
+    <router-link to='/register' >Register</router-link>
+    <router-link to='/login' >Login</router-link>
   </div>
   <div class="content">
     <router-view></router-view>

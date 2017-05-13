@@ -11,17 +11,8 @@ var Promise = require("bluebird");
 var config = require("./session-config");
 var session = require ("express-session");
 var KnexSessionStore = require("connect-session-knex")(session);
-var Vue = require('vue');
 var app = express();
-var template = fs.readFileSync(path.join(__dirname, '..', '/index.html'), 'utf-8');
 var api  = require('./db');
-
-const { createBundleRenderer } = require('vue-server-renderer')
-const bundle = require("../build/vue-ssr-server-bundle.json");
-const renderer = createBundleRenderer(bundle, {
-  template: template,
-  runInNewContext: false
-})
 
 var knex = Knex({
   client: 'pg',
@@ -48,32 +39,8 @@ app.use(session({
 app.use(bodyParser.json());
 app.use("/build", express.static(path.join(__dirname, "..", "build")));
 
-app.get('*', function (req, res) {
-  const context = {
-    url: req.url
-  }
-
-    renderer.renderToString(context, (err, html) => {
-    if (err) {
-      if (err.code === 404) {
-        res.status(404).end('Page not found')
-      } else {
-        res.status(500).end('Internal Server Error')
-      }
-    } else {
-      if (req.session.hasOwnProperty('userId')) {
-        api.getUsernameByUserId(req.sesssion.userId).then(user => {
-          console.log(user.rows[0])
-          context.username = user.rows[0].username;
-          context.isLoggedIn = true;
-        })
-      } else {
-        context.username = "Guest";
-        context.isLoggedIn = false;
-      }
-      res.end(html)
-    }
-  })
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, "..", "index.html"))
 })
 
 app.post('/register', function (req, res) {
@@ -87,10 +54,10 @@ app.post('/register', function (req, res) {
       email: req.body.email
     }).returning("id")
   }).then(row => {
-    console.log(row);
     req.session.userId = row;
-    console.log("session", req.session.userId);
     res.send();
+  }).catch(err => {
+    res.send(err);
   })
 });
 

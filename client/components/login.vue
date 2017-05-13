@@ -8,31 +8,31 @@
         <label for="reg-password">Password: </label>
         <input type="password" id="reg-password" v-model="password"/>
 
-        <input type="button" id="submit-login" v-on:click="submit" />
+        <input v-on:click="submit" type="button" value="Login" id="submit-login" />
       </div>
   </div>
-</template>
+  </template>
+  <script>
+  import axios from 'axios';
+  export default {
+      data() {
+        return {
+          username: '',
+          password: ''
+        }
+      },
 
-<script>
-export default {
-  name: "login",
-  data() {
-    return {
-      username: '',
-      password: ''
-    }
-  },
-
-  asyncData({store}) {
-    console.log(store.state);
-    return store.state.username;
-  },
-
-  methods: {
-    submit: function() {
-      console.log("hi")
-    }
+      methods: {
+        submit: function(e) {
+          e.preventDefault();
+          document.getElementById("submit-login").disabled = "true";
+          axios.post('/login', {
+            username: this.username,
+            password: this.password
+          }).then(data => {
+            console.log(data);
+          })
+        }
+      }
   }
-
-}
 </script>
