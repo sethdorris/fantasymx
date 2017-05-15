@@ -62,23 +62,38 @@ app.post('/register', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-  console.log("hit")
+  let user;
     pool.query('SELECT * FROM users WHERE username = $1', [req.body.username]).then( (users) => {
       if (users.length === 0) {
         throw new AuthenticationError("User does not exist");
       } else {
-        let user = users.rows[0];
+        user = users.rows[0];
         console.log(user)
         return Promise.try(() => {
           return scrypt.verifyHash(req.body.password, user.password);
         }).then(() => {
           req.session.userId = user.id;
-          res.redirect("/");
+          res.send(JSON.stringify({username: user.username, role: 'user'}));
         }).catch(scrypt.PasswordError, (err) => {
           throw new AuthenticationError("Invalid Password");
+        }).catch((err) => {
+          throw new AuthenticationError("Authentication Error")
         })
       }
     })
+  })
+
+  app.get('/getMainLeagueInfo', function (req, res) {
+    var leagueInfo = [];
+    pool.query("SELECT * FROM weekly_team JOIN riders ON weekly_team.rider1id = riders.id OR weekly_team.rider2id = riders.id OR weekly_team.rider3id = riders.id OR weekly_team.rider4id = riders.id JOIN users ON weekly_team.userid = users.id")
+    .then(data => {
+        leagueInfo = data.rows.reduce((m, o) => {
+          if (!m[o.username]) m[o.username] = [];
+          m[o.username].push(o.name);
+          return m;
+      }, Object.create(null))
+      res.send(leagueInfo);
+    });
   })
 
   https.createServer({

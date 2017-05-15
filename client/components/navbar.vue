@@ -2,12 +2,12 @@
   <template>
     <nav>
       <div class="nav-mobile">
-        <a id="nav-toggle" href="#!"><span></span></a>
+        <a id="nav-toggle" href="#!"><span>X</span></a>
       </div>
       <ul class="nav-list">
         <li><a href="#!">Register</a></li>
-        <li><a href="#!">Login</a>
-          <ul class="nav-dropdown">
+        <li @click="show = !show"><a href="#!">Login</a>
+          <ul class="nav-dropdown" v-if="show">
             <li>
               <label>Username: </label>
               <input type="text" v-model="username">
@@ -22,7 +22,7 @@
           </ul>
         </li>
         <li><a href="#!">Home</a></li>
-        <li><a href="#!">My Team</a></li>
+        <li v-if="isLoggedIn"><a href="#!">My Team</a></li>
         <li><a href="#!">Rules</a></li>
       </ul>
     </nav>
@@ -32,9 +32,25 @@
       data() {
         return  {
           username: '',
-          password: ''  
+          password: '',
+          show: false,
+          isLoggedIn: false
+        }
+      },
+      computed() {
+        return {
+
         }
       }
     }
   </script>
+  <style>
+    li {
+      display: inline-block;
+    }
+    .nav-dropdown {
+      position: absolute;
+      padding: 0;
+    }
+  </style>
 })

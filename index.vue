@@ -1,20 +1,15 @@
 <template>
-<div id="app">
-  <div class="nav">
-    hi
-    <router-link to='/register' >Register</router-link>
-    <router-link to='/login' >Login</router-link>
-  </div>
-  <div class="content">
+  <div>
+    <navigation></navigation>
     <router-view></router-view>
   </div>
-</div>
 </template>
 
 <style>
 </style>
 
 <script>
+import navbar from './client/components/navbar.vue';
 export default {
   computed: {
     username() {
@@ -23,6 +18,9 @@ export default {
     isLoggedIn() {
       return this.$store.state.isLoggedIn
     }
+  },
+  components: {
+    'navigation': navbar
   }
 }
 </script>

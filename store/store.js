@@ -10,7 +10,23 @@ import { fetchItem } from '../server/api'
 export function createStore () {
   return new Vuex.Store({
     state: {
-
+      userdata: {
+        username: '',
+        isLoggedIn: false,
+        role: '',
+      },
+      leagues: [
+        {
+          leagueId: 0,
+          leagueName: '',
+          team: {
+            rider1: '',
+            rider2: '',
+            rider3: '',
+            rider4: ''
+          }
+        }
+      ]
     },
     actions: {
       fetchItem ({ commit }, id) {
