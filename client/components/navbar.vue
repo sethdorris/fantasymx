@@ -23,6 +23,7 @@
         <li><a href="#!">Home</a></li>
         <li v-if="isLoggedIn"><router-link to="/myteam">My Team</router-link></li>
         <li><a href="#!">Rules</a></li>
+        <li>Hello {{$store.state.user.username}}</li>
       </ul>
     </nav>
   </template>
