@@ -10,8 +10,23 @@ import { fetchItem } from '../server/api'
 export function createStore () {
   return new Vuex.Store({
     state: {
-      username: '',
-      isLoggedIn: '',
+      userdata: {
+        username: '',
+        isLoggedIn: false,
+        role: '',
+      },
+      leagues: [
+        {
+          leagueId: 0,
+          leagueName: '',
+          team: {
+            rider1: '',
+            rider2: '',
+            rider3: '',
+            rider4: ''
+          }
+        }
+      ]
     },
     actions: {
       fetchItem ({ commit }, id) {
@@ -30,7 +45,7 @@ export function createStore () {
         Vue.set(state.items, id, item)
       },
       setUsername (state, value) {
-        Vue.set(state.test, value)
+        Vue.set(state.userdata.username, value)
       }
 
     }

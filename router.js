@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import index from './index.vue';
+import home from './client/components/leaderboard.vue';
 import register from './client/components/register.vue';
-import login from './client/components/login.vue';
+import myteam from './client/components/myteam.vue';
 
 Vue.use(Router)
 
@@ -10,10 +10,9 @@ export function createRouter () {
   return new Router({
     mode: 'history',
     routes: [
-      { path: "/", component: index },
+      { path: "/", component: home },
       { path: "/register", component: register },
-      { path: '/login', component: login }
-
+      { path: "/myteam", component: myteam }
     ]
   })
 }

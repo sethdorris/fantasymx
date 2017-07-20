@@ -26,3 +26,8 @@ module.exports.connect = function (callback) {
 module.exports.getUsernameByUserId = function (userId) {
   return pool.query('SELECT * FROM users WHERE id = $1', [userId]);
 }
+
+module.exports.getMainLeagueUserInfo = function () {
+  var leagueInfo = [];
+  return pool.query("SELECT * FROM weekly_team JOIN riders ON weekly_team.rider1id = riders.id OR weekly_team.rider2id = riders.id OR weekly_team.rider3id = riders.id OR weekly_team.rider4id = riders.id JOIN users ON weekly_team.userid = users.id")
+}
