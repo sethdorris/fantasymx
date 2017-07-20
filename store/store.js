@@ -13,7 +13,19 @@ const getters = {
   getUserData: state => return state.user
 }
 
+const mutations = {
+  changeTeam (state, riderArray) {
+    state.user.riders = riderArray
+  }
+}
+
+const actions = {
+  
+}
+
 export default new Vuex.Store({
   state,
-  getters
+  getters,
+  mutations,
+  actions
 });
