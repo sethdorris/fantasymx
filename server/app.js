@@ -12,7 +12,8 @@ var config = require("./session-config");
 var session = require ("express-session");
 var KnexSessionStore = require("connect-session-knex")(session);
 var app = express();
-var api  = require('./db');
+var api  = require('./api');
+var fetch = require('node-fetch');
 
 var knex = Knex({
   client: 'pg',
@@ -75,9 +76,9 @@ app.post('/login', function (req, res) {
           req.session.userId = user.id;
           res.send(JSON.stringify({username: user.username, role: 'user'}));
         }).catch(scrypt.PasswordError, (err) => {
-          throw new AuthenticationError("Invalid Password");
+          res.status(401).send("User password did not match");
         }).catch((err) => {
-          throw new AuthenticationError("Authentication Error")
+          res.status(500).send("An error occured with the authentication server.");
         })
       }
     })
@@ -85,15 +86,27 @@ app.post('/login', function (req, res) {
 
   app.get('/getMainLeagueInfo', function (req, res) {
     var leagueInfo = [];
-    pool.query("SELECT * FROM weekly_team JOIN riders ON weekly_team.rider1id = riders.id OR weekly_team.rider2id = riders.id OR weekly_team.rider3id = riders.id OR weekly_team.rider4id = riders.id JOIN users ON weekly_team.userid = users.id")
+    pool.query(api.mainLeagueInfoSql)
     .then(data => {
-        leagueInfo = data.rows.reduce((m, o) => {
-          if (!m[o.username]) m[o.username] = [];
-          m[o.username].push(o.name);
-          return m;
-      }, Object.create(null))
-      res.send(leagueInfo);
+      res.send(data.rows);
     });
+  })
+
+  app.get('/RaceResults', function (req, res) {
+   fetch('http://live.amasupercross.com/xml/sx/RaceResults.json?R=1494731612736')
+    .then(apires => {
+      return apires.json();
+    })
+    .then(data => {
+     res.send(data)
+    })
+  })
+
+  app.get('/GetAllAvailableRiders', function (req, res) {
+    pool.query(api.getAllAvailableRiders)
+    .then(data => {
+      res.send(data.rows)
+    })
   })
 
   https.createServer({

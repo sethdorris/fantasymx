@@ -45,7 +45,7 @@ export function createStore () {
         Vue.set(state.items, id, item)
       },
       setUsername (state, value) {
-        Vue.set(state.test, value)
+        Vue.set(state.userdata.username, value)
       }
 
     }

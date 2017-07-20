@@ -5,8 +5,8 @@
         <a id="nav-toggle" href="#!"><span>X</span></a>
       </div>
       <ul class="nav-list">
-        <li><a href="#!">Register</a></li>
-        <li @click="show = !show"><a href="#!">Login</a>
+        <li v-if="!isLoggedIn"><a href="#!">Register</a></li>
+        <li v-if="!isLoggedIn" @click="show = !show"><a href="#!">Login</a></li>
           <ul class="nav-dropdown" v-if="show">
             <li>
               <label>Username: </label>
@@ -17,17 +17,17 @@
               <input type="password" v-model="password">
             </li>
             <li>
-              <button>Login</button>
+              <button @click="login">Login</button>
             </li>
           </ul>
-        </li>
         <li><a href="#!">Home</a></li>
-        <li v-if="isLoggedIn"><a href="#!">My Team</a></li>
+        <li v-if="isLoggedIn"><router-link to="/myteam">My Team</router-link></li>
         <li><a href="#!">Rules</a></li>
       </ul>
     </nav>
   </template>
   <script>
+    import axios from 'axios';
     export default {
       data() {
         return  {
@@ -40,6 +40,20 @@
       computed() {
         return {
 
+        }
+      },
+      methods: {
+        login: function() {
+          axios.post('/login', {
+            username: this.username,
+            password: this.password
+          }).then(data => {
+            console.log("Login Success")
+            if (data.status == 200) {
+              this.show = !this.show;
+              this.isLoggedIn = true;
+            }
+          })
         }
       }
     }

@@ -4,11 +4,13 @@
     LEADERBOARDS
   </div>
   <div v-for="user in standings" v-if="doneLoading">
-      {{user.user}} - {{user.currentPoints}}
+      {{user.riders[0].username}} - {{user.totalpoints}} -
+      <span v-for="rider in user.riders">
+        {{rider.name}} - {{rider.points}}pts 
+      </span>
   </div>
   <div v-if="!doneLoading">
     <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
-    <img src="https://m.popkey.co/163fce/Llgbv_s-200x150.gif" />
   </div>
 </div>
 </template>
@@ -25,43 +27,43 @@ import axios from 'axios';
     computed: {
       standings: function() {
         return this.mainLeagueUsers.sort((a, b) => {
-          return a.currentPoints - b.currentPoints;
+          var aPoints = 0;
+          var bPoints = 0;
+          a.riders.forEach(rider => { aPoints += rider.points })
+          b.riders.forEach(rider => { bPoints += rider.points })
+          return aPoints - bPoints;
         })
-      }
+      },
     },
-    mounted() {
+    beforeCreate() {
        setTimeout(() => {
-         axios.get('https://live.amasupercross.com/xml/sx/RaceResults.json?R=1494731612736')
+         axios.get('/RaceResults')
          .then(data => {
            console.time();
            var results = data.data.B;
            console.log(results);
            this.mainLeagueUsers.forEach(user => {
-             var actualResults = results.filter(o => {
-               return user.riders.indexOf(o.F.slice(0, -1)) > -1;
-             });
-             console.log("actualResults", actualResults);
-             actualResults.forEach(result => {
-               console.log("currentpoints", this.mainLeagueUsers);
-               user.currentPoints.push(result.A);
+             user.totalpoints = 0;
+             user.riders.forEach(rider => {
+               results.forEach(result => {
+                 if (result.F.slice(0, -1) == rider.name) {
+                   rider.points = result.A;
+                 }
+               })
+               user.totalpoints += rider.points;
              })
-             user.currentPoints = user.currentPoints.reduce((prev, next) => {
-               return prev + next;
-             })
-             console.timeEnd();
-             this.doneLoading = true;
            })
-         })
+          console.timeEnd();
+          this.doneLoading = true;
+          console.log(this.mainLeagueUsers)
+        })
        }, 3000);
       axios.get('/getMainLeagueInfo')
       .then(data => {
-        for (var user in data.data) {
-          var obj = {};
-          obj.user = user;
-          obj.riders = data.data[user];
-          obj.currentPoints = [];
-          this.mainLeagueUsers.push(obj);
-        }
+        console.log(data.data);
+        data.data.forEach(user => {
+          this.mainLeagueUsers.push(user)
+        })
       })
     }
   }

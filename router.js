@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import home from './client/components/leaderboard.vue';
 import register from './client/components/register.vue';
+import myteam from './client/components/myteam.vue';
 
 Vue.use(Router)
 
@@ -10,7 +11,8 @@ export function createRouter () {
     mode: 'history',
     routes: [
       { path: "/", component: home },
-      { path: "/register", component: register }
+      { path: "/register", component: register },
+      { path: "/myteam", component: myteam }
     ]
   })
 }
