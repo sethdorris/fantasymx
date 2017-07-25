@@ -12,10 +12,10 @@
 import navbar from './client/components/navbar.vue';
 export default {
   computed: {
-    username() {
+    username: function() {
       return this.$store.state.username
     },
-    isLoggedIn() {
+    isLoggedIn: function() {
       return this.$store.state.isLoggedIn
     }
   },
