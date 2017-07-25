@@ -56,10 +56,7 @@
               this.isLoggedIn = true;
             }
           })
-        },
-        mapActions([
-
-        ])
+        }
       }
     }
   </script>

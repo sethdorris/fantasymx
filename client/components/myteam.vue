@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>MY TEAM</div>
+    {{ getUserData.username }}
   </div>
 
 

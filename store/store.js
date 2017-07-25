@@ -10,7 +10,9 @@ const state = {
 }
 
 const getters = {
-  getUserData: state => return state.user
+  getUserData: function () {
+    return state.user
+  }
 }
 
 const mutations = {
@@ -20,7 +22,7 @@ const mutations = {
 }
 
 const actions = {
-  
+
 }
 
 export default new Vuex.Store({
