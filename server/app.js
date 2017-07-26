@@ -62,6 +62,20 @@ app.post('/register', function (req, res) {
   })
 });
 
+app.get('/loginrefresh', function (req, res) {
+  if (req.session.userId == 'undefined') {
+    throw new AuthenticationError("User needs to login");
+  }
+  pool.query('SELECT * FROM users WHERE id = $1', [req.session.userId]).then(users => {
+    if (users.length === 0) {
+      throw new AuthenticationError("User was not found");
+    } else {
+      console.log(users)
+      res.send(JSON.stringify({username: users.rows[0].username, userId: users.rows[0].id}));
+    }
+  })
+})
+
 app.post('/login', function (req, res) {
   let user;
     pool.query('SELECT * FROM users WHERE username = $1', [req.body.username]).then( (users) => {

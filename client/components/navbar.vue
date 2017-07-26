@@ -87,11 +87,21 @@
           });
         }
       },
+      created() {
+        axios.get('/loginrefresh').then(data => {
+          console.log("data", data);
+          if (data.data.username != 'undefined') {
+            this.setUserData({ userData: data.data })
+            this.setLoggedIn({ loggedIn: true })
+          }
+        })
+      },
       methods: {
         ...mapMutations([
           'setRegisterModal',
           'setLoginModal',
-          'setLoggedIn'
+          'setLoggedIn',
+          'setUserData'
         ]),
         login: function() {
           console.log("username", this.username)
