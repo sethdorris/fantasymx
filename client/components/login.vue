@@ -56,17 +56,23 @@
       },
       methods: {
         ...mapMutations([
-          'setLoginModal'
+          'setLoginModal',
+          'setUserData',
+          'setLoggedIn'
         ]),
         submit: function(e) {
           e.preventDefault();
+          this.isLoading = true;
           axios.post('/login', {
             username: this.username,
             password: this.password
           }).then(data => {
             console.log(data);
-            isLoading = false;
-          }).error(err => {
+            this.isLoading = false;
+            this.setUserData({ userData: data.data })
+            this.setLoggedIn({ loggedIn: true })
+            this.setLoginModal({ show: false })
+          }).catch(err => {
             console.log("Login error: ", err)
           })
         }

@@ -19,24 +19,30 @@
             </span>
             <a href="#!">Home</a>
           </div>
-          <div class="navbar-item" v-if="isLoggedIn">
+          <div class="navbar-item" v-if="GetAuthStatus">
             <router-link to="/myteam">My Team</router-link>
           </div>
           <div class="navbar-item">
             <a href="#!">Rules</a>
           </div>
         </div>
-        <div class="navbar-end" v-if="!isLoggedIn">
-          <div class="navbar-item" v-if="!isLoggedIn" @click="setRegisterModal({ show: !ShowRegisterModal })">
-            <a href="#!" id="registerLink">Register</a>
+        <div class="navbar-end">
+          <div class="navbar-item" v-if="!GetAuthStatus" @click="setRegisterModal({ show: !ShowRegisterModal })">
+            <a href="#!">Register</a>
           </div>
-          <div class="navbar-item" v-if="!isLoggedIn" @click="setLoginModal({ show: !ShowLoginModal })">
-            <a href="#!" id="loginLink">Login</a>
+          <div class="navbar-item" v-if="!GetAuthStatus" @click="setLoginModal({ show: !ShowLoginModal })">
+            <a href="#!">Login</a>
+          </div>
+          <div class="navbar-item" v-if="GetAuthStatus">
+            <a href="#!">Welcome, {{ getUserData.username }}!</a>
+          </div>
+          <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
+            <a href="#!">Logout</a>
           </div>
         </div>
       </div>
-      <register :show=ShowRegisterModal></register>
-      <login v-bind:show=ShowLoginModal></login>
+      <register :show="ShowRegisterModal"></register>
+      <login v-bind:show="ShowLoginModal"></login>
     </nav>
   </template>
   <script>
@@ -49,16 +55,16 @@
         return  {
           username: '',
           password: '',
-          isLoggedIn: false,
           showRegisterModal: false,
         }
       },
       computed: mapGetters([
         'ShowLoginModal',
-        'ShowRegisterModal'
+        'ShowRegisterModal',
+        'getUserData',
+        'GetAuthStatus'
       ]),
       mounted() {
-        console.log("fired")
         // Get all "navbar-burger" elements
         var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
         console.log($navbarBurgers);
@@ -84,7 +90,8 @@
       methods: {
         ...mapMutations([
           'setRegisterModal',
-          'setLoginModal'
+          'setLoginModal',
+          'setLoggedIn'
         ]),
         login: function() {
           console.log("username", this.username)

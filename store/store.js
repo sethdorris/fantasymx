@@ -5,8 +5,9 @@ Vue.use(Vuex)
 
 const state = {
   user: {
-    username: "seth"
+    username: "seth",
   },
+  isLoggedIn: false,
   modalControl: {
     showLoginModal: false,
     showRegisterModal: false
@@ -22,6 +23,9 @@ const getters = {
   },
   ShowRegisterModal: function () {
     return state.modalControl.showRegisterModal
+  },
+  GetAuthStatus: function () {
+    return state.isLoggedIn;
   }
 }
 
@@ -34,6 +38,12 @@ const mutations = {
   },
   setRegisterModal(state, { show }) {
     state.modalControl.showRegisterModal = show
+  },
+  setUserData(state, { userData }) {
+    state.user = userData;
+  },
+  setLoggedIn(state, { loggedIn }) {
+    state.isLoggedIn = loggedIn;
   }
 }
 
