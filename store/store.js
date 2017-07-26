@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const state = {
   user: {
-    username: "seth",
+    username: ''
   },
   isLoggedIn: false,
   modalControl: {
@@ -44,6 +44,11 @@ const mutations = {
   },
   setLoggedIn(state, { loggedIn }) {
     state.isLoggedIn = loggedIn;
+  },
+  logout(state) {
+    state.user.riders = [];
+    state.user = {};
+    state.isLoggedIn = false;
   }
 }
 

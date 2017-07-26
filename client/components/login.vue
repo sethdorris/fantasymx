@@ -73,6 +73,7 @@
             this.setLoggedIn({ loggedIn: true })
             this.setLoginModal({ show: false })
           }).catch(err => {
+            this.isLoading = false;
             console.log("Login error: ", err)
           })
         }

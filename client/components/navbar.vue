@@ -37,7 +37,7 @@
             <a href="#!">Welcome, {{ getUserData.username }}!</a>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
-            <a href="#!">Logout</a>
+            <a href="#!" @click="logout">Logout</a>
           </div>
         </div>
       </div>
@@ -89,11 +89,13 @@
       },
       created() {
         axios.get('/loginrefresh').then(data => {
-          console.log("data", data);
-          if (data.data.username != 'undefined') {
+          if (typeof data.data.username != 'undefined') {
+            console.log("User Is Authenticated")
             this.setUserData({ userData: data.data })
             this.setLoggedIn({ loggedIn: true })
           }
+        }).catch(err => {
+          console.log("login refresh error", err);
         })
       },
       methods: {
@@ -101,22 +103,13 @@
           'setRegisterModal',
           'setLoginModal',
           'setLoggedIn',
-          'setUserData'
+          'setUserData',
+          'logout'
         ]),
-        login: function() {
-          console.log("username", this.username)
-          // axios.post('/login', {
-          //   username: this.username,
-          //   password: this.password
-          // }).then(data => {
-          //   console.log("Login Success")
-          //   if (data.status == 200) {
-          //     this.isLoggedIn = true;
-          //   }
-          // })
-          // .error(err => {
-          //   console.log("Login error: ", err);
-          // })
+        logout() {
+          axios.get('logout').then(data => {
+            this.logout();
+          })
         }
       },
       components: {
