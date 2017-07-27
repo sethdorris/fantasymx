@@ -132,7 +132,7 @@ app.post('/login', function (req, res) {
     });
   })
 
-  app.get('/RaceResults', function (req, res) {
+  app.get('/StatTracker', function (req, res) {
    fetch('http://live.amasupercross.com/xml/sx/RaceResults.json?R=1494731612736')
     .then(apires => {
       return apires.json();
@@ -141,6 +141,10 @@ app.post('/login', function (req, res) {
      res.send(data)
     })
   })
+
+  app.get('RaceResults', function (req, res)) {
+    res.sendStatus(200);
+  }
 
   app.get('/GetAllAvailableRiders', function (req, res) {
     pool.query(api.getAllAvailableRiders)

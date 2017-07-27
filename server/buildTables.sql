@@ -43,6 +43,15 @@ MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
 
+CREATE TABLE raceresults (
+    raceresultsid SERIAL PRIMARY KEY ,
+    seasonid INT REFERENCES seasons(seasonid) NOT NULL,
+    weekid INT REFERENCES season_weeks(season_weeksid) NOT NULL,
+    riderid INT REFERENCES riders(id) NOT NULL,
+    place INT NOT NULL,
+    points INT NOT NULL
+)
+
 -- Table: public.sessions
 -- DROP TABLE public.sessions;
 

@@ -25,4 +25,6 @@ exports.getCurrentWeeksRiders =
 JOIN riders AS r ON r.id = wt.riderid
 JOIN (SELECT MAX(seasonid) AS currentseason, season_name FROM seasons GROUP BY season_name) AS s ON wt.seasonid = s.currentseason
 JOIN (SELECT MAX(week_number) AS currentweek FROM season_weeks) AS sw ON wt.season_weeksid = sw.currentweek
-WHERE userid = $1`
+WHERE userid = $1`;
+
+exports.getLatestRaceResult =
