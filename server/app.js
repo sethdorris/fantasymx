@@ -142,9 +142,16 @@ app.post('/login', function (req, res) {
     })
   })
 
-  app.get('RaceResults', function (req, res)) {
+  app.get('/MainLeagueStandings', function (req, res) {
+    pool.query(api.getMainLeagueTotalStandings)
+    .then(data => {
+      res.send(data.rows)
+    })
+  })
+
+  app.get('RaceResults', function (req, res) {
     res.sendStatus(200);
-  }
+  })
 
   app.get('/GetAllAvailableRiders', function (req, res) {
     pool.query(api.getAllAvailableRiders)
