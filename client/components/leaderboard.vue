@@ -1,61 +1,37 @@
 <template>
   <div>
-  <div>
-    LEADERBOARDS
+  <div class="leaderboard-title">
+    2018 FantasySX Main League
   </div>
-  <table class="table" v-if="doneLoading">
-    <thead>
-      <tr>
-        <th>Total Points</th>
-        <th>Username</th>
-        <th>W1</th>
-        <th>W2</th>
-        <th>W3</th>
-        <th>W4</th>
-        <th>W5</th>
-        <th>W6</th>
-        <th>W7</th>
-        <th>W8</th>
-        <th>W9</th>
-        <th>W10</th>
-        <th>W11</th>
-        <th>W12</th>
-        <th>W13</th>
-        <th>W14</th>
-        <th>W15</th>
-        <th>W16</th>
-        <th>W17</th>
-        <th>Points Back</th>
-      </tr>
-    </thead>
-    <tfoot>Fantasy SX</tfoot>
-    <tbody>
-      <tr v-for="user in standings">
-        <td>{{user.totalpoints}}</td>
-        <td>{{user.weeklyteams[0].username}}</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td class="pointsback">{{ pointsbehind(user) }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div v-if="!doneLoading">
-    <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
+  <div class="columns leaderboard">
+    <div class="column is-half is-offset-one-quarter">
+      <table class="table is-striped" v-if="doneLoading">
+        <thead>
+          <tr>
+            <th>Total Points</th>
+            <th>Username</th>
+            <th>Points Back</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>Total Points</th>
+            <th>Username</th>
+            <th>Points Back</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          <tr v-for="user in standings">
+            <td>{{user.totalpoints}}</td>
+            <td>{{user.weeklyteams[0].username}}</td>
+            <td class="pointsback">{{ pointsbehind(user) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="!doneLoading">
+        <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -90,14 +66,12 @@ import axios from 'axios';
         this.mainLeagueUsers = data.data;
         this.mainLeagueUsers.forEach((user) => {
           user.totalpoints = 0
-          user.weeklypoints = []
           user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
           user.weeklyteams.sort((a, b) => {
             return a - b;
           })
         })
         this.doneLoading = true;
-        console.log("sorted", this.mainLeagueUsers)
       })
     },
     methods: {
@@ -146,5 +120,19 @@ import axios from 'axios';
   .pointsback {
     font-weight: bolder;
     color: #ff3860;
+  }
+  .leaderboard {
+    margin-top: 50px;
+  }
+  table td, th {
+    text-align: center !important;
+  }
+  .leaderboard-main {
+    margin-top: 25px;
+  }
+  .leaderboard-title {
+    text-align: center;
+    text-decoration: underline;
+    font-weight: 700;
   }
 </style>

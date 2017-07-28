@@ -160,6 +160,61 @@ app.post('/login', function (req, res) {
     })
   })
 
+  app.get('/GetCurrentWeek', function (req, res) {
+    var currentdate = Date.now();
+    if (currentdate < new Date(2018, 00, 06, 03)) {
+      return res.json({ week: 1 })
+    }
+    if (currentdate < new Date(2018, 00, 13, 03)) {
+      return res.json({ week: 2 })
+    }
+    if (currentdate < new Date(2018, 00, 20, 03)) {
+      return res.json({ week: 3 })
+    }
+    if (currentdate < new Date(2018, 00, 27, 03)) {
+      return res.json({ week: 4 })
+    }
+    if (currentdate < new Date(2018, 01, 3, 03)) {
+      return res.json({ week: 5 })
+    }
+    if (currentdate < new Date(2018, 01, 10, 03)) {
+      return res.json({ week: 6 })
+    }
+    if (currentdate < new Date(2018, 01, 17, 03)) {
+      return res.json({ week: 7 })
+    }
+    if (currentdate < new Date(2018, 01, 24, 03)) {
+      return res.json({ week: 8 })
+    }
+    if (currentdate < new Date(2018, 02, 03, 03)) {
+      return res.json({ week: 9 })
+    }
+    if (currentdate < new Date(2018, 02, 10, 03)) {
+      return res.json({ week: 10 })
+    }
+    if (currentdate < new Date(2018, 02, 17, 03)) {
+      return res.json({ week: 11 })
+    }
+    if (currentdate < new Date(2018, 02, 24, 03)) {
+      return res.json({ week: 12 })
+    }
+    if (currentdate < new Date(2018, 03, 07, 03)) {
+      return res.json({ week: 13 })
+    }
+    if (currentdate < new Date(2018, 03, 14, 03)) {
+      return res.json({ week: 14 })
+    }
+    if (currentdate < new Date(2018, 03, 21, 03)) {
+      return res.json({ week: 15 })
+    }
+    if (currentdate < new Date(2018, 03, 28, 03)) {
+      return res.json({ week: 16 })
+    }
+    if (currentdate < new Date(2018, 04, 05, 03)) {
+      return res.json({ week: 17 })
+    }
+  })
+
   function UserAlreadyExists(email, username) {
     return pool.query('SELECT * FROM users WHERE LOWER(email) = LOWER($1) OR LOWER(username) = LOWER($2)', [email, username])
     .then( data => {

@@ -11,7 +11,7 @@
           <span></span>
         </div>
       </div>
-      <div id="navMenu" class="navbar-menu">
+      <div class="navbar-menu">
         <div class="navbar-start">
           <div class="navbar-item">
             <span class="icon">
@@ -20,23 +20,38 @@
             <a href="#!">Home</a>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
+            <span class="icon" v-if="GetAuthStatus">
+              <i class="fa fa-motorcycle"></i>
+            </span>
             <router-link to="/myteam">My Team</router-link>
           </div>
           <div class="navbar-item">
+            <span class="icon">
+              <i class="fa fa-gavel"></i>
+            </span>
             <a href="#!">Rules</a>
           </div>
         </div>
         <div class="navbar-end">
           <div class="navbar-item" v-if="!GetAuthStatus" @click="setRegisterModal({ show: !ShowRegisterModal })">
+            <span class="icon">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </span>
             <a href="#!">Register</a>
           </div>
           <div class="navbar-item" v-if="!GetAuthStatus" @click="setLoginModal({ show: !ShowLoginModal })">
+            <span class="icon">
+              <i class="fa fa-sign-in"></i>
+            </span>
             <a href="#!">Login</a>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
             <a href="#!">Welcome, {{ getUserData.username }}!</a>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
+            <span class="icon" v-if="GetAuthStatus">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
+            </span>
             <a href="#!" @click="logout">Logout</a>
           </div>
         </div>
