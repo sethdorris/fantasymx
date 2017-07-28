@@ -11,13 +11,13 @@
           <span></span>
         </div>
       </div>
-      <div class="navbar-menu">
+      <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <div class="navbar-item">
             <span class="icon">
               <i class="fa fa-home"></i>
             </span>
-            <a href="#!">Home</a>
+            <router-link to="/">Home</router-link>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
             <span class="icon" v-if="GetAuthStatus">
@@ -104,6 +104,7 @@
       },
       created() {
         axios.get('/loginrefresh').then(data => {
+          console.log(data.data)
           if (typeof data.data.username != 'undefined') {
             console.log("User Is Authenticated")
             this.setUserData({ userData: data.data })

@@ -21,7 +21,7 @@ SELECT * FROM riders
 `
 
 exports.getCurrentWeeksRiders =
-`SELECT wt.id AS weeklyteamid, wt.riderid, r.name, r.avatar_url, r.active, s.currentseason, s.season_name, sw.currentweek  FROM weekly_team AS wt
+`SELECT wt.id AS weeklyteamid, wt.riderid, r.name, r.avatar_url, r.cost, r.rider_number, r.active, s.currentseason, s.season_name, sw.currentweek  FROM weekly_team AS wt
 JOIN riders AS r ON r.id = wt.riderid
 JOIN (SELECT MAX(seasonid) AS currentseason, season_name FROM seasons GROUP BY season_name) AS s ON wt.seasonid = s.currentseason
 JOIN (SELECT MAX(week_number) AS currentweek FROM season_weeks) AS sw ON wt.season_weeksid = sw.currentweek

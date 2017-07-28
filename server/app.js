@@ -86,10 +86,20 @@ app.get('/loginrefresh', function (req, res) {
   }
   pool.query('SELECT * FROM users WHERE id = $1', [parseInt(req.session.userId)]).then(users => {
     console.log("why is this hit?")
+    console.log("users", users)
     if (users.length === 0) {
       return res.send("User was not found.");
     } else {
-      return res.json({username: users.rows[0].username, userId: users.rows[0].id});
+      var userData = {
+        username: users.rows[0].username,
+        userId: users.rows[0].id
+      }
+      GetMostRecentTeam(users.rows[0].id)
+      .then(function (data) {
+        userData.recentteam = data.rows;
+        console.log("data rows")
+        return res.json(userData);
+      })
     }
   })
 })
@@ -108,7 +118,7 @@ app.post('/login', function (req, res) {
           return GetMostRecentTeam(user.id).then(data => {
             req.session.userId = user.id;
             console.log(data)
-            return res.json( {username: user.username, recentteam: data.rows })
+            return res.json( {username: user.username, userId: user.rows[0].Id, recentteam: data.rows })
           })
         }).catch(scrypt.PasswordError, (err) => {
           res.status(401).send("User password did not match");
@@ -158,6 +168,10 @@ app.post('/login', function (req, res) {
     .then(data => {
       res.send(data.rows)
     })
+  })
+
+  app.get('/myteam', (req, res) => {
+    res.redirect(301, '/')
   })
 
   app.get('/GetCurrentWeek', function (req, res) {

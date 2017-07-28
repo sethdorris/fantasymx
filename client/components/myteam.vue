@@ -1,13 +1,18 @@
 <template>
   <div class="content">
-    <div>MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
-    <div class="tile is-ancestor">
-      <div class="tile is-parent is-vertical" v-for="rider in allriders">
-        <article class="tile is-child box">
-          <p class="title">#{{rider.number}} - {{rider.name}}</p>
-          <p class="subtitle">${{rider.cost}}</p>
-        </article>
-      </div>
+    <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
+    <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
+    <div class="riders-container">
+      <article class="rider-block" v-for="rider in getUserData.recentteam">
+        <p class="title">{{rider.name}} - #{{rider.rider_number}}</p>
+        <p class="subtitle footer">Cost: ${{rider.cost}}</p>
+      </article>
+    </div>
+    <div class="riders-container">
+      <article class="rider-block" v-for="rider in filteredAvailable">
+        <p class="title">{{rider.name}} - #{{rider.rider_number}}</p>
+        <p class="subtitle footer">Cost: ${{rider.cost}}</p>
+      </article>
     </div>
   </div>
 </template>
@@ -19,7 +24,6 @@ import { mapGetters } from 'vuex';
     data() {
       return {
         dollars: 8,
-        selectedriders: [],
         currentweek: 0,
         allriders: []
       }
@@ -27,7 +31,16 @@ import { mapGetters } from 'vuex';
     computed: {
       ...mapGetters([
         'getUserData'
-      ])
+      ]),
+      filteredAvailable() {
+        return this.allriders.filter(rider => {
+          var ids = []
+          this.getUserData.recentteam.forEach(obj => {
+            ids.push(obj.riderid);
+          })
+          return ids.indexOf(rider.id) == -1;
+        })
+      }
     },
     beforeCreate() {
       axios.get('/GetAllAvailableRiders')
@@ -41,3 +54,31 @@ import { mapGetters } from 'vuex';
     }
   }
 </script>
+<style>
+  .riders-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 2rem 15rem;
+  }
+  .rider-block {
+    min-width: 17rem;
+    border: 1px solid #dedede;
+    margin: 1em;
+    box-shadow: 1px 1px 1px #cecece;
+    padding: 1rem;
+    width: 18rem;
+  }
+  .page-title {
+    text-align: center;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+  .page-title {
+    text-align: center;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+  .page-subheader {
+    text-align:center;
+  }
+</style>

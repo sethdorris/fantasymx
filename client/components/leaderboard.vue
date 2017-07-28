@@ -8,6 +8,7 @@
       <table class="table is-striped" v-if="doneLoading">
         <thead>
           <tr>
+            <th>Position</th>
             <th>Total Points</th>
             <th>Username</th>
             <th>Points Back</th>
@@ -15,13 +16,15 @@
         </thead>
         <tfoot>
           <tr>
+            <th>Position</th>
             <th>Total Points</th>
             <th>Username</th>
             <th>Points Back</th>
           </tr>
         </tfoot>
         <tbody>
-          <tr v-for="user in standings">
+          <tr v-for="(user, index) in standings">
+            <td>{{ index + 1 }}.</td>
             <td>{{user.totalpoints}}</td>
             <td>{{user.weeklyteams[0].username}}</td>
             <td class="pointsback">{{ pointsbehind(user) }}</td>
@@ -117,7 +120,7 @@ import axios from 'axios';
   }
 </script>
 <style>
-  .pointsback {
+  .pointsback: {
     font-weight: bolder;
     color: #ff3860;
   }
