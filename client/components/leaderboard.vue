@@ -81,7 +81,7 @@ import axios from 'axios';
       pointsbehind: function(user) {
         var objIndex = this.standings.indexOf(user);
         if (objIndex != 0) {
-          return user.totalpoints - this.standings[objIndex - 1].totalpoints;
+          return user.totalpoints - this.standings[0].totalpoints;
         }
         return '-'
       }

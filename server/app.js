@@ -163,11 +163,24 @@ app.post('/login', function (req, res) {
     res.sendStatus(200);
   })
 
+  app.get('/RaceResultsHistory', function (req, res) {
+    pool.query(api.getAllRaceResults)
+    .then(data => {
+      res.send(data.rows);
+    })
+  })
+
   app.get('/GetAllAvailableRiders', function (req, res) {
     pool.query(api.getAllAvailableRiders)
     .then(data => {
       res.send(data.rows)
     })
+  })
+
+  app.get('/CurrentMyTeamModel', function (req, res) {
+    var currentWeek = api.GetCurrentWeek();
+    var myCurrentTeam = [];
+    var allAvail = [];
   })
 
   app.get('/myteam', (req, res) => {
