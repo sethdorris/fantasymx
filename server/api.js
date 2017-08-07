@@ -18,6 +18,7 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 
 exports.getAllAvailableRiders = `
 SELECT * FROM riders
+ORDER BY name
 `
 
 exports.getCurrentWeeksRiders =
