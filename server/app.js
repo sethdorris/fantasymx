@@ -111,14 +111,19 @@ app.post('/login', function (req, res) {
         res.send("User does not exist")
       } else {
         user = users.rows[0];
-        console.log(user)
+        console.log("USER DATA", user)
         return Promise.try(() => {
           return scrypt.verifyHash(req.body.password, user.password);
         }).then(() => {
           return GetMostRecentTeam(user.id).then(data => {
             req.session.userId = user.id;
-            console.log(data)
-            return res.json( {username: user.username, userId: user.rows[0].Id, recentteam: data.rows })
+            if (data.rows.length == 0) {
+              return res.json({ username: user.username, userId: user.Id, recentteam: []})
+            }
+            console.log("Get most recent team", data)
+            return res.json( {username: user.username, userId: user.Id, recentteam: data.rows })
+          }).catch(e => {
+            console.log("error", e)
           })
         }).catch(scrypt.PasswordError, (err) => {
           res.status(401).send("User password did not match");
@@ -178,9 +183,24 @@ app.post('/login', function (req, res) {
   })
 
   app.get('/CurrentMyTeamModel', function (req, res) {
+    //For development added a year for the future season. In production, remove that +1
+    var seasonEndYear = new Date().getFullYear() + 1;
+    var seasonStartYear = seasonEndYear - 1;
+    var seasonEnd = `${seasonEndYear}-12-31`;
+    var seasonStart = `${seasonStartYear}-12-31`;
     var currentWeek = api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];
+    var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
+    var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentWeek]).then(data => { return data.rows })
+    var p3 = pool.query(api.getRaceResultStatsForCurrentYear, [seasonEnd, seasonStart]).then(data => { return data.rows })
+    Promise.all([p1, p2, p3]).then(([AvailRiders, CurrentWeekTeam, Stats]) => {
+      console.log("all avail", AvailRiders);
+      console.log("currentTeam", CurrentWeekTeam);
+      console.log("stats", Stats)
+      var model = MyTeamModelCreator({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats})
+      res.json(model);
+    })
   })
 
   app.get('/myteam', (req, res) => {
@@ -188,58 +208,8 @@ app.post('/login', function (req, res) {
   })
 
   app.get('/GetCurrentWeek', function (req, res) {
-    var currentdate = Date.now();
-    if (currentdate < new Date(2018, 00, 06, 03)) {
-      return res.json({ week: 1 })
-    }
-    if (currentdate < new Date(2018, 00, 13, 03)) {
-      return res.json({ week: 2 })
-    }
-    if (currentdate < new Date(2018, 00, 20, 03)) {
-      return res.json({ week: 3 })
-    }
-    if (currentdate < new Date(2018, 00, 27, 03)) {
-      return res.json({ week: 4 })
-    }
-    if (currentdate < new Date(2018, 01, 3, 03)) {
-      return res.json({ week: 5 })
-    }
-    if (currentdate < new Date(2018, 01, 10, 03)) {
-      return res.json({ week: 6 })
-    }
-    if (currentdate < new Date(2018, 01, 17, 03)) {
-      return res.json({ week: 7 })
-    }
-    if (currentdate < new Date(2018, 01, 24, 03)) {
-      return res.json({ week: 8 })
-    }
-    if (currentdate < new Date(2018, 02, 03, 03)) {
-      return res.json({ week: 9 })
-    }
-    if (currentdate < new Date(2018, 02, 10, 03)) {
-      return res.json({ week: 10 })
-    }
-    if (currentdate < new Date(2018, 02, 17, 03)) {
-      return res.json({ week: 11 })
-    }
-    if (currentdate < new Date(2018, 02, 24, 03)) {
-      return res.json({ week: 12 })
-    }
-    if (currentdate < new Date(2018, 03, 07, 03)) {
-      return res.json({ week: 13 })
-    }
-    if (currentdate < new Date(2018, 03, 14, 03)) {
-      return res.json({ week: 14 })
-    }
-    if (currentdate < new Date(2018, 03, 21, 03)) {
-      return res.json({ week: 15 })
-    }
-    if (currentdate < new Date(2018, 03, 28, 03)) {
-      return res.json({ week: 16 })
-    }
-    if (currentdate < new Date(2018, 04, 05, 03)) {
-      return res.json({ week: 17 })
-    }
+    var currentWeek = api.GetCurrentWeek();
+    res.json({ week: currentWeek });
   })
 
   function UserAlreadyExists(email, username) {
@@ -258,6 +228,55 @@ app.post('/login', function (req, res) {
 
   function GetMostRecentTeam(userid) {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
+  }
+
+  function MyTeamModelCreator(data) {
+    var currentTeamids = [];
+    var availRidersId = [];
+    var availRidersModel = [];
+    data.CurrentTeam.forEach(roster => {
+      currentTeamids.push(roster.riderid);
+    })
+    var availableRiders = data.AvailableRiders.filter(riders => {
+      if (currentTeamids.indexOf(riders.id) == -1) {
+          availRidersId.push(riders.id);
+      }
+      return currentTeamids.indexOf(riders.id) == -1;
+    })
+
+    console.log(availableRiders)
+
+    availableRiders.forEach(rider => {
+      data.Stats.forEach(riderStat => {
+        if (rider.id == riderStat.id) {
+          availRidersModel.push({
+            active: rider.active,
+            avatar_url: rider.avatar_url,
+            cost: rider.cost,
+            riderid: rider.id,
+            name: rider.name,
+            number: rider.number,
+            highestFinish: riderStat.min,
+            lowestFinish: riderStat.max,
+            averageFinish: riderStat.round
+          })
+        } else {
+          availRidersModel.push({
+            active: rider.active,
+            avatar_url: rider.avatar_url,
+            cost: rider.cost,
+            riderid: rider.id,
+            name: rider.name,
+            number: rider.number,
+            highestFinish: '-',
+            lowestFinish: '-',
+            averageFinish: '-'
+          })
+        }
+      })
+    })
+
+    return { CurrentTeam: data.CurrentTeam, AvailableRiders: availRidersModel };
   }
 
   https.createServer({

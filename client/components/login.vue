@@ -67,7 +67,6 @@
             username: this.username,
             password: this.password
           }).then(data => {
-            console.log(data);
             this.isLoading = false;
             this.setUserData({ userData: data.data })
             this.setLoggedIn({ loggedIn: true })

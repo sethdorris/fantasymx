@@ -72,6 +72,12 @@ exports.getAllRaceResults = `SELECT riders.id, riders.name, ROUND(AVG(place),2),
 JOIN riders ON raceresults.riderid = riders.id
 GROUP BY riders.id, riders.name`;
 
+exports.getRaceResultStatsForCurrentYear = `SELECT riders.id, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
+JOIN riders ON raceresults.riderid = riders.id
+JOIN seasons ON raceresults.seasonid = seasons.seasonid
+WHERE seasons.end_date < $1 AND seasons.start_date > $2
+GROUP BY riders.id, riders.name`
+
 exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
 JOIN riders ON weekly_team.riderid = riders.id
 WHERE userid = $1 AND season_weeksid = $2 AND leagueid = 1`
