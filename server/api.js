@@ -5,7 +5,7 @@ FROM
 (SELECT weekly_team.userid, users.username, name, points
 FROM riders
 INNER JOIN weekly_team
-ON riders.id = weekly_team.riderid
+ON riders.riderid = weekly_team.riderid
 INNER JOIN users
 ON weekly_team.userid = users.id) AS json_rows
 GROUP BY userid)
@@ -23,7 +23,7 @@ ORDER BY name
 
 exports.getCurrentWeeksRiders =
 `SELECT wt.id AS weeklyteamid, wt.riderid, r.name, r.avatar_url, r.cost, r.rider_number, r.active, s.currentseason, s.season_name, sw.currentweek  FROM weekly_team AS wt
-JOIN riders AS r ON r.id = wt.riderid
+JOIN riders AS r ON r.riderid = wt.riderid
 JOIN (SELECT MAX(seasonid) AS currentseason, season_name FROM seasons GROUP BY season_name) AS s ON wt.seasonid = s.currentseason
 JOIN (SELECT MAX(week_number) AS currentweek FROM season_weeks) AS sw ON wt.season_weeksid = sw.currentweek
 WHERE userid = $1`;
@@ -45,11 +45,11 @@ FROM
 (SELECT weekly_team.userid, users.username, name, raceresults.place, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
 FROM riders
 INNER JOIN weekly_team
-ON riders.id = weekly_team.riderid
+ON riders.riderid = weekly_team.riderid
 INNER JOIN users
 ON weekly_team.userid = users.id
 INNER JOIN raceresults
-ON riders.id = raceresults.riderid) AS json_rows
+ON riders.riderid = raceresults.riderid) AS json_rows
 WHERE json_rows.leagueid = 1
 GROUP BY userid)
 SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
@@ -61,25 +61,25 @@ ON users.id = wt.userid
 GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
 
 exports.getMainLeagueLeader = `SELECT DISTINCT(wt.id) AS weeklyteamid, wt.riderid, wt.userid, wt.season_weeksid, r.name, r.avatar_url, r.active, rr.place, s.currentseason, s.season_name, wt.leagueid  FROM weekly_team AS wt
-JOIN riders AS r ON r.id = wt.riderid
+JOIN riders AS r ON r.riderid = wt.riderid
 JOIN (SELECT MAX(seasonid) AS currentseason, season_name FROM seasons GROUP BY season_name) AS s ON wt.seasonid = s.currentseason
 JOIN (SELECT season_weeksid, seasonid FROM season_weeks) AS wn ON wt.season_weeksid = wn.season_weeksid
 JOIN raceresults AS rr ON wt.riderid = rr.riderid
 WHERE wt.leagueid = $1
 ORDER BY wt.userid`
 
-exports.getAllRaceResults = `SELECT riders.id, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
-JOIN riders ON raceresults.riderid = riders.id
-GROUP BY riders.id, riders.name`;
+exports.getAllRaceResults = `SELECT riders.riderid, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
+JOIN riders ON raceresults.riderid = riders.riderid
+GROUP BY riders.riderid, riders.name`;
 
-exports.getRaceResultStatsForCurrentYear = `SELECT riders.id, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
-JOIN riders ON raceresults.riderid = riders.id
+exports.getRaceResultStatsForCurrentYear = `SELECT riders.riderid, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
+JOIN riders ON raceresults.riderid = riders.riderid
 JOIN seasons ON raceresults.seasonid = seasons.seasonid
 WHERE seasons.end_date < $1 AND seasons.start_date > $2
-GROUP BY riders.id, riders.name`
+GROUP BY riders.riderid, riders.name`
 
 exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
-JOIN riders ON weekly_team.riderid = riders.id
+JOIN riders ON weekly_team.riderid = riders.riderid
 WHERE userid = $1 AND season_weeksid = $2 AND leagueid = 1`
 
 exports.GetCurrentWeek = function () {

@@ -13,7 +13,9 @@ var session = require ("express-session");
 var KnexSessionStore = require("connect-session-knex")(session);
 var app = express();
 var api  = require('./api');
+var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var fetch = require('node-fetch');
+var _ = require('lodash');
 
 var knex = Knex({
   client: 'pg',
@@ -198,7 +200,7 @@ app.post('/login', function (req, res) {
       console.log("all avail", AvailRiders);
       console.log("currentTeam", CurrentWeekTeam);
       console.log("stats", Stats)
-      var model = MyTeamModelCreator({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats})
+      var model = MyTeamVMCreator.Create({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats})
       res.json(model);
     })
   })
@@ -228,55 +230,6 @@ app.post('/login', function (req, res) {
 
   function GetMostRecentTeam(userid) {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
-  }
-
-  function MyTeamModelCreator(data) {
-    var currentTeamids = [];
-    var availRidersId = [];
-    var availRidersModel = [];
-    data.CurrentTeam.forEach(roster => {
-      currentTeamids.push(roster.riderid);
-    })
-    var availableRiders = data.AvailableRiders.filter(riders => {
-      if (currentTeamids.indexOf(riders.id) == -1) {
-          availRidersId.push(riders.id);
-      }
-      return currentTeamids.indexOf(riders.id) == -1;
-    })
-
-    console.log(availableRiders)
-
-    availableRiders.forEach(rider => {
-      data.Stats.forEach(riderStat => {
-        if (rider.id == riderStat.id) {
-          availRidersModel.push({
-            active: rider.active,
-            avatar_url: rider.avatar_url,
-            cost: rider.cost,
-            riderid: rider.id,
-            name: rider.name,
-            number: rider.number,
-            highestFinish: riderStat.min,
-            lowestFinish: riderStat.max,
-            averageFinish: riderStat.round
-          })
-        } else {
-          availRidersModel.push({
-            active: rider.active,
-            avatar_url: rider.avatar_url,
-            cost: rider.cost,
-            riderid: rider.id,
-            name: rider.name,
-            number: rider.number,
-            highestFinish: '-',
-            lowestFinish: '-',
-            averageFinish: '-'
-          })
-        }
-      })
-    })
-
-    return { CurrentTeam: data.CurrentTeam, AvailableRiders: availRidersModel };
   }
 
   https.createServer({

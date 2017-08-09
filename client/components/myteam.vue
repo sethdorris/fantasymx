@@ -3,23 +3,34 @@
     <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
     <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
     <div class="riders-container">
-      <article class="rider-block" v-for="rider in getUserData.recentteam">
-        <p class="title is-6">{{rider.name}} - #{{rider.rider_number}}</p>
-        <p class="subtitle is-6">Cost: ${{rider.cost}}</p>
-      </article>
-      <div class="card rider-block" v-for="n in 4">
+      <div class="card rider-block" v-for="rider in selectedriders">
         <header class="card-header">
           <p class="card-header-title">
-            OPEN SLOT
+            {{rider.name}} - {{rider.rider_number}}
+              <span class="icon" v-if="rider.name !== 'OPEN SLOT'">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </span>
           </p>
         </header>
         <div class="card-content">
           <div class="content">
-            <img src="http://www.shopaardvark.com/media/catalog/product/W/S/WS-18655.jpg" />
+            <img :src="rider.avatar_url" />
             <!-- <img src="http://motocross.transworld.net/wp-content/blogs.dir/441/files/2013/11/Jason_Anderson_TWMX_735-600x399.jpg" /> -->
           </div>
         </div>
         <footer class="card-footer">
+          <div class="footer-row">
+            Cost: <span>${{rider.cost}}</span>
+          </div>
+          <div class="footer-row">
+            Avg Finish: <span>{{rider.averageFinish}}</span>
+          </div>
+          <div class="footer-row">
+            Highest Finish: <span>{{rider.highestFinish}}</span>
+          </div>
+          <div class="footer-row">
+            Lowest Finish: <span>{{rider.lowestFinish}}</span>
+          </div>
         </footer>
       </div>
     </div>
@@ -49,14 +60,14 @@
           </tr>
         </tfoot>
         <tbody>
-          <tr v-for="rider in filteredAvailable">
+          <tr v-for="rider in availableRiders">
             <td>${{rider.cost}}</td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
-            <td>{{highestFinish(rider.id)}}</td>
-            <td>{{lowestFinish(rider.id)}}</td>
-            <td>{{averageFinish(rider.id)}}</td>
-            <td><a href="/#" v-if="selectedriders.length < 4">SELECT</a></td>
+            <td>{{rider.highestFinish}}</td>
+            <td>{{rider.lowestFinish}}</td>
+            <td>{{rider.averageFinish}}</td>
+            <td><a href="/#" v-if="openSlots">SELECT</a></td>
           </tr>
         </tbody>
       </table>
@@ -70,78 +81,36 @@ import { mapGetters } from 'vuex';
   export default {
     data() {
       return {
-        dollars: 8,
         currentweek: 0,
-        allriders: [],
-        selectedriders: [],
-        raceresults: []
+        availableRiders: [],
+        selectedriders: []
       }
     },
     computed: {
       ...mapGetters([
         'getUserData'
       ]),
-      filteredAvailable() {
-        if (this.getUserData.recentteam.length == 0) {
-          return this.allriders;
+      dollars() {
+        var total = 8;
+        if (this.selectedriders.length == 0) {
+          return total;
         }
-        return this.allriders.filter(rider => {
-          var ids = []
-          this.getUserData.recentteam.forEach(obj => {
-            ids.push(obj.riderid);
-            selectedriders.push(obj.riderid);
-          })
-          return ids.indexOf(rider.id) == -1;
+        this.selectedriders.forEach(rider => {
+          total -= rider.cost;
         })
-      }
-    },
-    methods: {
-      highestFinish(riderId) {
-        var max = "-";
-        this.raceresults.forEach(result => {
-          if (result.id == riderId) {
-            max = result.max;
-          }
-        })
-        return max;
+        return total;
       },
-      lowestFinish(riderId) {
-        var min = "-";
-        this.raceresults.forEach(result => {
-          if (result.id == riderId) {
-            min = result.min;
-          }
-        })
-        return min;
-      },
-      averageFinish(riderId) {
-        var avg = "-";
-        this.raceresults.forEach(result => {
-          if (result.id == riderId) {
-            avg = result.round;
-          }
-        })
-        return avg;
+      openSlots() {
+        return this.selectedriders.some((rider) => {return rider.name == "OPEN SLOT"})
       }
     },
     beforeCreate() {
-      axios.get('/GetAllAvailableRiders')
-      .then(data => {
-        console.log("available riders", data.data)
-        this.allriders = data.data;
-      })
-      axios.get('/GetCurrentWeek')
-      .then(data => {
-        this.currentweek = data.data.week;
-      })
-      axios.get('/RaceResultsHistory')
-      .then(data => {
-        console.log("Race results", data.data)
-        this.raceresults = data.data;
-      })
       axios.get('/CurrentMyTeamModel')
       .then(data => {
-        console.log("Current Team", data.data)
+        console.log("data", data.data);
+        this.currentweek = data.data.CurrentTeam[0].season_weeksid;
+        this.availableRiders = data.data.AvailableRiders;
+        this.selectedriders = data.data.CurrentTeam;
       })
     }
   }
@@ -172,5 +141,29 @@ import { mapGetters } from 'vuex';
   }
   .page-subheader {
     text-align:center;
+  }
+  .card-footer {
+    flex-direction: column;
+    border: 1px solid #eee;
+  }
+  .card-content {
+    min-height: 11rem;
+    max-height: 11rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .card-footer div:nth-child(even) {
+    background-color: #eee;
+  }
+  .footer-row {
+    display:flex;
+    justify-content: space-between;
+  }
+  p.card-header-title {
+    display:flex;
+    justify-content: space-around;
+  }
+  p span.icon {
+    color: #ff3860;
   }
 </style>
