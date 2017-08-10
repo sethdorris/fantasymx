@@ -25,8 +25,6 @@
       <footer class="modal-card-foot">
         <div class="field">
           <button class="button is-primary" v-bind:class="{ 'is-loading': isLoading }" v-on:click="submit" type="button" value="Login" id="submit-login">Login</button>
-        </div>
-        <div class="field">
           <a class="button" @click="setLoginModal({ show: !ShowLoginModal })">Cancel</a>
         </div>
       </footer>

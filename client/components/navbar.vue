@@ -125,6 +125,7 @@
         logout() {
           axios.get('logout').then(data => {
             this.logout();
+            this.$router.push("/");
           })
         }
       },
