@@ -15,7 +15,7 @@ exports.Create = function (data) {
             cost: rider.cost,
             riderid: rider.riderid,
             name: rider.name,
-            number: rider.number,
+            rider_number: rider.rider_number,
             highestFinish: riderStat.min,
             lowestFinish: riderStat.max,
             averageFinish: riderStat.round
@@ -44,7 +44,7 @@ exports.Create = function (data) {
           cost: rider.cost,
           riderid: rider.riderid,
           name: rider.name,
-          number: rider.number,
+          rider_number: rider.rider_number,
           highestFinish: '-',
           lowestFinish: '-',
           averageFinish: '-'

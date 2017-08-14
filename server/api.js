@@ -68,7 +68,7 @@ JOIN raceresults AS rr ON wt.riderid = rr.riderid
 WHERE wt.leagueid = $1
 ORDER BY wt.userid`
 
-exports.getAllRaceResults = `SELECT riders.riderid, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
+exports.getAllRaceResults = `SELECT riders.riderid, riders.rider_number, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
 JOIN riders ON raceresults.riderid = riders.riderid
 GROUP BY riders.riderid, riders.name`;
 
