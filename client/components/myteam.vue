@@ -7,7 +7,7 @@
         <header class="card-header">
           <p class="card-header-title">
             {{rider.name}} - {{rider.rider_number}}
-              <span class="icon" v-if="rider.name !== 'OPEN SLOT'" @click="removeRacer(rider.riderid)">
+              <span class="icon" v-if="rider.name !== 'OPEN SLOT'" @click="removeRacer(rider)">
                 <i class="fa fa-times" aria-hidden="true"></i>
               </span>
           </p>
@@ -80,12 +80,13 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 import _findIndex from 'lodash/findIndex';
 import _sortBy from 'lodash/sortBy';
+import _remove from 'lodash/remove';
   export default {
     data() {
       return {
         currentweek: 0,
-        availableRiders: [],
-        selectedriders: []
+        selectedriders: [],
+        availableRiders: []
       }
     },
     computed: {
@@ -105,28 +106,38 @@ import _sortBy from 'lodash/sortBy';
       showSelect() {
         var openSlots = this.selectedriders.some((rider) => {return rider.name == "OPEN SLOT"});
         var lowestCostAvailable = _sortBy(this.availableRiders, o => { return o.cost });
-        if (this.dollars >= lowestCostAvailable[0].cost && openSlots) {
+        console.log("showSelect", lowestCostAvailable[0])
+        if ((this.dollars >= lowestCostAvailable[0].cost) && openSlots) {
           return true;
         }
         return false;
       }
     },
     methods: {
-      removeRacer(racerid) {
-        var selectedRacerIndex = _findIndex(this.selectedriders, o => { return o.riderid === racerid });
+      removeRacer(racer) {
+        console.log("removed racers", racer);
+        var selectedRacerIndex = _findIndex(this.selectedriders, o => { return o.riderid === racer.riderid });
+        console.log("selected racer index", selectedRacerIndex);
+        console.log(this.selectedriders[selectedRacerIndex])
+        this.availableRiders.push(racer);
         //Return removed racer back to available pool
-        this.selectedriders[selectedRacerIndex].avatar_url = 'http://www.shopaardvark.com/media/catalog/product/W/S/WS-18655.jpg';
-        this.selectedriders[selectedRacerIndex].cost = 0;
-        this.selectedriders[selectedRacerIndex].highestFinish = '-';
-        this.selectedriders[selectedRacerIndex].averageFinish = '-';
-        this.selectedriders[selectedRacerIndex].lowestFinish = '-';
-        this.selectedriders[selectedRacerIndex].name = "OPEN SLOT";
-        this.selectedriders[selectedRacerIndex].rider_number = 0;
-        this.selectedriders[selectedRacerIndex].riderid = 0;
+        this.selectedriders[selectedRacerIndex] = {
+          avatar_url: 'http://www.shopaardvark.com/media/catalog/product/W/S/WS-18655.jpg',
+          cost: 0,
+          highestFinish: '-',
+          averageFinish: '-',
+          lowestFinish: '-',
+          name: "OPEN SLOT",
+          rider_number: 0,
+          riderid: 0
+        }
         //call to save to DB;
       },
       addRacer(racer) {
         var openSlotIndex = _findIndex(this.selectedriders, o => { return o.name == "OPEN SLOT" });
+        console.log("added racer", this.selectedriders[openSlotIndex]);
+        console.log("added racer2", racer)
+        _remove(this.availableRiders, o => { return o.riderid == racer.riderid })
         //Remove selected racer from available pool.
         this.selectedriders[openSlotIndex].avatar_url = racer.avatar_url;
         this.selectedriders[openSlotIndex].cost = racer.cost;
@@ -145,7 +156,7 @@ import _sortBy from 'lodash/sortBy';
       .then(data => {
         console.log("data", data.data);
         this.currentweek = data.data.CurrentTeam[0].season_weeksid;
-        this.availableRiders = data.data.AvailableRiders;
+        this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.cost });
         this.selectedriders = data.data.CurrentTeam;
       })
     }
