@@ -39,7 +39,7 @@
       <table class="table is-striped">
         <thead>
           <tr>
-            <th>Price</th>
+            <th @click="sortByPrice">Price</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -60,7 +60,7 @@
           </tr>
         </tfoot>
         <tbody>
-          <tr v-for="rider in sortedAvailable">
+          <tr v-for="rider in availableRiders">
             <td>${{rider.cost}}</td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
@@ -86,7 +86,7 @@ import _remove from 'lodash/remove';
       return {
         currentweek: 0,
         selectedriders: [],
-        availableRiders: []
+        availableRiders: [],
       }
     },
     computed: {
@@ -144,6 +144,17 @@ import _remove from 'lodash/remove';
         var openSlotIndex = _findIndex(this.selectedriders, o => { return o.name == "OPEN SLOT" });
         _remove(this.availableRiders, o => { return o.riderid == racer.riderid })
         this.$set(this.selectedriders, openSlotIndex, racer);
+      },
+      sortByPrice() {
+        this.availableRiders = this.availableRiders.sort((a, b) => {
+          if (a.cost > b.cost) {
+            return -1
+          }
+          if (a.cost < b.cost) {
+            return 1
+          }
+          return 0
+        })
       }
     },
     beforeCreate() {
@@ -154,6 +165,13 @@ import _remove from 'lodash/remove';
         this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.cost });
         this.selectedriders = data.data.CurrentTeam;
       })
+    },
+    mounted() {
+      var riderContainer = document.querySelector(".riders-container").attributes;
+      console.log(riderContainer)
+      // if (window.pageYOffset >= riderContainer.pageYOffset) {
+      //
+      // }
     }
   }
 </script>
