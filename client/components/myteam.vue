@@ -1,6 +1,7 @@
 <template>
   <div class="content">
     <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
+    <a class="button is-success save-button">Save Team</a>
     <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
     <div class="riders-container">
       <div class="card rider-block" v-for="rider in selectedriders">
@@ -39,7 +40,12 @@
       <table class="table is-striped">
         <thead>
           <tr>
-            <th @click="sortByPrice">Price</th>
+            <th @click="sortByPrice">Price
+              <span class="icon">
+                <i class="fa fa-caret-up" v-if="CostSortByAsc" aria-hidden="true"></i>
+                <i class="fa fa-caret-down" v-else aria-hidden="true"></i>
+              </span>
+            </th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -87,6 +93,7 @@ import _remove from 'lodash/remove';
         currentweek: 0,
         selectedriders: [],
         availableRiders: [],
+        CostSortByAsc: true
       }
     },
     computed: {
@@ -146,15 +153,29 @@ import _remove from 'lodash/remove';
         this.$set(this.selectedriders, openSlotIndex, racer);
       },
       sortByPrice() {
-        this.availableRiders = this.availableRiders.sort((a, b) => {
-          if (a.cost > b.cost) {
-            return -1
-          }
-          if (a.cost < b.cost) {
-            return 1
-          }
-          return 0
-        })
+        if (this.CostSortByAsc) {
+          this.CostSortByAsc = false;
+          this.availableRiders = this.availableRiders.sort((a, b) => {
+            if (a.cost > b.cost) {
+              return -1
+            }
+            if (a.cost < b.cost) {
+              return 1
+            }
+            return 0
+          })
+        } else {
+          this.CostSortByAsc = true;
+          this.availableRiders = this.availableRiders.sort((a, b) => {
+            if (a.cost > b.cost) {
+              return 1
+            }
+            if (a.cost < b.cost) {
+              return -1
+            }
+            return 0
+          })
+        }
       }
     },
     beforeCreate() {
@@ -225,5 +246,12 @@ import _remove from 'lodash/remove';
   }
   p span.icon {
     color: #ff3860;
+  }
+  th:hover {
+    cursor: pointer;
+  }
+  .save-button {
+    position: fixed;
+    
   }
 </style>
