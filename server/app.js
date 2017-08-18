@@ -214,6 +214,11 @@ app.post('/login', function (req, res) {
     res.json({ week: currentWeek });
   })
 
+  app.post("/SaveTeam", function (req, res) {
+    console.log(req.body);
+    res.sendStatus(200);
+  })
+
   function UserAlreadyExists(email, username) {
     return pool.query('SELECT * FROM users WHERE LOWER(email) = LOWER($1) OR LOWER(username) = LOWER($2)', [email, username])
     .then( data => {

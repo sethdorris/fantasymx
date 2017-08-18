@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
-    <a class="button is-success save-button">Save Team</a>
+    <a class="button is-success save-button" @click="SaveTeam">Save Team</a>
     <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
     <div class="riders-container">
       <div class="card rider-block" v-for="rider in selectedriders">
@@ -176,6 +176,12 @@ import _remove from 'lodash/remove';
             return 0
           })
         }
+      },
+      SaveTeam() {
+        axios.post("/SaveTeam", this.selectedriders)
+        .then(data => {
+          console.log(data);
+        })
       }
     },
     beforeCreate() {
@@ -252,6 +258,6 @@ import _remove from 'lodash/remove';
   }
   .save-button {
     position: fixed;
-    
+
   }
 </style>
