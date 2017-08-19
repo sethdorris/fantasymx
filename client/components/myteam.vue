@@ -3,7 +3,7 @@
     <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
     <a class="button is-success save-button" @click="SaveTeam">Save Team</a>
     <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
-    <div class="riders-container">
+    <!-- <div class="riders-container">
       <div class="card rider-block" v-for="rider in selectedriders">
         <header class="card-header">
           <p class="card-header-title">
@@ -16,7 +16,6 @@
         <div class="card-content">
           <div class="content">
             <img :src="rider.avatar_url" />
-            <!-- <img src="http://motocross.transworld.net/wp-content/blogs.dir/441/files/2013/11/Jason_Anderson_TWMX_735-600x399.jpg" /> -->
           </div>
         </div>
         <footer class="card-footer">
@@ -35,7 +34,7 @@
         </footer>
       </div>
     </div>
-    <p class="page-title">AVAILABLE RIDERS</p>
+    <p class="page-title">AVAILABLE RIDERS</p> -->
     <div class="container">
       <table class="table is-striped">
         <thead>
@@ -66,7 +65,7 @@
           </tr>
         </tfoot>
         <tbody>
-          <tr v-for="rider in availableRiders">
+          <tr v-for="rider in paginatedRiders">
             <td>${{rider.cost}}</td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
@@ -77,6 +76,17 @@
           </tr>
         </tbody>
       </table>
+      <div class="custom-pagination">
+        <div>
+          <a class="pagination-previous" @click="page--" v-bind:class="{ 'hide-pagination-button' : hidePrevious }">Previous</a>
+        </div>
+        <div>
+          <a class="pagination-number">{{page}}/{{paginationPages}}</a>
+        </div>
+        <div>
+          <a class="pagination-next" @click="page++" v-bind:class="{ 'hide-pagination-button' : hideNext }">Next page</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -93,30 +103,42 @@ import _remove from 'lodash/remove';
         currentweek: 0,
         selectedriders: [],
         availableRiders: [],
-        CostSortByAsc: true
+        CostSortByAsc: true,
+        page: 1
       }
     },
     computed: {
       ...mapGetters([
         'getUserData'
       ]),
-      sortedAvailable() {
-        return this.availableRiders.sort((a, b) => {
-          if (a.name < b.name) {
-            return -1;
-          }
-          if (a.name > b.name) {
-            return 1;
-          }
-          return 0
-        })
-      },
       dollars() {
         var total = 8;
         this.selectedriders.forEach(rider => {
           total -= rider.cost;
         })
         return total;
+      },
+      hidePrevious() {
+        return this.page <= 1;
+      },
+      hideNext() {
+        return this.page >= this.paginationPages;
+      },
+      paginatedRiders() {
+        if (this.page == 1) {
+          console.log("entire array", this.availableRiders)
+          console.log(this.availableRiders.slice(0, 10));
+          return this.availableRiders.slice(0, 10);
+        } else {
+          var beginSlice = this.page * 10 - 9;
+          var endSlice = beginSlice + 10;
+          console.log(this.availableRiders)
+          console.log(this.availableRiders.slice(beginSlice, endSlice))
+          return this.availableRiders.slice(beginSlice, endSlice);
+        }
+      },
+      paginationPages() {
+        return Math.ceil(this.availableRiders.length / 10);
       },
       showSelect() {
         var openSlots = this.selectedriders.some((rider) => {return rider.name == "OPEN SLOT"});
@@ -155,7 +177,7 @@ import _remove from 'lodash/remove';
       sortByPrice() {
         if (this.CostSortByAsc) {
           this.CostSortByAsc = false;
-          this.availableRiders = this.availableRiders.sort((a, b) => {
+          this.paginatedRiders = this.paginatedRiders.sort((a, b) => {
             if (a.cost > b.cost) {
               return -1
             }
@@ -166,7 +188,7 @@ import _remove from 'lodash/remove';
           })
         } else {
           this.CostSortByAsc = true;
-          this.availableRiders = this.availableRiders.sort((a, b) => {
+          this.paginatedRiders = this.paginatedRiders.sort((a, b) => {
             if (a.cost > b.cost) {
               return 1
             }
@@ -194,11 +216,7 @@ import _remove from 'lodash/remove';
       })
     },
     mounted() {
-      var riderContainer = document.querySelector(".riders-container").attributes;
-      console.log(riderContainer)
-      // if (window.pageYOffset >= riderContainer.pageYOffset) {
-      //
-      // }
+      console.log("mounted", this.getUserData)
     }
   }
 </script>
@@ -258,6 +276,12 @@ import _remove from 'lodash/remove';
   }
   .save-button {
     position: fixed;
-
+  }
+  .hide-pagination-button {
+    visibility: hidden;
+  }
+  .custom-pagination {
+    display: flex;
+    justify-content: space-between;
   }
 </style>
