@@ -3,7 +3,7 @@
     <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
     <a class="button is-success save-button" @click="SaveTeam">Save Team</a>
     <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
-    <!-- <div class="riders-container">
+    <div class="riders-container">
       <div class="card rider-block" v-for="rider in selectedriders">
         <header class="card-header">
           <p class="card-header-title">
@@ -34,7 +34,7 @@
         </footer>
       </div>
     </div>
-    <p class="page-title">AVAILABLE RIDERS</p> -->
+    <p class="page-title">AVAILABLE RIDERS</p>
     <div class="container">
       <table class="table is-striped">
         <thead>
