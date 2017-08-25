@@ -215,8 +215,21 @@ app.post('/login', function (req, res) {
   })
 
   app.post("/SaveTeam", function (req, res) {
-    console.log(req.body);
-    res.sendStatus(200);
+    var currentweek = api.GetCurrentWeek();
+    var weeklyteam_ids = [];
+    var p1 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentweek]).then(data => { return data.rows });
+    p1.then(currentTeam => {
+      currentTeam.forEach(team => { weeklyteam_ids.push(team.id) });
+      console.log(weeklyteam_ids);
+      req.body.forEach(racer => {
+        console.log("RACCERRR", racer)
+        if (weeklyteam_ids.indexOf(racer.id) > -1) {
+          pool.query(api.saveTeam, [racer.id, racer.riderid]).then(data => console.log("Rows Updated", data))
+        } else if (weeklyteam_ids.length < 4)
+        pool.query(api.createARosterSlot, [req.session.userId, racer.riderid, currentweek]).then(data => weeklyteam_ids.push(2))
+      })
+      res.sendStatus(200);
+    })
   })
 
   function UserAlreadyExists(email, username) {

@@ -10,6 +10,7 @@ exports.Create = function (data) {
       data.Stats.forEach(riderStat => {
         if (rider.riderid == riderStat.riderid) {
           availRidersModel.push({
+            id: rider.id,
             active: rider.active,
             avatar_url: rider.avatar_url,
             cost: rider.cost,
@@ -39,6 +40,7 @@ exports.Create = function (data) {
     ridersWithNoResults.forEach(rider => {
       availRidersModel.push(
         {
+          id: rider.id,
           active: rider.active,
           avatar_url: rider.avatar_url,
           cost: rider.cost,

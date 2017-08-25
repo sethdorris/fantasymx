@@ -82,6 +82,10 @@ exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
 JOIN riders ON weekly_team.riderid = riders.riderid
 WHERE userid = $1 AND season_weeksid = $2 AND leagueid = 1`
 
+exports.saveTeam = `UPDATE weekly_team SET riderid = $2 WHERE id = $1`;
+
+exports.createARosterSlot = `INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid) VALUES (nextval('weekly_team_id_seq'), $1, 1, 1, $2, $3)`
+
 exports.GetCurrentWeek = function () {
   var currentdate = Date.now();
   if (currentdate < new Date(2018, 00, 06, 03)) {
@@ -136,6 +140,8 @@ exports.GetCurrentWeek = function () {
     return 17
   }
 }
+
+
 
 // potential query - grabs the users and total points for a league
 // SELECT res.userid, SUM(res.place) FROM (

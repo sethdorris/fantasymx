@@ -1,44 +1,16 @@
 <template>
   <div class="content">
-    <div class="page-title">MY TEAM - TEAM SELECTION FOR WEEK {{ currentweek }}</div>
-    <a class="button is-success save-button" @click="SaveTeam">Save Team</a>
-    <p class="page-subheader">Week {{ currentweek }} Balance: ${{dollars}}</p>
-    <div class="riders-container">
-      <div class="card rider-block" v-for="rider in selectedriders">
-        <header class="card-header">
-          <p class="card-header-title">
-            {{rider.name}} - {{rider.rider_number}}
-              <span class="icon" v-if="rider.name !== 'OPEN SLOT'" @click="removeRacer(rider)">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </span>
-          </p>
-        </header>
-        <div class="card-content">
-          <div class="content">
-            <img :src="rider.avatar_url" />
-          </div>
-        </div>
-        <footer class="card-footer">
-          <div class="footer-row">
-            Cost: <span>${{rider.cost}}</span>
-          </div>
-          <div class="footer-row">
-            Avg Finish: <span>{{rider.averageFinish}}</span>
-          </div>
-          <div class="footer-row">
-            Highest Finish: <span>{{rider.highestFinish}}</span>
-          </div>
-          <div class="footer-row">
-            Lowest Finish: <span>{{rider.lowestFinish}}</span>
-          </div>
-        </footer>
+    <div class="page-header-container">
+      <div class="page-header-block">
+        <div class="lh-4r">Week: <span class="boldest-header right">{{currentweek}}</span></div>
+        <div class="lh-4r">Balance Remaining:<span class="boldest-header right"> ${{dollars}}</span></div>
       </div>
     </div>
-    <p class="page-title">AVAILABLE RIDERS</p>
     <div class="container">
-      <table class="table is-striped">
+      <table class="table">
         <thead>
           <tr>
+            <th>Action</th>
             <th @click="sortByPrice">Price
               <span class="icon">
                 <i class="fa fa-caret-up" v-if="CostSortByAsc" aria-hidden="true"></i>
@@ -50,29 +22,64 @@
             <th>Highest Finish</th>
             <th>Lowest Finish</th>
             <th>Average Finish</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
+            <th>Action</th>
             <th>Price</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
             <th>Lowest Finish</th>
             <th>Average Finish</th>
-            <th>Action</th>
           </tr>
         </tfoot>
         <tbody>
+          <tr class="transparent-background">
+            <td colspan="7">My Team</td>
+          </tr>
+          <tr v-for="(racer, index) in selectedriders">
+            <td>
+              <a href="#!" v-if="racer.name != 'OPEN SLOT'" @click="removeRacer(racer)">
+                <span class="icon minus-icon">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </span>
+              </a>
+            </td>
+            <td>${{racer.cost}}</td>
+            <td>{{racer.name}}</td>
+            <td>{{racer.rider_number}}</td>
+            <td>{{racer.highestFinish}}</td>
+            <td>{{racer.lowestFinish}}</td>
+            <td>{{racer.averageFinish}}</td>
+          </tr>
+          <tr class="lastRow">
+            <td colspan="5"></td>
+            <td colspan="1">
+              <button class="button is-danger" @click="RemoveAll" :disabled="!showRemoveAll">Remove All</button>
+            </td>
+            <td colspan="1">
+              <button class="button is-success" @click="SaveTeam" :disabled="hasOpenSlots">Save Team</button>
+            </td>
+          </tr>
+          <tr class="transparent-background">
+            <td colspan="7">Available Racers</td>
+          </tr>
           <tr v-for="rider in paginatedRiders">
+            <td>
+              <a href="#!" v-if="showSelect && rider.cost <= dollars" @click="addRacer(rider)">
+                <span class="icon">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </span>
+              </a>
+            </td>
             <td>${{rider.cost}}</td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
             <td>{{rider.highestFinish}}</td>
             <td>{{rider.lowestFinish}}</td>
             <td>{{rider.averageFinish}}</td>
-            <td><a href="#!" v-if="showSelect && rider.cost <= dollars" @click="addRacer(rider)">SELECT</a></td>
           </tr>
         </tbody>
       </table>
@@ -140,6 +147,12 @@ import _remove from 'lodash/remove';
       paginationPages() {
         return Math.ceil(this.availableRiders.length / 10);
       },
+      hasOpenSlots() {
+        return this.selectedriders.some(rider => { return rider.name == "OPEN SLOT" })
+      },
+      showRemoveAll() {
+        return this.selectedriders.some(rider => { return rider.name != "OPEN SLOT" })
+      },
       showSelect() {
         var openSlots = this.selectedriders.some((rider) => {return rider.name == "OPEN SLOT"});
         var lowestCostAvailable = _sortBy(this.availableRiders, o => { return o.cost });
@@ -155,6 +168,7 @@ import _remove from 'lodash/remove';
         console.log("removed racers", racer);
         var selectedRacerIndex = _findIndex(this.selectedriders, o => { return o.riderid === racer.riderid });
         var openSpace = {
+          weeklyteam_id: 0,
           avatar_url: 'http://www.shopaardvark.com/media/catalog/product/W/S/WS-18655.jpg',
           cost: 0,
           highestFinish: '-',
@@ -165,12 +179,13 @@ import _remove from 'lodash/remove';
           leagueid: 1,
           season_weeksid: this.currentweek
         }
-        this.availableRiders.push(racer);
+        this.availableRiders.push(racer)
         this.$set(this.selectedriders, selectedRacerIndex, openSpace)
         //call to save to DB;
       },
       addRacer(racer) {
         var openSlotIndex = _findIndex(this.selectedriders, o => { return o.name == "OPEN SLOT" });
+        _remove(this.paginatedRiders, o => { return o.riderid == racer.riderid })
         _remove(this.availableRiders, o => { return o.riderid == racer.riderid })
         this.$set(this.selectedriders, openSlotIndex, racer);
       },
@@ -204,6 +219,13 @@ import _remove from 'lodash/remove';
         .then(data => {
           console.log(data);
         })
+      },
+      RemoveAll() {
+        this.selectedriders.forEach(racer => {
+          if (racer.name != "OPEN SLOT") {
+            this.removeRacer(racer)
+          }
+        })
       }
     },
     beforeCreate() {
@@ -221,6 +243,13 @@ import _remove from 'lodash/remove';
   }
 </script>
 <style>
+.page-header-container {
+  display: flex;
+  justify-content: center;
+}
+.page-header-block {
+  width: 10%;
+}
   .riders-container {
     display: flex;
     flex-wrap: wrap;
@@ -274,14 +303,35 @@ import _remove from 'lodash/remove';
   th:hover {
     cursor: pointer;
   }
-  .save-button {
-    position: fixed;
-  }
   .hide-pagination-button {
     visibility: hidden;
   }
   .custom-pagination {
     display: flex;
     justify-content: space-between;
+  }
+  .lastRow {
+    border-bottom: 2px solid #00d1b2;
+  }
+  .minus-icon {
+    color: #ff3860;
+  }
+  .boldest-header {
+    color: #00d1b2;
+    font-weight: 700;
+    font-size: xx-large;
+  }
+  .right {
+    float: right;
+  }
+  .lh-4r {
+    height: 4rem;
+    line-height: 4rem;
+  }
+  .lh-4r:first-of-type {
+    border-bottom: 1px solid #00d1b2;
+  }
+  .lh-4r:last-of-type {
+    margin-bottom: 2rem;
   }
 </style>
