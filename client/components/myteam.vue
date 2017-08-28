@@ -7,6 +7,9 @@
       </div>
     </div>
     <div class="container">
+      <transition name="fade">
+        <p v-if="showSaveMessage" class="successful-save">Your team has been successfully saved!</p>
+      </transition>
       <table class="table">
         <thead>
           <tr>
@@ -60,7 +63,7 @@
               <button class="button is-danger" @click="RemoveAll" :disabled="!showRemoveAll">Remove All</button>
             </td>
             <td colspan="1">
-              <button class="button is-success" @click="SaveTeam" :disabled="hasOpenSlots">Save Team</button>
+              <button class="button is-success" @click="SaveTeam" :disabled="hasOpenSlots" v-bind:class="{'is-loading':isLoading}">Save Team</button>
             </td>
           </tr>
           <tr class="transparent-background">
@@ -111,7 +114,9 @@ import _remove from 'lodash/remove';
         selectedriders: [],
         availableRiders: [],
         CostSortByAsc: true,
-        page: 1
+        page: 1,
+        isLoading: false,
+        showSaveMessage: false
       }
     },
     computed: {
@@ -168,7 +173,7 @@ import _remove from 'lodash/remove';
         console.log("removed racers", racer);
         var selectedRacerIndex = _findIndex(this.selectedriders, o => { return o.riderid === racer.riderid });
         var openSpace = {
-          weeklyteam_id: 0,
+          id: this.selectedriders[selectedRacerIndex].id,
           avatar_url: 'http://www.shopaardvark.com/media/catalog/product/W/S/WS-18655.jpg',
           cost: 0,
           highestFinish: '-',
@@ -181,13 +186,15 @@ import _remove from 'lodash/remove';
         }
         this.availableRiders.push(racer)
         this.$set(this.selectedriders, selectedRacerIndex, openSpace)
-        //call to save to DB;
+        console.log("My new team", this.selectedriders)
       },
       addRacer(racer) {
         var openSlotIndex = _findIndex(this.selectedriders, o => { return o.name == "OPEN SLOT" });
         _remove(this.paginatedRiders, o => { return o.riderid == racer.riderid })
         _remove(this.availableRiders, o => { return o.riderid == racer.riderid })
+        racer.id = this.selectedriders[openSlotIndex].id;
         this.$set(this.selectedriders, openSlotIndex, racer);
+        console.log("Racers to Add", this.selectedriders)
       },
       sortByPrice() {
         if (this.CostSortByAsc) {
@@ -215,10 +222,21 @@ import _remove from 'lodash/remove';
         }
       },
       SaveTeam() {
+        this.isLoading = true;
         axios.post("/SaveTeam", this.selectedriders)
         .then(data => {
+          this.isLoading = false;
+          this.SaveMessage();
           console.log(data);
         })
+        .catch(error => {
+          console.log(error);
+          this.isLoading = false;
+        })
+      },
+      SaveMessage() {
+        this.showSaveMessage = true;
+        setTimeout(() => { this.showSaveMessage = false }, 7000)
       },
       RemoveAll() {
         this.selectedriders.forEach(racer => {
@@ -243,6 +261,17 @@ import _remove from 'lodash/remove';
   }
 </script>
 <style>
+.successful-save {
+  text-align: center;
+  color: #00d1b2;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .page-header-container {
   display: flex;
   justify-content: center;

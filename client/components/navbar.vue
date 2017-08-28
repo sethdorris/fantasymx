@@ -3,7 +3,7 @@
     <nav class="navbar">
       <div class="navbar-brand">
         <div class="navbar-item">
-          FANTASYMX
+          //ALPHA TEST//
         </div>
         <div class="navbar-burger burger" data-target="navMenu">
           <span></span>
@@ -25,11 +25,17 @@
             </span>
             <router-link to="/myteam">My Team</router-link>
           </div>
+          <div class="navbar-item" v-if="GetAuthStatus">
+            <span class="icon" v-if="GetAuthStatus">
+              <i class="fa fa-rss"></i>
+            </span>
+            <router-link to="/live">Stat Tracker</router-link>
+          </div>
           <div class="navbar-item">
             <span class="icon">
-              <i class="fa fa-gavel"></i>
+              <i class="fa fa-info"></i>
             </span>
-            <a href="#!">Rules</a>
+            <router-link to="/rules">Info</router-link>
           </div>
         </div>
         <div class="navbar-end">

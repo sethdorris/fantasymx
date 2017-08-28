@@ -208,6 +208,7 @@ app.post('/login', function (req, res) {
   app.get('/myteam', (req, res) => {
     res.redirect(301, '/')
   })
+  app.get('/rules', (req, res) => res.redirect(301, '/'))
 
   app.get('/GetCurrentWeek', function (req, res) {
     var currentWeek = api.GetCurrentWeek();
@@ -224,12 +225,17 @@ app.post('/login', function (req, res) {
       req.body.forEach(racer => {
         console.log("RACCERRR", racer)
         if (weeklyteam_ids.indexOf(racer.id) > -1) {
-          pool.query(api.saveTeam, [racer.id, racer.riderid]).then(data => console.log("Rows Updated", data))
+          pool.query(api.saveTeam, [racer.id, racer.riderid]).then(data => console.log("Rows Updated", data)).catch(e => res.status(500).send("Save Failed."))
         } else if (weeklyteam_ids.length < 4)
-        pool.query(api.createARosterSlot, [req.session.userId, racer.riderid, currentweek]).then(data => weeklyteam_ids.push(2))
+        pool.query(api.createARosterSlot, [req.session.userId, racer.riderid, currentweek]).then(data => {
+          console.log("")
+          weeklyteam_ids.push(2)
+        }).catch(e => {
+          res.status(500).send("Save Failed.")
+        })
       })
       res.sendStatus(200);
-    })
+    }).catch(e => res.status(500).send("Save Failed."))
   })
 
   function UserAlreadyExists(email, username) {

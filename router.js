@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import home from './client/components/leaderboard.vue';
 import register from './client/components/register.vue';
 import myteam from './client/components/myteam.vue';
+import rules from './client/components/rules.vue';
 
 Vue.use(Router)
 
@@ -12,7 +13,8 @@ export function createRouter () {
     routes: [
       { path: "/", component: home },
       { path: "/register", component: register },
-      { path: "/myteam", component: myteam }
+      { path: "/myteam", component: myteam },
+      { path: "/rules", component: rules }
     ]
   })
 }
