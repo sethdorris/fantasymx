@@ -15,7 +15,7 @@ var app = express();
 var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var fetch = require('node-fetch');
-var _ = require('lodash');
+var expressWs = require('express-ws')(app);
 
 var knex = Knex({
   client: 'pg',
@@ -236,6 +236,12 @@ app.post('/login', function (req, res) {
       })
       res.sendStatus(200);
     }).catch(e => res.status(500).send("Save Failed."))
+  })
+
+  app.ws('/tracker', function(ws, req) {
+    ws.on('message', function(msg) {
+      ws.send(msg);
+    })
   })
 
   function UserAlreadyExists(email, username) {

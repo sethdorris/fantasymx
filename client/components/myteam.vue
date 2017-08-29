@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="container">
-      <transition name="fade">
+      <transition name="fade" mode="out-in">
         <p v-if="showSaveMessage" class="successful-save">Your team has been successfully saved!</p>
       </transition>
       <table class="table">
