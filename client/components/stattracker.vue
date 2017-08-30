@@ -20,7 +20,10 @@ import axios from 'axios';
 
     },
     beforeCreate() {
-
+      axios.get("/tracker")
+      .then(data => {
+        console.log(data)
+      })
     }
   }
 </script>

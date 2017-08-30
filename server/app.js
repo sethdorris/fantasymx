@@ -15,7 +15,11 @@ var app = express();
 var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var fetch = require('node-fetch');
-var expressWs = require('express-ws')(app);
+var theServer = https.createServer({
+    key: fs.readFileSync(path.join(__dirname, "./key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
+  }, app);
+var expressWs = require('express-ws')(app, theServer);
 
 var knex = Knex({
   client: 'pg',
@@ -239,6 +243,7 @@ app.post('/login', function (req, res) {
   })
 
   app.ws('/tracker', function(ws, req) {
+    console.log("Oh man we got a request")
     ws.on('message', function(msg) {
       ws.send(msg);
     })
@@ -262,10 +267,7 @@ app.post('/login', function (req, res) {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
   }
 
-  https.createServer({
-    key: fs.readFileSync(path.join(__dirname, "./key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
-  }, app).listen(3000);
+theServer.listen(3000);
 
 // pool.query('SELECT * FROM riders').then(function (res, err) {
 //   console.log(res.rows[0]);
