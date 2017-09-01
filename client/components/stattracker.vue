@@ -20,10 +20,16 @@ import axios from 'axios';
 
     },
     beforeCreate() {
-      axios.get("/tracker")
-      .then(data => {
-        console.log(data)
-      })
+      var ws = new WebSocket("wss://localhost:3000/tracker");
+      ws.onopen = function () {
+        ws.send("Hi")
+      }
+      ws.onmessage = function (e) {
+        console.log(e)
+      }
+      ws.onerror = function (e) {
+        console.log("Error", e)
+      }
     }
   }
 </script>
