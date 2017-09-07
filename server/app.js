@@ -20,6 +20,7 @@ var theServer = https.createServer({
     cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
   }, app);
 var expressWs = require('express-ws')(app, theServer);
+var mockAPI = require('./MockAPI');
 
 var knex = Knex({
   client: 'pg',
@@ -35,6 +36,10 @@ var knex = Knex({
 var store = new KnexSessionStore({
   knex: knex
 })
+//For live stat tracker
+var oldObj;
+//lastBroadcast is used to determine if we have broadcast session complete results at least 1 time and then stopped.
+var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadcast: false, lastBroadcast: false };
 
 app.use(session({
   store: store,
@@ -154,7 +159,7 @@ app.post('/login', function (req, res) {
   })
 
   app.get('/StatTracker', function (req, res) {
-   fetch('http://live.amasupercross.com/xml/sx/RaceResults.json?R=1494731612736')
+   fetch('http://live.amasupercross.com/xml/sx/RaceResults.json')
     .then(apires => {
       return apires.json();
     })
@@ -243,10 +248,22 @@ app.post('/login', function (req, res) {
   })
 
   app.ws('/tracker', function(ws, req) {
-    console.log("Oh man we got a request")
-    ws.on('message', function(msg) {
-      ws.send(msg);
-    })
+    var indexOfMock = 0;
+    function nextPoll() {
+      return MockAPIPolling(indexOfMock).then(data => {
+        console.log("data", data)
+        if (returnObj.broadcast) {
+          //Transform the data and then send
+          ws.send(JSON.stringify(returnObj.raceData))
+        }
+        if (!returnObj.raceFinished) {
+          indexOfMock++;
+          setTimeout(() => { return }, 5000);
+          return nextPoll();
+        }
+      })
+    }
+    nextPoll();
   })
 
   function UserAlreadyExists(email, username) {
@@ -267,12 +284,69 @@ app.post('/login', function (req, res) {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
   }
 
-theServer.listen(3000);
+  function APIPolling() {
+    var p1 = fetch('http://live.amasupercross.com/xml/sx/RaceResults.json').then(results => { return results.json() });
+    var p2 = fetch('http://live.amasupercross.com/xml/sx/RaceData.json').then(data => { return data.json(); }).catch(err => console.log("error with data", err));
+    Promise.all([p1, p2]).then(([results, info]) => {
+      if (returnObj.info.B == 'Session Complete') {
+        returnObj.raceFinished = true;
+        return returnObj;
+      }
+      if (results.S.indexOf("450SX Main") < 0) {
+        return returnObj;
+      }
+      if (returnObj.raceData == '') {
+        returnObj.raceData = results;
+        returnObj.raceStarted = true;
+        returnObj.broadcast = true;
+        return returnObj;
+      }
+      if (returnObj.raceData == results) {
+        returnObj.raceData = results;
+        returnObj.raceStarted = true;
+        returnObj.broadcast = false;
+        return returnObj;
+      }
+      returnObj.raceData = results;
+      return returnObj;
+    })
+  }
 
-// pool.query('SELECT * FROM riders').then(function (res, err) {
-//   console.log(res.rows[0]);
-//   if (err) {
-//     console.log("error");
-//   }
-// });
-// pool.query('INSERT into users (email, username, password) VALUES ($1, $2, $3)', [req.body.email, req.body.username, hash])
+  function MockAPIPolling(index) {
+    console.log("hit")
+    var p1 = Promise.try(function () {
+      return mockAPI.GetRaceResults(index);
+    }).then(results => { return results });
+    var p2 = Promise.try(function () {
+      return mockAPI.GetRaceData(index);
+    }).then(results => { return results });
+    return Promise.all([p1, p2]).then(([results, info]) => {
+      console.log("Mock Results", results)
+      console.log("Mock Data", info);
+      if (info.B == 'Session Complete' && !returnObj.lastBroadcast) {
+        returnObj.raceFinished = true;
+        returnObj.broadcast = false;
+        returnObj.lastBroadcast = true;
+        return returnObj;
+      }
+      if (results.S.indexOf("450SX Main") < 0) {
+        return returnObj;
+      }
+      if (returnObj.raceData == '') {
+        returnObj.raceData = results;
+        returnObj.raceStarted = true;
+        returnObj.broadcast = true;
+        return returnObj;
+      }
+      if (returnObj.raceData == results) {
+        returnObj.raceData = results;
+        returnObj.raceStarted = true;
+        returnObj.broadcast = false;
+        return returnObj;
+      }
+      returnObj.raceData = results;
+      return returnObj;
+    })
+  }
+
+theServer.listen(3000);

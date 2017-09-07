@@ -25,7 +25,7 @@ import axios from 'axios';
         ws.send("Hi")
       }
       ws.onmessage = function (e) {
-        console.log(e)
+        console.log(JSON.parse(e.data))
       }
       ws.onerror = function (e) {
         console.log("Error", e)
