@@ -249,17 +249,17 @@ app.post('/login', function (req, res) {
 
   app.ws('/tracker', function(ws, req) {
     var indexOfMock = 0;
+    //Send current week's team to only the connected client;
     function nextPoll() {
       return MockAPIPolling(indexOfMock).then(data => {
         console.log("data", data)
         if (returnObj.broadcast) {
           //Transform the data and then send
-          ws.send(JSON.stringify(returnObj.raceData))
+          ws.send(JSON.stringify({RaceData: returnObj.raceData}))
         }
         if (!returnObj.raceFinished) {
           indexOfMock++;
-          setTimeout(() => { return }, 5000);
-          return nextPoll();
+          return setTimeout(nextPoll, 5000);
         }
       })
     }
