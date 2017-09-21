@@ -14,6 +14,7 @@ var KnexSessionStore = require("connect-session-knex")(session);
 var app = express();
 var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
+var StatTrackerVMCreator = require('./ViewModelCreators/StatTrackerVMCreator');
 var fetch = require('node-fetch');
 var theServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, "./key.pem")),
@@ -21,6 +22,7 @@ var theServer = https.createServer({
   }, app);
 var expressWs = require('express-ws')(app, theServer);
 var mockAPI = require('./MockAPI');
+var wss = expressWs.getWss('/tracker');
 
 var knex = Knex({
   client: 'pg',
@@ -251,17 +253,32 @@ app.post('/login', function (req, res) {
     var indexOfMock = 0;
     //Send current week's team to only the connected client;
     function nextPoll() {
-      return MockAPIPolling(indexOfMock).then(data => {
-        console.log("data", data)
+      var p1 = MockAPIPolling(indexOfMock).then(apires => { return apires; })
+      var p2 = pool.query(api.MainLeagueStatTrackerData, [api.GetCurrentWeek()]).then(data => { return data.rows })
+      return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
-          //Transform the data and then send
-          ws.send(JSON.stringify({RaceData: returnObj.raceData}))
+          var model = StatTrackerVMCreator.Create(results, league);
+          wss.clients.forEach(client => {
+            client.send(JSON.stringify(model))
+          })
         }
         if (!returnObj.raceFinished) {
           indexOfMock++;
-          return setTimeout(nextPoll, 5000);
+          return setTimeout(nextPoll, 5000)
         }
       })
+      // return MockAPIPolling(indexOfMock).then(data => {
+      //   console.log("data", data)
+      //   if (returnObj.broadcast) {
+      //
+      //     //Transform the data and then send
+      //     ws.send(JSON.stringify({RaceData: returnObj.raceData}))
+      //   }
+      //   if (!returnObj.raceFinished) {
+      //     indexOfMock++;
+      //     return setTimeout(nextPoll, 5000);
+      //   }
+      // })
     }
     nextPoll();
   })

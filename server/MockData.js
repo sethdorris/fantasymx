@@ -1154,7 +1154,7 @@ exports.RaceResults = [
     "MBY": "3",
     "B": [
         {
-            "A": 1,
+            "A": 6,
             "C": "S1",
             "N": "21",
             "F": "Jason Anderson ",
@@ -2295,7 +2295,7 @@ exports.RaceResults = [
     "MBY": "3",
     "B": [
         {
-            "A": 1,
+            "A": 5,
             "C": "S1",
             "N": "21",
             "F": "Jason Anderson ",

@@ -21,6 +21,25 @@ SELECT * FROM riders
 ORDER BY name
 `
 
+exports.MainLeagueStatTrackerData = `
+WITH riders_json AS (
+SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS riders
+FROM
+(SELECT weekly_team.userid, users.username, weekly_team.leagueid, weekly_team.seasonid, weekly_team.season_weeksid, riders.name, riders.riderid AS riderid
+FROM riders
+INNER JOIN weekly_team
+ON riders.riderid = weekly_team.riderid
+INNER JOIN users
+ON weekly_team.userid = users.id
+WHERE weekly_team.leagueid = 1 AND weekly_team.seasonid = 1 AND weekly_team.season_weeksid = $1) AS json_rows
+GROUP BY userid)
+SELECT wt.userid, users.username, riders_json.riders::jsonb[]
+FROM weekly_team AS wt
+INNER JOIN riders_json
+ON riders_json.userid = wt.userid
+JOIN users ON wt.userid = users.id
+GROUP BY wt.userid, users.username, riders_json.riders::jsonb[]`
+
 exports.getCurrentWeeksRiders =
 `SELECT wt.id AS weeklyteamid, wt.riderid, r.name, r.avatar_url, r.cost, r.rider_number, r.active, s.currentseason, s.season_name, sw.currentweek  FROM weekly_team AS wt
 JOIN riders AS r ON r.riderid = wt.riderid
