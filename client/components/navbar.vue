@@ -37,6 +37,12 @@
             </span>
             <router-link to="/rules">Info</router-link>
           </div>
+          <div class="navbar-item">
+            <span class="icon">
+              <i class="fa fa-bullhorn"></i>
+            </span>
+            <router-link to="/suggestions">Suggestions</router-link>
+          </div>
         </div>
         <div class="navbar-end">
           <div class="navbar-item" v-if="!GetAuthStatus" @click="setRegisterModal({ show: !ShowRegisterModal })">

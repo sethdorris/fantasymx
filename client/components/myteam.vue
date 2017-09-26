@@ -124,7 +124,7 @@ import _remove from 'lodash/remove';
         'getUserData'
       ]),
       dollars() {
-        var total = 8;
+        var total = 10000;
         this.selectedriders.forEach(rider => {
           total -= rider.cost;
         })
@@ -277,7 +277,7 @@ import _remove from 'lodash/remove';
   justify-content: center;
 }
 .page-header-block {
-  width: 10%;
+  width: 15%;
 }
   .riders-container {
     display: flex;

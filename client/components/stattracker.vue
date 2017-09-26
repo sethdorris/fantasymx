@@ -24,7 +24,7 @@
               <td>{{ index + 1 }}.</td>
               <td>{{user.total}}</td>
               <td>{{user.username}}</td>
-              <td class="pointsback">-</td>
+              <td class="pointsback">{{ pointsbehind(user) }}</td>
             </tr>
           </tbody>
         </table>
@@ -58,8 +58,16 @@ var ws = new WebSocket("wss://localhost:3000/tracker");
     created() {
     },
     methods:  {
+      pointsbehind: function(user) {
+        var objIndex = this.leagueData.indexOf(user);
+        if (objIndex != 0) {
+          return user.total - this.leagueData[0].total;
+        }
+        return '-'
+      }
     },
     beforeCreate() {
+      console.log("stat tracker before create")
       var v = this;
       ws.onopen = function () {
         ws.send("Hi")

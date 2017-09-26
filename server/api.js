@@ -21,6 +21,17 @@ SELECT * FROM riders
 ORDER BY name
 `
 
+exports.getMostRecentRiderAdds = `
+SELECT *
+FROM weekly_team a
+WHERE last_transaction = (
+    SELECT MAX(last_transaction)
+    FROM weekly_team
+)`;
+
+exports.SaveFeedback = `
+INSERT INTO feedback (username, report_type, registered, feature, bugreport, feedback) VALUES ($1, $2, $3, $4, $5, $6)`
+
 exports.MainLeagueStatTrackerData = `
 WITH riders_json AS (
 SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS riders

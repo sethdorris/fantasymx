@@ -5,6 +5,7 @@ import register from './client/components/register.vue';
 import myteam from './client/components/myteam.vue';
 import rules from './client/components/rules.vue';
 import stattracker from './client/components/stattracker.vue';
+import suggestions from './client/components/suggestions.vue';
 
 Vue.use(Router)
 
@@ -16,7 +17,8 @@ export function createRouter () {
       { path: "/register", component: register },
       { path: "/myteam", component: myteam },
       { path: "/rules", component: rules },
-      { path: "/live", component: stattracker }
+      { path: "/live", component: stattracker },
+      { path: "/suggestions", component: suggestions }
     ]
   })
 }

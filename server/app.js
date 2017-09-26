@@ -232,14 +232,12 @@ app.post('/login', function (req, res) {
     var p1 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentweek]).then(data => { return data.rows });
     p1.then(currentTeam => {
       currentTeam.forEach(team => { weeklyteam_ids.push(team.id) });
-      console.log(weeklyteam_ids);
+
       req.body.forEach(racer => {
-        console.log("RACCERRR", racer)
         if (weeklyteam_ids.indexOf(racer.id) > -1) {
           pool.query(api.saveTeam, [racer.id, racer.riderid]).then(data => console.log("Rows Updated", data)).catch(e => res.status(500).send("Save Failed."))
         } else if (weeklyteam_ids.length < 4)
         pool.query(api.createARosterSlot, [req.session.userId, racer.riderid, currentweek]).then(data => {
-          console.log("")
           weeklyteam_ids.push(2)
         }).catch(e => {
           res.status(500).send("Save Failed.")
@@ -250,6 +248,7 @@ app.post('/login', function (req, res) {
   })
 
   app.ws('/tracker', function(ws, req) {
+    console.log("THIS IS SHIT")
     var indexOfMock = 0;
     //Send current week's team to only the connected client;
     function nextPoll() {
@@ -262,25 +261,17 @@ app.post('/login', function (req, res) {
             client.send(JSON.stringify(model))
           })
         }
-        if (!returnObj.raceFinished) {
-          indexOfMock++;
+        if (!returnObj.raceFinished) { //taking off the if to let it run continuously on test
           return setTimeout(nextPoll, 5000)
         }
       })
-      // return MockAPIPolling(indexOfMock).then(data => {
-      //   console.log("data", data)
-      //   if (returnObj.broadcast) {
-      //
-      //     //Transform the data and then send
-      //     ws.send(JSON.stringify({RaceData: returnObj.raceData}))
-      //   }
-      //   if (!returnObj.raceFinished) {
-      //     indexOfMock++;
-      //     return setTimeout(nextPoll, 5000);
-      //   }
-      // })
     }
     nextPoll();
+  })
+
+  app.post('/feedback', (req, res) => {
+    pool.query(api.SaveFeedback, [req.body.Username, req.body.ReportType, req.body.Registered, req.body.Feature, req.body.BugReport, req.body.Feedback])
+    .then(data => res.sendStatus(200));
   })
 
   function UserAlreadyExists(email, username) {
