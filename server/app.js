@@ -5,6 +5,7 @@ var path = require("path");
 var pool = require("./db");
 var bodyParser = require("body-parser");
 var https = require("https");
+var http = require("http")
 var fs = require("fs");
 var scrypt = require("scrypt-for-humans");
 var Promise = require("bluebird");
