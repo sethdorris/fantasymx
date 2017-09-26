@@ -16,10 +16,11 @@ var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var StatTrackerVMCreator = require('./ViewModelCreators/StatTrackerVMCreator');
 var fetch = require('node-fetch');
-var theServer = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, "./key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
-  }, app);
+// var theServer = https.createServer({
+//     key: fs.readFileSync(path.join(__dirname, "./key.pem")),
+//     cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
+//   }, app);
+var theServer = http.createServer(app);
 var expressWs = require('express-ws')(app, theServer);
 var mockAPI = require('./MockAPI');
 var wss = expressWs.getWss('/tracker');
