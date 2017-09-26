@@ -357,4 +357,4 @@ app.post('/login', function (req, res) {
     })
   }
 
-theServer.listen(process.env.PORT || 44300);
+theServer.listen(process.env.PORT);
