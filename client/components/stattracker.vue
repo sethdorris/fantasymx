@@ -35,7 +35,7 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-var ws = new WebSocket("wss://localhost:3000/tracker");
+var ws = new WebSocket("wss://fantasysx.herokuapp.com/tracker");
   export default {
     data() {
       return {
