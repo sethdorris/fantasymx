@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container suggestions-container">
       <section>
         <div class="field">
           <div class="control">
@@ -100,7 +100,7 @@ import axios from 'axios';
   }
 </script>
 <style>
-  .container {
+  .suggestions-container {
     display: flex;
     justify-content: center;
     margin-top: 3rem;
