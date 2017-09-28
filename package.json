@@ -8,7 +8,8 @@
     "build:production:andstart": "./node_modules/.bin/webpack --config webpack.config.js && npm run start:production",
     "build:production": "./node_modules/.bin/webpack/webpac --config webpack.config.js",
     "start:development": "cross-env NODE_ENV=development node ./server/app.js",
-    "start:production": "cross-env NODE_ENV=production node ./server/app.js"
+    "start:production": "cross-env NODE_ENV=production node ./server/app.js",
+    "start": "node ./server/app.js"
   },
   "author": "seth dorris",
   "license": "ISC",
