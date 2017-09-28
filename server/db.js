@@ -1,6 +1,6 @@
 var pg = require("pg");
 var dbConnectionConfig = require('./server-config');
-
+var IsDevelopment = process.env.NODE_ENV == 'development';
 var config = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
 
 const pool = new pg.Pool(config);
