@@ -68,5 +68,5 @@ exports.Create = function (data) {
       }
     }
 
-    return { CurrentTeam: data.CurrentTeam, AvailableRiders: availRidersModel };
+    return { CurrentTeam: data.CurrentTeam, AvailableRiders: availRidersModel, CurrentWeek: data.CurrentWeek };
   }
