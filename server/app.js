@@ -126,6 +126,7 @@ app.get('/loginrefresh', function (req, res) {
       })
     }
   })
+  .catch(err => console.log(err))
 })
 
 app.post('/login', function (req, res) {
