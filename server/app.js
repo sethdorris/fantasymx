@@ -39,6 +39,7 @@ console.log("Development Environment: ", process.env.NODE_ENV)
 console.log("IsDevelopment", IsDevelopment)
 
 var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
+console.log("Database Connection", dbConnection)
 
 var knex = Knex({
   client: 'pg',
