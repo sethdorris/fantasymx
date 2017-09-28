@@ -35,14 +35,13 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-var ws = new WebSocket("wss://fantasysx.herokuapp.com/tracker");
   export default {
     data() {
       return {
         leagueData: [],
         raceData: [],
         isLoading: true,
-
+        ws: null
       }
     },
     computed: {
@@ -56,6 +55,20 @@ var ws = new WebSocket("wss://fantasysx.herokuapp.com/tracker");
       }
     },
     created() {
+      this.ws = process.env.NODE_ENV == 'production'
+        ? new WebSocket("ws://fantasysx.herokuapp.com/tracker")
+        : new WebSocket("wss://localhost:3000/tracker");
+
+      var v = this;
+      this.ws.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        v.isLoading = false;
+        console.log(data.LeagueData)
+        v.leagueData = data.LeagueData;
+      }
+      this.ws.onerror = function (e) {
+        console.log("Error", e)
+      }
     },
     methods:  {
       pointsbehind: function(user) {
@@ -66,24 +79,8 @@ var ws = new WebSocket("wss://fantasysx.herokuapp.com/tracker");
         return '-'
       }
     },
-    beforeCreate() {
-      console.log("stat tracker before create")
-      var v = this;
-      ws.onopen = function () {
-        ws.send("Hi")
-      }
-      ws.onmessage = function (e) {
-        var data = JSON.parse(e.data);
-        v.isLoading = false;
-        console.log(data.LeagueData)
-        v.leagueData = data.LeagueData;
-      }
-      ws.onerror = function (e) {
-        console.log("Error", e)
-      }
-    },
     beforeDestroy() {
-      ws.close();
+      this.ws.close();
     }
   }
 </script>

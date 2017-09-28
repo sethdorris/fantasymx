@@ -64,6 +64,7 @@ import axios from 'axios';
       }
     },
     created() {
+      console.log("environment", process.env.NODE_ENV)
       axios.get('/MainLeagueStandings')
       .then(data => {
         this.mainLeagueUsers = data.data;

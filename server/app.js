@@ -1,11 +1,11 @@
+var IsDevelopment = process.env.NODE_ENV == 'development';
+
 var express = require("express");
 var Knex = require("knex");
 var pg = require("pg");
 var path = require("path");
 var pool = require("./db");
 var bodyParser = require("body-parser");
-var https = require("https");
-var http = require("http")
 var fs = require("fs");
 var scrypt = require("scrypt-for-humans");
 var Promise = require("bluebird");
@@ -17,33 +17,42 @@ var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var StatTrackerVMCreator = require('./ViewModelCreators/StatTrackerVMCreator');
 var fetch = require('node-fetch');
-var theServer = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, "./key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
-   }, app);
-// var theServer = http.createServer(app);
+
+if (IsDevelopment) {
+  var https = require("https");
+  var theServer = https.createServer({
+      key: fs.readFileSync(path.join(__dirname, "./key.pem")),
+      cert: fs.readFileSync(path.join(__dirname, "./cert.pem"))
+     }, app);
+} else {
+  var http = require("http");
+  var theServer = http.createServer(app);
+}
+
 var expressWs = require('express-ws')(app, theServer);
 var mockAPI = require('./MockAPI');
 var wss = expressWs.getWss('/tracker');
+var dbConnectionConfig = require('./server-config');
+
+
+console.log("Development Environment: ", process.env.NODE_ENV)
+console.log("IsDevelopment", IsDevelopment)
+
+var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
 
 var knex = Knex({
   client: 'pg',
-  connection: {
-    user: "postgres",
-    password: "Seth42276",
-    database: "fantasymx",
-    host: "localhost",
-    port: 5432
-  }
+  connection: dbConnection
 })
 
 var store = new KnexSessionStore({
   knex: knex
 })
+
 //For live stat tracker
 var oldObj;
 //lastBroadcast is used to determine if we have broadcast session complete results at least 1 time and then stopped.
-var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadcast: false, lastBroadcast: false };
+var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadcast: true, lastBroadcast: false };
 
 app.use(session({
   store: store,
@@ -250,6 +259,7 @@ app.post('/login', function (req, res) {
   })
 
   app.ws('/tracker', function(ws, req) {
+    ws.on('message', msg => {console.log(msg)})
     console.log("THIS IS SHIT")
     var indexOfMock = 0;
     //Send current week's team to only the connected client;
@@ -263,7 +273,8 @@ app.post('/login', function (req, res) {
             client.send(JSON.stringify(model))
           })
         }
-        if (!returnObj.raceFinished) { //taking off the if to let it run continuously on test
+        if (!returnObj.raceFinished) {
+          indexOfMock++;
           return setTimeout(nextPoll, 5000)
         }
       })

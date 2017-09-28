@@ -4,8 +4,11 @@
   "description": "",
   "main": "./client/client.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --config webpack.config.js && npm start",
-    "start": "node ./server/app.js"
+    "build:development": "./node_modules/.bin/webpack --config webpack.config.js && npm run start:development",
+    "build:production:andstart": "./node_modules/.bin/webpack --config webpack.config.js && npm run start:production",
+    "build:production": "./node_modules/.bin/webpack/webpac --config webpack.config.js",
+    "start:development": "cross-env NODE_ENV=development node ./server/app.js",
+    "start:production": "cross-env NODE_ENV=production node ./server/app.js"
   },
   "author": "seth dorris",
   "license": "ISC",
@@ -17,6 +20,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "bluebird": "^3.5.0",
+    "cross-env": "^5.0.5",
     "css-loader": "^0.28.1",
     "pem": "^1.9.4",
     "vue-loader": "^12.0.3",
