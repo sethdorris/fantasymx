@@ -1,12 +1,7 @@
 var pg = require("pg");
+var dbConnectionConfig = require('./server-config');
 
-var config = {
-  user: "postgres",
-  password: "Seth42276",
-  database: "fantasymx",
-  host: "localhost",
-  port: 5432
-};
+var config = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
 
 const pool = new pg.Pool(config);
 
