@@ -250,7 +250,8 @@ import _remove from 'lodash/remove';
       axios.get('/CurrentMyTeamModel')
       .then(data => {
         console.log("data", data.data);
-        this.currentweek = data.data.CurrentTeam[0].season_weeksid;
+        this.currentweek = data.data.CurrentWeek;
+        console.log(this.currentweek);
         this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.cost });
         this.selectedriders = data.data.CurrentTeam;
       })

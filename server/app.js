@@ -224,7 +224,7 @@ app.post('/login', function (req, res) {
       console.log("all avail", AvailRiders);
       console.log("currentTeam", CurrentWeekTeam);
       console.log("stats", Stats)
-      var model = MyTeamVMCreator.Create({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats})
+      var model = MyTeamVMCreator.Create({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats, CurrentWeek: currentWeek })
       res.json(model);
     })
   })
