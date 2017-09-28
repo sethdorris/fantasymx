@@ -57,7 +57,7 @@ import { mapGetters } from 'vuex';
     created() {
       console.log(process.env.NODE_ENV)
       this.ws = process.env.NODE_ENV == 'production'
-        ? new WebSocket("ws://fantasysx.herokuapp.com/tracker")
+        ? new WebSocket("wss://fantasysx.herokuapp.com/tracker")
         : new WebSocket("wss://localhost:3000/tracker");
 
       var v = this;
