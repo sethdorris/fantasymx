@@ -44,7 +44,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" type="submit" v-bind:class="{ 'is-loading': isLoading }">Register</button>
+        <button class="button is-success" @click="Register" v-bind:class="{ 'is-loading': isLoading }">Register</button>
         <button class="button" @click="setRegisterModal({ show: !ShowRegisterModal })">Cancel</button>
       </footer>
     </div>
