@@ -58,7 +58,7 @@ var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadca
 app.use(session({
   store: store,
   secret: config.sessions.secret,
-  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: true },
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: IsDevelopment },
   resave: false,
   saveUninitialized: false
 }))
@@ -70,6 +70,8 @@ app.get('/', function (req, res) {
 })
 
 app.post('/register', function (req, res) {
+  console.log("RECAPTCHA", req.body)
+  console.log("RECAPTCHA", req)
   return Promise.try(() => {
     return UserAlreadyExists(req.body.email, req.body.username)
   }).then(exists => {
@@ -163,6 +165,7 @@ app.post('/login', function (req, res) {
   app.get('/logout', function (req, res) {
     req.session.destroy();
     res.sendStatus(200);
+    console.log(req)
   })
 
   app.get('/getMainLeagueInfo', function (req, res) {
