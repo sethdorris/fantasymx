@@ -279,6 +279,7 @@ import _remove from 'lodash/remove';
 }
 .page-header-block {
   width: 15%;
+  min-width: 260px;
 }
   .riders-container {
     display: flex;
