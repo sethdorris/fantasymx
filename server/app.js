@@ -220,7 +220,7 @@ app.post('/login', function (req, res) {
     var currentWeek = api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];
-    console.log("req session id: " req.session.Userid)
+    console.log("req session id: ", req.session.Userid)
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
     var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentWeek]).then(data => { return data.rows })
     var p3 = pool.query(api.getRaceResultStatsForCurrentYear, [seasonEnd, seasonStart]).then(data => { return data.rows })
