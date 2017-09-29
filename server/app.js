@@ -90,9 +90,9 @@ app.post('/register', function (req, res) {
         });
         console.log("INSERT COMPLETE", userId)
       }).then(row => {
-        console.log("row", row)
-        req.session.userId = row;
-        res.json({ username: req.body.username, userId: row});
+        console.log("row", row[0])
+        req.session.userId = row[0];
+        res.json({ username: req.body.username, userId: row[0] });
       }).catch(err => {
         res.send(err);
       })
