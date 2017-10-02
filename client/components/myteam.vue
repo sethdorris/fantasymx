@@ -9,6 +9,7 @@
     <div class="container">
       <transition name="fade" mode="out-in">
         <p v-if="showSaveMessage" class="successful-save">Your team has been successfully saved!</p>
+        <p v-if="showFailMessage" class="failure-save">Oops! Something Went Wrong. Please try again later.</p>
       </transition>
       <table class="table">
         <thead>
@@ -116,7 +117,8 @@ import _remove from 'lodash/remove';
         CostSortByAsc: true,
         page: 1,
         isLoading: false,
-        showSaveMessage: false
+        showSaveMessage: false,
+        showFailMessage: false
       }
     },
     computed: {
@@ -232,11 +234,16 @@ import _remove from 'lodash/remove';
         .catch(error => {
           console.log(error);
           this.isLoading = false;
+          this.FailMessage();
         })
       },
       SaveMessage() {
         this.showSaveMessage = true;
-        setTimeout(() => { this.showSaveMessage = false }, 7000)
+        setTimeout(() => { this.showSaveMessage = false }, 5000)
+      },
+      FailMessage() {
+        this.showFailMessage = true;
+        setTimeout(() => { this.showFailMessage = false }, 5000)
       },
       RemoveAll() {
         this.selectedriders.forEach(racer => {
@@ -265,6 +272,10 @@ import _remove from 'lodash/remove';
 .successful-save {
   text-align: center;
   color: #00d1b2;
+}
+.failure-save {
+  text-align: center;
+  color: #ff2b56;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1s;

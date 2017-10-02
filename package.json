@@ -23,6 +23,7 @@
     "bluebird": "^3.5.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.1",
+    "express-promise-router": "^2.0.0",
     "pem": "^1.9.4",
     "vue-loader": "^12.0.3",
     "vue-template-compiler": "^2.3.3",

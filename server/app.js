@@ -217,7 +217,7 @@ app.post('/login', function (req, res) {
     var seasonStartYear = seasonEndYear - 1;
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
-    var currentWeek = api.GetCurrentWeek();
+    var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];
     console.log("req session id: ", req.session.Userid)
@@ -239,39 +239,44 @@ app.post('/login', function (req, res) {
   app.get('/rules', (req, res) => res.redirect(301, '/'))
 
   app.get('/GetCurrentWeek', function (req, res) {
-    var currentWeek = api.GetCurrentWeek();
+    var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     res.json({ week: currentWeek });
   })
 
-  app.post("/SaveTeam", function (req, res) {
-    var currentweek = api.GetCurrentWeek();
+  app.post("/SaveTeam", async (req, res) => {
+    var currentweek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var weeklyteam_ids = [];
-    var p1 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentweek]).then(data => { return data.rows });
-    p1.then(currentTeam => {
-      currentTeam.forEach(team => { weeklyteam_ids.push(team.id) });
+    var CurrentTeam = await pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentweek]);
 
-      req.body.forEach(racer => {
-        if (weeklyteam_ids.indexOf(racer.id) > -1) {
-          pool.query(api.saveTeam, [racer.id, racer.riderid]).then(data => console.log("Rows Updated", data)).catch(e => res.status(500).send("Save Failed."))
-        } else if (weeklyteam_ids.length < 4)
-        pool.query(api.createARosterSlot, [req.session.userId, racer.riderid, currentweek]).then(data => {
-          weeklyteam_ids.push(2)
-        }).catch(e => {
-          res.status(500).send("Save Failed.")
-        })
-      })
-      res.sendStatus(200);
-    }).catch(e => res.status(500).send("Save Failed."))
+    CurrentTeam.rows.forEach(team => { weeklyteam_ids.push(team.id) });
+    console.log(req.session.userId)
+    console.log(req.body)
+    try {
+      if (weeklyteam_ids.length == 4) {
+        await pool.query(api.saveTeam, [weeklyteam_ids[0], req.body[0].riderid])
+        await pool.query(api.saveTeam, [weeklyteam_ids[1], req.body[1].riderid])
+        await pool.query(api.saveTeam, [weeklyteam_ids[2], req.body[2].riderid])
+        await pool.query(api.saveTeam, [weeklyteam_ids[3], req.body[3].riderid])
+      } else {
+        await pool.query(api.createRosterSlots, [req.session.userId, currentweek, req.body[0].riderid])
+        await pool.query(api.createRosterSlots, [req.session.userId, currentweek, req.body[1].riderid])
+        await pool.query(api.createRosterSlots, [req.session.userId, currentweek, req.body[2].riderid])
+        await pool.query(api.createRosterSlots, [req.session.userId, currentweek, req.body[3].riderid])
+      }
+    } catch (e) {
+      console.log("Fucking error", e)
+      res.status(500).send("Save Failed")
+    }
+    res.status(200).send("Successful Save")
   })
 
   app.ws('/tracker', function(ws, req) {
-    ws.on('message', msg => {console.log(msg)})
-    console.log("THIS IS SHIT")
+    var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var indexOfMock = 0;
     //Send current week's team to only the connected client;
     function nextPoll() {
       var p1 = MockAPIPolling(indexOfMock).then(apires => { return apires; })
-      var p2 = pool.query(api.MainLeagueStatTrackerData, [api.GetCurrentWeek()]).then(data => { return data.rows })
+      var p2 = pool.query(api.MainLeagueStatTrackerData, [currentWeek]).then(data => { return data.rows })
       return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
           var model = StatTrackerVMCreator.Create(results, league);

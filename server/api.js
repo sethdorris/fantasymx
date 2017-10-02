@@ -112,9 +112,12 @@ exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
 JOIN riders ON weekly_team.riderid = riders.riderid
 WHERE userid = $1 AND season_weeksid = $2 AND leagueid = 1`
 
-exports.saveTeam = `UPDATE weekly_team SET riderid = $2 WHERE id = $1`;
+exports.saveTeam = `
+UPDATE weekly_team SET riderid = $2 WHERE id = $1;
+`;
 
-exports.createARosterSlot = `INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid) VALUES (nextval('weekly_team_id_seq'), $1, 1, 1, $2, $3)`
+exports.createRosterSlots = `
+INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid) VALUES (nextval('weekly_team_id_seq'), $1, 1, 1, $3, $2);`
 
 exports.GetCurrentWeek = function () {
   var currentdate = Date.now();
@@ -167,6 +170,61 @@ exports.GetCurrentWeek = function () {
     return 16
   }
   if (currentdate < new Date(2018, 04, 05, 03)) {
+    return 17
+  }
+}
+
+exports.GetCurrentWeekForTest =  function () {
+  var currentdate = Date.now();
+  if (currentdate < new Date(2017, 08, 06, 03)) {
+    return 1
+  }
+  if (currentdate < new Date(2017, 08, 13, 03)) {
+    return 2
+  }
+  if (currentdate < new Date(2017, 08, 20, 03)) {
+    return 3
+  }
+  if (currentdate < new Date(2017, 08, 27, 03)) {
+    return 4
+  }
+  if (currentdate < new Date(2017, 09, 3, 03)) {
+    return 5
+  }
+  if (currentdate < new Date(2017, 09, 10, 03)) {
+    return 6
+  }
+  if (currentdate < new Date(2017, 09, 17, 03)) {
+    return 7
+  }
+  if (currentdate < new Date(2017, 09, 24, 03)) {
+    return 8
+  }
+  if (currentdate < new Date(2017, 10, 03, 03)) {
+    return 9
+  }
+  if (currentdate < new Date(2017, 10, 10, 03)) {
+    return 10
+  }
+  if (currentdate < new Date(2017, 10, 17, 03)) {
+    return 11
+  }
+  if (currentdate < new Date(2017, 10, 24, 03)) {
+    return 12
+  }
+  if (currentdate < new Date(2017, 11, 07, 03)) {
+    return 13
+  }
+  if (currentdate < new Date(2017, 11, 14, 03)) {
+    return 14
+  }
+  if (currentdate < new Date(2017, 11, 21, 03)) {
+    return 15
+  }
+  if (currentdate < new Date(2017, 11, 28, 03)) {
+    return 16
+  }
+  if (currentdate < new Date(2017, 00, 05, 03)) {
     return 17
   }
 }
