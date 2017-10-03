@@ -1,7 +1,7 @@
 
   <template>
     <nav class="navbar">
-      <div class="navbar-brand">
+       <div class="navbar-brand">
         <div class="navbar-item">
           //ALPHA TEST//
         </div>
@@ -14,41 +14,23 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <div class="navbar-item">
-            <span class="icon">
-              <i class="fa fa-home"></i>
-            </span>
             <router-link to="/">Home</router-link>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
-            <span class="icon" v-if="GetAuthStatus">
-              <i class="fa fa-motorcycle"></i>
-            </span>
             <router-link to="/myteam">My Team</router-link>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
-            <span class="icon" v-if="GetAuthStatus">
-              <i class="fa fa-rss"></i>
-            </span>
             <router-link to="/live">Stat Tracker</router-link>
           </div>
           <div class="navbar-item">
-            <span class="icon">
-              <i class="fa fa-info"></i>
-            </span>
             <router-link to="/rules">Info</router-link>
           </div>
           <div class="navbar-item">
-            <span class="icon">
-              <i class="fa fa-bullhorn"></i>
-            </span>
             <router-link to="/suggestions">Suggestions</router-link>
           </div>
         </div>
         <div class="navbar-end">
           <div class="navbar-item" v-if="!GetAuthStatus" @click="setRegisterModal({ show: !ShowRegisterModal })">
-            <span class="icon">
-              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-            </span>
             <a href="#!">Register</a>
           </div>
           <div class="navbar-item" v-if="!GetAuthStatus" @click="setLoginModal({ show: !ShowLoginModal })">
@@ -150,9 +132,12 @@
     .navbar-menu {
       padding: 0 100px 0 50px;
     }
-    .icon {
-      margin-right: 5px;
-      color: #00d1b2;
+    .navbar {
+      background: transparent;
+    }
+    a {
+      color: white;
+      font-size: 16pt;
     }
   </style>
 })

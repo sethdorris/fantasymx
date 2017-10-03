@@ -283,7 +283,6 @@ import _remove from 'lodash/remove';
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
-
 .page-header-container {
   display: flex;
   justify-content: center;
@@ -353,13 +352,13 @@ import _remove from 'lodash/remove';
     justify-content: space-between;
   }
   .lastRow {
-    border-bottom: 2px solid #00d1b2;
+    border-bottom: 2px solid #ffe978;
   }
   .minus-icon {
     color: #ff3860;
   }
   .boldest-header {
-    color: #00d1b2;
+    color: #ff3860;
     font-weight: 700;
     font-size: xx-large;
   }
@@ -371,7 +370,7 @@ import _remove from 'lodash/remove';
     line-height: 4rem;
   }
   .lh-4r:first-of-type {
-    border-bottom: 1px solid #00d1b2;
+    border-bottom: 1px solid #ffe978;
   }
   .lh-4r:last-of-type {
     margin-bottom: 2rem;

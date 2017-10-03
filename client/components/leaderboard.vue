@@ -1,41 +1,41 @@
 <template>
   <div>
-  <div class="leaderboard-title">
-    2018 FantasySX Main League
-  </div>
-  <div class="columns leaderboard">
-    <div class="column is-half is-offset-one-quarter">
-      <table class="table is-striped" v-if="doneLoading">
-        <thead>
-          <tr>
-            <th>Position</th>
-            <th>Total Points</th>
-            <th>Username</th>
-            <th>Points Back</th>
-          </tr>
-        </thead>
-        <tfoot>
-          <tr>
-            <th>Position</th>
-            <th>Total Points</th>
-            <th>Username</th>
-            <th>Points Back</th>
-          </tr>
-        </tfoot>
-        <tbody>
-          <tr v-for="(user, index) in standings">
-            <td>{{ index + 1 }}.</td>
-            <td>{{user.totalpoints}}</td>
-            <td>{{user.weeklyteams[0].username}}</td>
-            <td class="pointsback">{{ pointsbehind(user) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-if="!doneLoading">
-        <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
+    <div class="columns leaderboard">
+      <div class="column is-half is-offset-one-quarter">
+        <table class="leaderboard-table" v-if="doneLoading">
+          <thead>
+            <tr class="title">
+              <th colspan="4">2018 Fantasy SX: Main League Standings</th>
+            </tr>
+            <tr>
+              <th>Position</th>
+              <th>Total Points</th>
+              <th>Username</th>
+              <th>Points Back</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Position</th>
+              <th>Total Points</th>
+              <th>Username</th>
+              <th>Points Back</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <tr v-for="(user, index) in standings">
+              <td>{{ index + 1 }}.</td>
+              <td>{{user.totalpoints}}</td>
+              <td>{{user.weeklyteams[0].username}}</td>
+              <td class="pointsback">{{ pointsbehind(user) }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-if="!doneLoading">
+          <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
+        </div>
       </div>
     </div>
-  </div>
 </div>
 </template>
 <script>
@@ -121,6 +121,40 @@ import axios from 'axios';
   }
 </script>
 <style>
+body {
+  font-family: "Open Sans Condensed";
+  height: 100%;
+  min-height: 100vh;
+  background:
+    linear-gradient(to bottom right, rgba(251, 109, 8, .8)0%, rgba(204, 66, 0, 1)100%),
+    url('https://images.pexels.com/photos/37527/sports-games-fun-holiday-37527.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb');
+  background-size: cover;
+  background-position:center;
+  background-repeat: no-repeat;
+}
+.leaderboard-table .title {
+  border-bottom: 1px solid #f5f5a2;
+  font-size: 16pt;
+  padding: .5rem;
+}
+.leaderboard-table {
+  background-color: rgba(255, 255, 255, .8);
+  color: #7b7b7b;
+  box-shadow: 1px 1px 10px #222;
+}
+.leaderboard-table thead th, tfoot th {
+  color: #fff;
+  font-size: 12pt;
+}
+.leaderboard-table thead, tfoot {
+  background: linear-gradient(rgba(255, 108, 18, .8)0%, rgba(205, 68, 0, 1)100%);
+}
+.leaderboard-table td {
+  border: none;
+}
+.leaderboard-table tr:hover {
+  background-color: rgba(255, 233, 120, .2)
+}
   .pointsback: {
     font-weight: bolder;
     color: #ff3860;
@@ -133,10 +167,5 @@ import axios from 'axios';
   }
   .leaderboard-main {
     margin-top: 25px;
-  }
-  .leaderboard-title {
-    text-align: center;
-    text-decoration: underline;
-    font-weight: 700;
   }
 </style>
