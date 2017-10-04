@@ -176,7 +176,7 @@ exports.GetCurrentWeek = function () {
 
 exports.GetCurrentWeekForTest =  function () {
   var currentdate = Date.now();
-  if (currentdate < new Date(2017, 08, 06, 03)) {
+  if (currentdate < new Date(2018, 08, 06, 03)) {
     return 1
   }
   if (currentdate < new Date(2017, 08, 13, 03)) {

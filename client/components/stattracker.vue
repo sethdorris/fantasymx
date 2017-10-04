@@ -1,8 +1,15 @@
 <template>
   <div>
+    <div class="flex-center fl live-header" v-if="!isLoading">
+      <div class="live-header-box">
+        <div>Session Event: <span class="text-highlight fl-right">{{raceData.raceData.S}}</span></div>
+        <div>Season Event:<span class="text-highlight fl-right"> {{raceData.raceData.E}}</span></div>
+        <div>Session Status:<span class="text-highlight fl-right"> {{raceData.raceDetails.B}}</span></div>
+      </div>
+    </div>
     <div class="columns leaderboard">
       <div class="column is-half is-offset-one-quarter">
-        <table class="table is-striped" v-if="!isLoading">
+        <table class="table-live" v-if="!isLoading">
           <thead>
             <tr>
               <th>Position</th>
@@ -64,8 +71,9 @@ import { mapGetters } from 'vuex';
       this.ws.onmessage = function (e) {
         var data = JSON.parse(e.data);
         v.isLoading = false;
-        console.log(data.LeagueData)
         v.leagueData = data.LeagueData;
+        v.raceData = data.RaceData;
+        console.log(data)
       }
       this.ws.onerror = function (e) {
         console.log("Error", e)
@@ -86,7 +94,46 @@ import { mapGetters } from 'vuex';
   }
 </script>
 <style>
+.flex-center {
+  display:flex;
+  justify-content:center;
+}
+.live-header-box {
+  min-width: 360px;
+}
+.live-header {
+  color: white;
+  font-size: 12pt;
+  margin-top: 3rem;
+  font-weight: 700;
+}
+.text-highlight {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #fffc7f;
+}
+.fl-right {
+  float: right;
+}
   .myRow {
-    background-color: rgba(0, 209, 178, 0.35) !important;
+    background-color:rgba(255, 233, 120, .35) !important;
+  }
+  .table-live table td {
+    border: none;
+  }
+  .table-live {
+    background-color: rgba(255, 255, 255, .8);
+    color: #7b7b7b;
+    box-shadow: 1px 1px 10px #222;
+  }
+  .table-live thead, tfoot {
+    background: linear-gradient(rgba(255, 106, 0, 1)0%, rgba(156, 52, 0, 1)100%);
+  }
+  .table-live thead th, tfoot th {
+    color: #fff;
+    font-size: 12pt;
+  }
+  .table-live tr:hover {
+    background: rgba(255, 233, 120, .2);
   }
 </style>

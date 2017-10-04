@@ -53,7 +53,7 @@ var store = new KnexSessionStore({
 //For live stat tracker
 var oldObj;
 //lastBroadcast is used to determine if we have broadcast session complete results at least 1 time and then stopped.
-var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadcast: true, lastBroadcast: false };
+var returnObj = { raceStarted: false, raceFinished: false, raceData: '', broadcast: true, lastBroadcast: false, raceDetails: '' };
 
 app.use(session({
   store: store,
@@ -280,6 +280,7 @@ app.post('/login', function (req, res) {
       return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
           var model = StatTrackerVMCreator.Create(results, league);
+          console.log("MODDDDDEL", model)
           wss.clients.forEach(client => {
             client.send(JSON.stringify(model))
           })
@@ -359,6 +360,7 @@ app.post('/login', function (req, res) {
         returnObj.raceFinished = true;
         returnObj.broadcast = false;
         returnObj.lastBroadcast = true;
+        returnObj.raceDetails = info;
         return returnObj;
       }
       if (results.S.indexOf("450SX Main") < 0) {
@@ -368,15 +370,18 @@ app.post('/login', function (req, res) {
         returnObj.raceData = results;
         returnObj.raceStarted = true;
         returnObj.broadcast = true;
+        returnObj.raceDetails = info;
         return returnObj;
       }
       if (returnObj.raceData == results) {
         returnObj.raceData = results;
         returnObj.raceStarted = true;
         returnObj.broadcast = false;
+        returnObj.raceDetails = info;
         return returnObj;
       }
       returnObj.raceData = results;
+      returnObj.raceDetails = info;
       return returnObj;
     })
   }

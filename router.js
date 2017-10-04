@@ -18,7 +18,8 @@ export function createRouter () {
       { path: "/myteam", component: myteam },
       { path: "/rules", component: rules },
       { path: "/live", component: stattracker },
-      { path: "/suggestions", component: suggestions }
+      { path: "/suggestions", component: suggestions },
+      { path: "/home", component: home }
     ]
   })
 }

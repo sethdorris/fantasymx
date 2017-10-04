@@ -13,7 +13,8 @@
         <input id="tab-two" type="checkbox" name="tabs">
         <label for="tab-two">How does team selection work?</label>
         <div class="tab-content">
-          <p>As of now, each user is REQUIRED to select 4 racers for each week. The deadline for making racer selection is 3am Mountain Time on the day of the scheduled race.</p>
+          <p>As of now, each user is REQUIRED to select 4 racers for each week. The deadline for making racer selection is 3am Mountain Time on the day of the scheduled race. After that time
+            users will no longer be able to select racers for that week's race; the team selection for the next week will be available for selection</p>
           <p>Users may only SAVE a roster if ALL 4 roster slots have a racer chosen. The SAVE button is disabled if an OPEN SLOT still exists for a weekly lineup.</p>
           <p>Each user begins each week with $8 credits to spend on filling out their weekly lineup, and that credit is used to select racers for their week's lineup from the available racers pool.
             The selected racer's cost, once selected, will be deducted from the current week's available credits. You are NOT REQUIRED to spend all $8 credits each week.</p>
@@ -52,11 +53,11 @@ label {
   position: relative;
   display: block;
   padding: 0 0 0 1em;
-  background: #00d1b2;
+  background: rgba(255, 255, 255, 0.3);
   font-weight: bold;
   line-height: 3;
   cursor: pointer;
-  color: white;
+  color: #fffc7f;
 }
 .tab-content {
   max-height: 0;
@@ -65,7 +66,7 @@ label {
   -webkit-transition: max-height .35s;
   -o-transition: max-height .35s;
   transition: max-height .35s;
-  color: #716d6d;
+  color: #fff;
 }
 .tab-content p {
   margin: 1em;

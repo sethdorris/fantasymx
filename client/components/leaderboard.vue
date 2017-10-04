@@ -27,7 +27,7 @@
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
               <td>{{user.weeklyteams[0].username}}</td>
-              <td class="pointsback">{{ pointsbehind(user) }}</td>
+              <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
             </tr>
           </tbody>
         </table>
@@ -132,7 +132,7 @@ body {
   background-position:center;
   background-repeat: no-repeat;
 }
-.leaderboard-table .title {
+.leaderboard-table .title > th {
   border-bottom: 1px solid #f5f5a2;
   font-size: 16pt;
   padding: .5rem;
@@ -147,15 +147,15 @@ body {
   font-size: 12pt;
 }
 .leaderboard-table thead, tfoot {
-  background: linear-gradient(rgba(255, 108, 18, .8)0%, rgba(205, 68, 0, 1)100%);
+  background: linear-gradient(rgba(255, 106, 0, 1)0%, rgba(156, 52, 0, 1)100%);
 }
 .leaderboard-table td {
   border: none;
 }
 .leaderboard-table tr:hover {
-  background-color: rgba(255, 233, 120, .2)
+  background-color: rgba(255, 233, 120, .2);
 }
-  .pointsback: {
+  .pointsback {
     font-weight: bolder;
     color: #ff3860;
   }

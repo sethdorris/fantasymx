@@ -14,7 +14,7 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <div class="navbar-item">
-            <router-link to="/">Home</router-link>
+            <router-link to="/home" exact>Home</router-link>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
             <router-link to="/myteam">My Team</router-link>
@@ -138,6 +138,9 @@
     a {
       color: white;
       font-size: 16pt;
+    }
+    .router-link-active {
+      border-bottom: 1px solid #fffc7f;
     }
   </style>
 })

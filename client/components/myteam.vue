@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div>
     <div class="page-header-container">
       <div class="page-header-block">
         <div class="lh-4r">Week: <span class="boldest-header right">{{currentweek}}</span></div>
@@ -11,7 +11,7 @@
         <p v-if="showSaveMessage" class="successful-save">Your team has been successfully saved!</p>
         <p v-if="showFailMessage" class="failure-save">Oops! Something Went Wrong. Please try again later.</p>
       </transition>
-      <table class="table">
+      <table class="myteam-table">
         <thead>
           <tr>
             <th>Action</th>
@@ -40,9 +40,6 @@
           </tr>
         </tfoot>
         <tbody>
-          <tr class="transparent-background">
-            <td colspan="7">My Team</td>
-          </tr>
           <tr v-for="(racer, index) in selectedriders">
             <td>
               <a href="#!" v-if="racer.name != 'OPEN SLOT'" @click="removeRacer(racer)">
@@ -67,13 +64,10 @@
               <button class="button is-success" @click="SaveTeam" :disabled="hasOpenSlots" v-bind:class="{'is-loading':isLoading}">Save Team</button>
             </td>
           </tr>
-          <tr class="transparent-background">
-            <td colspan="7">Available Racers</td>
-          </tr>
           <tr v-for="rider in paginatedRiders">
             <td>
               <a href="#!" v-if="showSelect && rider.cost <= dollars" @click="addRacer(rider)">
-                <span class="icon">
+                <span class="icon plus-icon">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </span>
               </a>
@@ -273,6 +267,28 @@ import _remove from 'lodash/remove';
   text-align: center;
   color: #00d1b2;
 }
+.myteam-table table td {
+  border: none;
+}
+.myteam-table {
+  background-color: rgba(255, 255, 255, .8);
+  color: #7b7b7b;
+  box-shadow: 1px 1px 10px #222;
+}
+.myteam-table thead, tfoot {
+  background: linear-gradient(rgba(255, 106, 0, 1)0%, rgba(156, 52, 0, 1)100%);
+}
+.myteam-title {
+  color: #868686;
+  font-size: 16pt;
+}
+.myteam-table thead th, tfoot th {
+  color: #fff;
+  font-size: 12pt;
+}
+.myteam-table tr:hover {
+  background: rgba(255, 233, 120, .2);
+}
 .failure-save {
   text-align: center;
   color: #ff2b56;
@@ -286,6 +302,9 @@ import _remove from 'lodash/remove';
 .page-header-container {
   display: flex;
   justify-content: center;
+}
+button {
+  margin-bottom: 0.25rem;
 }
 .page-header-block {
   width: 15%;
@@ -352,13 +371,16 @@ import _remove from 'lodash/remove';
     justify-content: space-between;
   }
   .lastRow {
-    border-bottom: 2px solid #ffe978;
+    border-bottom: 2px solid rgb(208, 83, 1);
   }
   .minus-icon {
     color: #ff3860;
   }
+  .plus-icon {
+    color: #23d160;
+  }
   .boldest-header {
-    color: #ff3860;
+    color: #fffc7f;
     font-weight: 700;
     font-size: xx-large;
   }
@@ -368,6 +390,8 @@ import _remove from 'lodash/remove';
   .lh-4r {
     height: 4rem;
     line-height: 4rem;
+    font-size: 1.75rem;
+    color:white;
   }
   .lh-4r:first-of-type {
     border-bottom: 1px solid #ffe978;
