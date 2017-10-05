@@ -138,13 +138,13 @@ app.post('/login', async (req, res) => {
     , { method: "POST" })
   var data = await captchaResponse.json();
   if (!data.success) {
-    res.status(401).send({ error: "Recaptcha Failed" })
+    return res.status(401).send({ error: "Recaptcha Failed" })
   }
   try {
     var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
     user = userQuery.rows[0];
     if (userQuery.rows.length == 0) {
-      res.status(401).send({ error: "User does not exist" })
+      return res.status(401).send({ error: "User does not exist" })
     } else {
       console.log("still running")
       var correctPassword = await scrypt.verifyHash(req.body.password, user.password)
@@ -152,14 +152,14 @@ app.post('/login', async (req, res) => {
         var recentTeam = await GetMostRecentTeam(user.userid);
         req.session.userId = user.id;
         if (recentTeam.rows.length == 0) {
-          res.json({ username: user.username, userId: user.userid })
+          return res.json({ username: user.username, userId: user.userid })
         }
-        res.json({ username: user.username, userId: user.userId, recentteam: data.rows })
+        return res.json({ username: user.username, userId: user.userId, recentteam: data.rows })
       }
     }
   } catch (e) {
     console.log(e);
-    res.status(500).send({ error: e });
+    return res.status(500).send({ error: e });
   }
     // pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]).then( (users) => {
     //   if (users.length === 0) {
