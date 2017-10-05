@@ -146,7 +146,6 @@ app.post('/login', async (req, res) => {
     if (userQuery.rows.length == 0) {
       return res.status(401).send({ error: "User does not exist" })
     } else {
-      console.log("still running")
       var correctPassword = await scrypt.verifyHash(req.body.password, user.password)
       if (correctPassword) {
         var recentTeam = await GetMostRecentTeam(user.userid);
@@ -157,42 +156,15 @@ app.post('/login', async (req, res) => {
         return res.json({ username: user.username, userId: user.userId, recentteam: data.rows })
       }
     }
-  } catch (e) {
-    console.log(e);
-    return res.status(500).send({ error: e });
-  }
-    // pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]).then( (users) => {
-    //   if (users.length === 0) {
-    //     res.send("User does not exist")
-    //   } else {
-    //     user = users.rows[0];
-    //     console.log("USER DATA", user)
-    //     return Promise.try(() => {
-    //       return scrypt.verifyHash(req.body.password, user.password);
-    //     }).then(() => {
-    //       return GetMostRecentTeam(user.id).then(data => {
-    //         req.session.userId = user.id;
-    //         if (data.rows.length == 0) {
-    //           return res.json({ username: user.username, userId: user.Id, recentteam: []})
-    //         }
-    //         console.log("Get most recent team", data)
-    //         return res.json( {username: user.username, userId: user.Id, recentteam: data.rows })
-    //       }).catch(e => {
-    //         console.log("error", e)
-    //       })
-    //     }).catch(scrypt.PasswordError, (err) => {
-    //       res.status(401).send("User password did not match");
-    //     }).catch((err) => {
-    //       res.status(500).send("An error occured with the authentication server.");
-    //     })
-    //   }
-    // })
+   } catch (e) {
+     console.error(e);
+     return res.status(500);
+   }
   });
 
   app.get('/logout', function (req, res) {
     req.session.destroy();
     res.sendStatus(200);
-    console.log(req)
   })
 
   app.get('/getMainLeagueInfo', function (req, res) {
