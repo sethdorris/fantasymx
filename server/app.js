@@ -132,8 +132,11 @@ app.get('/loginrefresh', function (req, res) {
   .catch(err => console.log(err))
 })
 
-app.post('/login', function (req, res) {
+app.post('/login', async (req, res) => {
   let user;
+  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`
+    , { method: "POST", body: { secret: '6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyh', response: req.body.captcha }, headers: { 'Content-Type': 'application/json'} })
+  console.log("CaptchaResponse", captchaResponse);
     pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]).then( (users) => {
       if (users.length === 0) {
         res.send("User does not exist")

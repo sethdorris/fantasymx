@@ -21,6 +21,7 @@
             </div>
           </div>
         </div>
+        <div class="g-recaptcha" data-sitekey="6LcSfDIUAAAAAO3jhHna-D8qTwX-nbFbxAk2q5_7"></div>
       </section>
       <footer class="modal-card-foot">
         <div class="field">
@@ -63,7 +64,8 @@
           this.isLoading = true;
           axios.post('/login', {
             username: this.username,
-            password: this.password
+            password: this.password,
+            captcha: grecaptcha.getResponse()
           }).then(data => {
             this.isLoading = false;
             this.setUserData({ userData: data.data })
