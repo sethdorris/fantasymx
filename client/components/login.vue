@@ -22,6 +22,9 @@
           </div>
         </div>
         <div class="g-recaptcha" data-sitekey="6LcSfDIUAAAAAO3jhHna-D8qTwX-nbFbxAk2q5_7"></div>
+        <div class="errorMessage" v-if="errorMessage != ''">
+          {{ errorMessage }}
+        </div>
       </section>
       <footer class="modal-card-foot">
         <div class="field">
@@ -41,7 +44,8 @@
         return {
           username: '',
           password: '',
-          isLoading: false
+          isLoading: false,
+          errorMessage: ''
         }
       },
       computed: mapGetters([
@@ -73,7 +77,8 @@
             this.setLoginModal({ show: false })
           }).catch(err => {
             this.isLoading = false;
-            console.log("Login error: ", err)
+            grecaptcha.reset();
+            this.errorMessage = err.response.data.error;
           })
         }
       }

@@ -134,35 +134,59 @@ app.get('/loginrefresh', function (req, res) {
 
 app.post('/login', async (req, res) => {
   let user;
-  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`
-    , { method: "POST", body: { secret: '6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyh', response: req.body.captcha }, headers: { 'Content-Type': 'application/json'} })
-  console.log("CaptchaResponse", captchaResponse);
-    pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]).then( (users) => {
-      if (users.length === 0) {
-        res.send("User does not exist")
-      } else {
-        user = users.rows[0];
-        console.log("USER DATA", user)
-        return Promise.try(() => {
-          return scrypt.verifyHash(req.body.password, user.password);
-        }).then(() => {
-          return GetMostRecentTeam(user.id).then(data => {
-            req.session.userId = user.id;
-            if (data.rows.length == 0) {
-              return res.json({ username: user.username, userId: user.Id, recentteam: []})
-            }
-            console.log("Get most recent team", data)
-            return res.json( {username: user.username, userId: user.Id, recentteam: data.rows })
-          }).catch(e => {
-            console.log("error", e)
-          })
-        }).catch(scrypt.PasswordError, (err) => {
-          res.status(401).send("User password did not match");
-        }).catch((err) => {
-          res.status(500).send("An error occured with the authentication server.");
-        })
+  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
+    , { method: "POST" })
+  var data = await captchaResponse.json();
+  if (!data.success) {
+    res.status(401).send({ error: "Recaptcha Failed" })
+  }
+  try {
+    var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
+    user = userQuery.rows[0];
+    if (userQuery.rows.length == 0) {
+      res.status(401).send({ error: "User does not exist" })
+    } else {
+      console.log("still running")
+      var correctPassword = await scrypt.verifyHash(req.body.password, user.password)
+      if (correctPassword) {
+        var recentTeam = await GetMostRecentTeam(user.userid);
+        req.session.userId = user.id;
+        if (recentTeam.rows.length == 0) {
+          res.json({ username: user.username, userId: user.userid })
+        }
+        res.json({ username: user.username, userId: user.userId, recentteam: data.rows })
       }
-    })
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({ error: e });
+  }
+    // pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]).then( (users) => {
+    //   if (users.length === 0) {
+    //     res.send("User does not exist")
+    //   } else {
+    //     user = users.rows[0];
+    //     console.log("USER DATA", user)
+    //     return Promise.try(() => {
+    //       return scrypt.verifyHash(req.body.password, user.password);
+    //     }).then(() => {
+    //       return GetMostRecentTeam(user.id).then(data => {
+    //         req.session.userId = user.id;
+    //         if (data.rows.length == 0) {
+    //           return res.json({ username: user.username, userId: user.Id, recentteam: []})
+    //         }
+    //         console.log("Get most recent team", data)
+    //         return res.json( {username: user.username, userId: user.Id, recentteam: data.rows })
+    //       }).catch(e => {
+    //         console.log("error", e)
+    //       })
+    //     }).catch(scrypt.PasswordError, (err) => {
+    //       res.status(401).send("User password did not match");
+    //     }).catch((err) => {
+    //       res.status(500).send("An error occured with the authentication server.");
+    //     })
+    //   }
+    // })
   });
 
   app.get('/logout', function (req, res) {
@@ -316,7 +340,7 @@ app.post('/login', async (req, res) => {
     })
   }
 
-  function GetMostRecentTeam(userid) {
+  async function GetMostRecentTeam(userid) {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
   }
 
