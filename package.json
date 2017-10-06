@@ -11,6 +11,9 @@
     "start:production": "cross-env NODE_ENV=production node ./server/app.js",
     "start": "node ./server/app.js"
   },
+  "engines": {
+    "node": "8.6.0"
+  },
   "author": "seth dorris",
   "license": "ISC",
   "devDependencies": {
