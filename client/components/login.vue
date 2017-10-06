@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <div class="g-recaptcha" data-sitekey="6LcSfDIUAAAAAO3jhHna-D8qTwX-nbFbxAk2q5_7"></div>
+        <div id="login-recaptcha"></div>
         <div class="errorMessage" v-if="errorMessage != ''">
           {{ errorMessage }}
         </div>
@@ -72,12 +72,17 @@
             captcha: grecaptcha.getResponse()
           }).then(data => {
             this.isLoading = false;
+            grecaptcha.reset();
+            this.username = '';
+            this.password = '';
             this.setUserData({ userData: data.data })
             this.setLoggedIn({ loggedIn: true })
             this.setLoginModal({ show: false })
           }).catch(err => {
             this.isLoading = false;
             grecaptcha.reset();
+            this.username = '';
+            this.password = '';
             this.errorMessage = err.response.data.error;
           })
         }

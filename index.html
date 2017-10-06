@@ -6,11 +6,17 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src='https://www.google.com/recaptcha/api.js?onload=onLoadCallback&render=explicit'></script>
   </head>
   <body>
     <div id="app">
     </div>
     <script src="./build/bundle.js"></script>
+    <script type="text/javascript">
+      var onLoadCallback = function() {
+        grecaptcha.render("login-recaptcha", {'sitekey':'6LcSfDIUAAAAAO3jhHna-D8qTwX-nbFbxAk2q5_7'});
+        grecaptcha.render("register-recaptcha", {'sitekey':'6LcSfDIUAAAAAO3jhHna-D8qTwX-nbFbxAk2q5_7'})
+      }
+    </script>
   </body>
 </html>

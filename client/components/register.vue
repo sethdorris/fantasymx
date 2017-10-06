@@ -36,7 +36,7 @@
               </div>
             </div>
             <div class="field">
-              RECAPTCHA PLACEHOLDER
+              <div id="register-recaptcha"></div>
             </div>
             <div class="errorMessage" v-for="error in errorMessage" v-if="errorMessage != ''">
               {{ error }}
@@ -84,11 +84,11 @@ import axios from 'axios';
         this.blankPassword = false;
         this.invalidUsername = false;
         if (this.RegistrationIsValid()) {
-
           axios.post('/register', {
             username: this.username,
             email: this.email,
-            password: this.password
+            password: this.password,
+            captcha: grecaptcha.getResponse(1)
           }).then(data => {
             console.log(data);
             this.isLoading = false;
@@ -111,6 +111,19 @@ import axios from 'axios';
                 }
               })
             }
+            grecaptcha.reset();
+            this.username = '';
+            this.email = '';
+            this.password = ''
+            this.isLoading = false;
+          })
+          .catch(e => {
+            this.errorMessage.push(e.response.data.error);
+            grecaptcha.reset();
+            this.username = '';
+            this.email = '';
+            this.password = ''
+            this.isLoading = false;
           })
 
         }

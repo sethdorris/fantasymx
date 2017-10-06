@@ -69,37 +69,27 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, "..", "index.html"))
 })
 
-app.post('/register', function (req, res) {
-  console.log("RECAPTCHA", req.body)
-  console.log("RECAPTCHA", req)
-  return Promise.try(() => {
-    return UserAlreadyExists(req.body.email, req.body.username)
-  }).then(exists => {
-    console.log("exists",exists);
-    if (!exists) {
-      console.log("inside exists if")
-      Promise.try(() => {
-        return scrypt.hash(req.body.password);
-      }).then(hash => {
-         return knex("users")
-        .returning('id')
-        .insert({
-          username: req.body.username,
-          password: hash,
-          email: req.body.email
-        });
-        console.log("INSERT COMPLETE", userId)
-      }).then(row => {
-        console.log("row", row[0])
-        req.session.userId = row[0];
-        res.json({ username: req.body.username, userId: row[0] });
-      }).catch(err => {
-        res.send(err);
-      })
-    } else {
-      res.json(exists);
+app.post('/register', async (req, res) => {
+  console.log("RECAPTCHA", req.body.captcha);
+  try {
+    var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`, { method: "POST" })
+    var data = await captchaResponse.json();
+    console.log("recaptcha", data)
+    if (!data.success) {
+      return res.status(401).send({ error: "Recaptcha Failed" })
     }
-  })
+    var userExists = await UserAlreadyExists(req.body.email, req.body.username);
+    if (!userExists) {
+      var hashedPw = await scrypt.hash(req.body.password);
+      var createdId = await knex("users").returning("id").insert({ username: req.body.username, password: hashedPw, email: req.body.email })
+      return res.json({ username: req.body.username, userId: createdId[0] })
+    }
+    return res.json(userExists);
+  } catch (e) {
+    //log e
+    console.error(e);
+    return res.sendStatus(500);
+  }
 });
 
 app.get('/loginrefresh', function (req, res) {
@@ -298,8 +288,8 @@ app.post('/login', async (req, res) => {
     .then(data => res.sendStatus(200));
   })
 
-  function UserAlreadyExists(email, username) {
-    return pool.query('SELECT * FROM users WHERE LOWER(email) = LOWER($1) OR LOWER(username) = LOWER($2)', [email, username])
+  async function UserAlreadyExists(email, username) {
+    return await pool.query('SELECT * FROM users WHERE LOWER(email) = LOWER($1) OR LOWER(username) = LOWER($2)', [email, username])
     .then( data => {
       console.log("data", data)
       if (data.rowCount > 0 && data.rows[0].username.toLowerCase() == username.toLowerCase()) {
