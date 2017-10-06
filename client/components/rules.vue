@@ -16,17 +16,16 @@
           <p>As of now, each user is REQUIRED to select 4 racers for each week. The deadline for making racer selection is 3am Mountain Time on the day of the scheduled race. After that time
             users will no longer be able to select racers for that week's race; the team selection for the next week will be available for selection</p>
           <p>Users may only SAVE a roster if ALL 4 roster slots have a racer chosen. The SAVE button is disabled if an OPEN SLOT still exists for a weekly lineup.</p>
-          <p>Each user begins each week with $8 credits to spend on filling out their weekly lineup, and that credit is used to select racers for their week's lineup from the available racers pool.
-            The selected racer's cost, once selected, will be deducted from the current week's available credits. You are NOT REQUIRED to spend all $8 credits each week.</p>
+          <p>Each user begins each week with $10,000 salary cap to spend on filling out their weekly lineup, and that cap room is used to select racers for their week's lineup from the available racers pool.
+            The selected racer's cost, once selected, will be deducted from the current week's available salary cap. You are NOT REQUIRED to utilize your entire cap space each week.</p>
         </div>
       </div>
       <div class="tab">
         <input id="tab-three" type="checkbox" name="tabs">
-        <label for="tab-three">Live Stat Tracker & Custom Leagues</label>
+        <label for="tab-three">Custom Leagues</label>
         <div class="tab-content">
-          <p>Right now the application is configured where every registered user competes against each other in an open Main League. The live stat tracker (to see the standings update with live position changes) is not available for the ALPHA test.
-          This feature will be testable during the BETA version of the application.</p>
-          <p>Currently, the application does not support custom / private leagues, however, this feature will be available for testing in the BETA version of the application.</p>
+          <p>Currently, the application does not support custom / private leagues; We are looking into how best to incorporate this feature with the UI. If you have suggestions please let us know
+          by dropping a suggestion.</p>
         </div>
       </div>
     </div>

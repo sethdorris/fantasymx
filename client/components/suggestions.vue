@@ -104,5 +104,6 @@ import axios from 'axios';
     display: flex;
     justify-content: center;
     margin-top: 3rem;
+    color: white;
   }
 </style>
