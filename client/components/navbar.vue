@@ -40,7 +40,7 @@
             <a href="#!">Login</a>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus">
-            <a href="#!">Welcome, {{ getUserData.username }}!</a>
+            <router-link to="/myaccount">Welcome, {{ getUserData.username }}!</router-link>
           </div>
           <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
             <span class="icon" v-if="GetAuthStatus">
