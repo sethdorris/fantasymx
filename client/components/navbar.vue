@@ -76,7 +76,6 @@
       mounted() {
         // Get all "navbar-burger" elements
         var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        console.log($navbarBurgers);
         // Check if there are any nav burgers
         if ($navbarBurgers.length > 0) {
 

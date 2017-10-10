@@ -1,60 +1,21 @@
 <template>
     <div class="container myaccount-container">
       <ul class="ul">
-        <li>Create League</li>
-        <li>Join League</li>
-        <li>Delete Account</li>
-        <li>Upgrade Account</li>
+        <li><router-link to="/myaccount/createleague">Create League</router-link></li>
+        <li><router-link to="/myaccount/joinleague">Join League</router-link></li>
+        <li><router-link to="/myaccount/deleteaccount">Delete Account</router-link></li>
+        <li><router-link to="/myaccount/upgradeaccount">Upgrade Account</router-link></li>
       </ul>
-      <div>
-      <div class="field">
-        <label class="label">League Name</label>
-        <div class="control has-icons-left">
-          <input class="input" type="text" placeholder="League Name">
-          <span class="icon is-small is-left">
-            <i class="fa fa-trophy"></i>
-          </span>
-        </div>
-      </div>
-      <div class="field">
-        <label class="label">League Password</label>
-        <div class="control has-icons-left">
-          <input class="input" type="text" placeholder="League Password">
-          <span class="icon is-small is-left">
-            <i class="fa fa-lock"></i>
-          </span>
-        </div>
-      </div>
-      <div class="field">
-        <label class="label">Max Players</label>
-        <div class="control has-icons-left">
-          <input class="input" type="number" placeholder="League Name">
-          <span class="icon is-small is-left">
-            <i class="fa fa-hashtag"></i>
-          </span>
-        </div>
-      </div>
+      <router-view></router-view>
     </div>
-  </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
-import axios from 'axios';
   export default {
     data() {
       return {
-        CreateLeagueName: '',
-        CreateLeaguePassword: '',
-        CreateMaxPlayers: ''
+
       }
-    },
-    computed: mapGetters([
-      'getUserData'
-    ]),
-    methods: {
-      ...mapMutations([
-      ])
     }
   }
 </script>
@@ -64,11 +25,23 @@ import axios from 'axios';
     flex-direction:column;
     width: 45%;
     color: white;
+    margin-top: 2rem;
   }
   .ul {
     list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
   }
-  .ul li {
+  .ul > li {
     display: inline;
+  }
+  label {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  input[type='radio'] {
+    margin-left: 2rem;
   }
 </style>

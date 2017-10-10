@@ -82,7 +82,7 @@ app.post('/register', async (req, res) => {
     if (!userExists) {
       var hashedPw = await scrypt.hash(req.body.password);
       var createdId = await knex("users").returning("id").insert({ username: req.body.username, password: hashedPw, email: req.body.email })
-      return res.json({ username: req.body.username, userId: createdId[0] })
+      return res.json({ username: req.body.username, userId: createdId[0], accounttype: 0 })
     }
     return res.json(userExists);
   } catch (e) {
@@ -109,7 +109,8 @@ app.get('/loginrefresh', function (req, res) {
     } else {
       var userData = {
         username: users.rows[0].username,
-        userId: users.rows[0].id
+        userId: users.rows[0].id,
+        accounttype: users.rows[0].account_type
       }
       GetMostRecentTeam(users.rows[0].id)
       .then(function (data) {
@@ -141,9 +142,9 @@ app.post('/login', async (req, res) => {
         var recentTeam = await GetMostRecentTeam(user.userid);
         req.session.userId = user.id;
         if (recentTeam.rows.length == 0) {
-          return res.json({ username: user.username, userId: user.userid })
+          return res.json({ username: user.username, userId: user.userid, accounttype: user.account_type })
         }
-        return res.json({ username: user.username, userId: user.userId, recentteam: data.rows })
+        return res.json({ username: user.username, userId: user.userId, recentteam: data.rows, accounttype: user.account_type })
       }
     }
    } catch (e) {

@@ -7,6 +7,9 @@ import rules from './client/components/rules.vue';
 import stattracker from './client/components/stattracker.vue';
 import suggestions from './client/components/suggestions.vue';
 import myaccount from './client/components/myaccount.vue';
+import createleague from './client/components/CreateLeague.vue';
+import joinleague from './client/components/joinleague.vue';
+import deleteaccount from './client/components/deleteaccount.vue';
 
 Vue.use(Router)
 
@@ -21,7 +24,12 @@ export function createRouter () {
       { path: "/live", component: stattracker },
       { path: "/suggestions", component: suggestions },
       { path: "/home", component: home },
-      { path: "/myaccount", component: myaccount }
+      { path: "/myaccount", component: myaccount,
+        children: [
+          { path: 'createleague', component: createleague },
+          { path: 'joinleague', component: joinleague },
+          { path: 'deleteaccount', component: deleteaccount }
+        ]}
     ]
   })
 }
