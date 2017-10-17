@@ -8,7 +8,8 @@ INNER JOIN weekly_team
 ON riders.riderid = weekly_team.riderid
 INNER JOIN users
 ON weekly_team.userid = users.id) AS json_rows
-GROUP BY userid)
+GROUP BY userid
+WHERE weekly_team.leagueid = $1)
 SELECT wt.userid, riders_json.riders::jsonb[]
 FROM weekly_team AS wt
 INNER JOIN riders_json
@@ -19,7 +20,11 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 exports.getAllAvailableRiders = `
 SELECT * FROM riders
 ORDER BY name
-`
+`;
+
+exports.GetUsersLeagues = `SELECT DISTINCT(leagueid), leagues.name FROM league_users
+JOIN leagues ON leagues.id = league_users.leagueid
+WHERE userid = $1`
 
 exports.getMostRecentRiderAdds = `
 SELECT *
@@ -80,7 +85,7 @@ INNER JOIN users
 ON weekly_team.userid = users.id
 INNER JOIN raceresults
 ON riders.riderid = raceresults.riderid) AS json_rows
-WHERE json_rows.leagueid = 1
+WHERE json_rows.leagueid = $1
 GROUP BY userid)
 SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
 FROM weekly_team AS wt

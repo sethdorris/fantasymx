@@ -92,7 +92,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.get('/loginrefresh', function (req, res) {
+app.get('/loginrefresh', async (req, res) => {
   console.log(req.session)
   console.log(req.session.userId);
   var isUndefined = typeof req.session.userId == 'undefined';
@@ -101,26 +101,19 @@ app.get('/loginrefresh', function (req, res) {
     console.log("session undefined")
     return res.sendStatus(200);
   }
-  pool.query('SELECT * FROM users WHERE id = $1', [parseInt(req.session.userId)]).then(users => {
-    console.log("why is this hit?")
-    console.log("users", users)
-    if (users.length === 0) {
-      return res.send("User was not found.");
-    } else {
-      var userData = {
-        username: users.rows[0].username,
-        userId: users.rows[0].id,
-        accounttype: users.rows[0].account_type
-      }
-      GetMostRecentTeam(users.rows[0].id)
-      .then(function (data) {
-        userData.recentteam = data.rows;
-        console.log("data rows")
-        return res.json(userData);
-      })
+  var users = await pool.query('SELECT * FROM users WHERE id = $1', [parseInt(req.session.userId)]);
+  if (users.length === 0) {
+    return res.send("User was not found.");
+  } else {
+    var userData = {
+      username: users.rows[0].username,
+      userId: users.rows[0].id,
+      accounttype: users.rows[0].account_type
     }
-  })
-  .catch(err => console.log(err))
+    var leagues = await pool.query(api.GetUsersLeagues, [users.rows[0].id]);
+    userData.leagues = leagues.rows;
+      return res.json(userData);
+    }
 })
 
 app.post('/login', async (req, res) => {
@@ -139,12 +132,9 @@ app.post('/login', async (req, res) => {
     } else {
       var correctPassword = await scrypt.verifyHash(req.body.password, user.password)
       if (correctPassword) {
-        var recentTeam = await GetMostRecentTeam(user.userid);
         req.session.userId = user.id;
-        if (recentTeam.rows.length == 0) {
-          return res.json({ username: user.username, userId: user.userid, accounttype: user.account_type })
-        }
-        return res.json({ username: user.username, userId: user.userId, recentteam: data.rows, accounttype: user.account_type })
+        var leagues = await pool.query(api.GetUsersLeagues, [user.id]);
+        return res.json({ username: user.username, userId: user.userid, accounttype: user.account_type, leagues: leagues.rows })
       }
     }
    } catch (e) {

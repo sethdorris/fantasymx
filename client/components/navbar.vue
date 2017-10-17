@@ -42,6 +42,8 @@
           <div class="navbar-item" v-if="GetAuthStatus">
             <router-link to="/myaccount">Welcome, {{ getUserData.username }}!</router-link>
           </div>
+          <LeagueDropdown class="navbar-item" v-if="GetAuthStatus" :currentLeague="getUserData.currentleague" :allLeagues="getUserData.leagues">
+          </LeagueDropdown>
           <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
             <span class="icon" v-if="GetAuthStatus">
               <i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -59,6 +61,7 @@
     import { mapGetters, mapMutations } from 'vuex';
     import register from './register.vue';
     import login from './login.vue';
+    import LeagueDropdown from './navbarDropdown.vue';
     export default {
       data() {
         return  {
@@ -113,7 +116,8 @@
           'setLoginModal',
           'setLoggedIn',
           'setUserData',
-          'logout'
+          'logout',
+          'setManagedLeague'
         ]),
         logout() {
           axios.get('logout').then(data => {
@@ -123,7 +127,8 @@
       },
       components: {
         'register': register,
-        'login': login
+        'login': login,
+        'LeagueDropdown': LeagueDropdown
       }
     }
   </script>

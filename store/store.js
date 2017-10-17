@@ -49,6 +49,9 @@ const mutations = {
     state.user.riders = [];
     state.user = {};
     state.isLoggedIn = false;
+  },
+  setManagedLeague(state, { league }) {
+    state.user.currentLeague = league
   }
 }
 

@@ -5,7 +5,7 @@
         <table class="leaderboard-table" v-if="doneLoading">
           <thead>
             <tr class="title">
-              <th colspan="4">2018 Fantasy SX: Main League Standings</th>
+              <th colspan="4">2018 Fantasy SX: {{CurrentLeague.name}} Standings</th>
             </tr>
             <tr>
               <th>Position</th>
@@ -40,6 +40,7 @@
 </template>
 <script>
 import axios from 'axios';
+import { mapGetters } from 'vuex';
   export default {
     data() {
       return {
@@ -59,9 +60,9 @@ import axios from 'axios';
           return aPoints - bPoints;
         })
       },
-      newstandings: function() {
-
-      }
+      ...mapGetters([
+        'getUserData'
+      ])
     },
     created() {
       console.log("environment", process.env.NODE_ENV)
@@ -87,37 +88,6 @@ import axios from 'axios';
         return '-'
       }
     }
-    // beforeCreate() {
-    //    setTimeout(() => {
-    //      axios.get('/RaceResults')
-    //      .then(data => {
-    //        console.time();
-    //        var results = data.data.B;
-    //        console.log(results);
-    //        this.mainLeagueUsers.forEach(user => {
-    //          user.totalpoints = 0;
-    //          user.riders.forEach(rider => {
-    //            results.forEach(result => {
-    //              if (result.F.slice(0, -1) == rider.name) {
-    //                rider.points = result.A;
-    //              }
-    //            })
-    //            user.totalpoints += rider.points;
-    //          })
-    //        })
-    //       console.timeEnd();
-    //       this.doneLoading = true;
-    //       console.log(this.mainLeagueUsers)
-    //     })
-    //    }, 3000);
-    //   axios.get('/getMainLeagueInfo')
-    //   .then(data => {
-    //     console.log(data.data);
-    //     data.data.forEach(user => {
-    //       this.mainLeagueUsers.push(user)
-    //     })
-    //   })
-    // }
   }
 </script>
 <style>
