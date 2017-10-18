@@ -65,7 +65,7 @@ import { mapGetters } from 'vuex';
       console.log(process.env.NODE_ENV)
       this.ws = process.env.NODE_ENV == 'production'
         ? new WebSocket("wss://fantasysx.herokuapp.com/tracker")
-        : new WebSocket("wss://localhost:3000/tracker");
+        : new WebSocket("wss://127.0.0.1:3000/tracker");
 
       var v = this;
       this.ws.onmessage = function (e) {
@@ -116,7 +116,9 @@ import { mapGetters } from 'vuex';
   float: right;
 }
   .myRow {
-    background-color:rgba(255, 233, 120, .35) !important;
+    background-color:rgba(255, 233, 120, .7) !important;
+    color: #d24a00;
+    font-weight: 600;
   }
   .table-live table td {
     border: none;

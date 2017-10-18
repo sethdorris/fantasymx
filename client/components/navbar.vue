@@ -42,8 +42,6 @@
           <div class="navbar-item" v-if="GetAuthStatus">
             <router-link to="/myaccount">Welcome, {{ getUserData.username }}!</router-link>
           </div>
-          <LeagueDropdown class="navbar-item" v-if="GetAuthStatus" :currentLeague="getUserData.currentleague" :allLeagues="getUserData.leagues">
-          </LeagueDropdown>
           <div class="navbar-item" v-if="GetAuthStatus" @click="setLoggedIn({ isLoggedIn: !GetAuthStatus })">
             <span class="icon" v-if="GetAuthStatus">
               <i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -117,7 +115,8 @@
           'setLoggedIn',
           'setUserData',
           'logout',
-          'setManagedLeague'
+          'setManagedLeague',
+          'setLeagues'
         ]),
         logout() {
           axios.get('logout').then(data => {

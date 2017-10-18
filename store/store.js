@@ -52,6 +52,9 @@ const mutations = {
   },
   setManagedLeague(state, { league }) {
     state.user.currentLeague = league
+  },
+  setLeagues(state, { leagues }) {
+    state.user.leagues = leagues;
   }
 }
 

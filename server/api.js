@@ -85,7 +85,7 @@ INNER JOIN users
 ON weekly_team.userid = users.id
 INNER JOIN raceresults
 ON riders.riderid = raceresults.riderid) AS json_rows
-WHERE json_rows.leagueid = $1
+WHERE json_rows.leagueid = 1
 GROUP BY userid)
 SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
 FROM weekly_team AS wt

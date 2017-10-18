@@ -108,7 +108,8 @@ app.get('/loginrefresh', async (req, res) => {
     var userData = {
       username: users.rows[0].username,
       userId: users.rows[0].id,
-      accounttype: users.rows[0].account_type
+      accounttype: users.rows[0].account_type,
+      currentLeague: { leagueid: 1, name: "MainLeague" }
     }
     var leagues = await pool.query(api.GetUsersLeagues, [users.rows[0].id]);
     userData.leagues = leagues.rows;
@@ -134,7 +135,7 @@ app.post('/login', async (req, res) => {
       if (correctPassword) {
         req.session.userId = user.id;
         var leagues = await pool.query(api.GetUsersLeagues, [user.id]);
-        return res.json({ username: user.username, userId: user.userid, accounttype: user.account_type, leagues: leagues.rows })
+        return res.json({ username: user.username, userId: user.userid, accounttype: user.account_type, leagues: leagues.rows, currentLeague: {leagueid: 1, name: "MainLeague"} })
       }
     }
    } catch (e) {

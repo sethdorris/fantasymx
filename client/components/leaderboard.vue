@@ -5,7 +5,7 @@
         <table class="leaderboard-table" v-if="doneLoading">
           <thead>
             <tr class="title">
-              <th colspan="4">2018 Fantasy SX: {{CurrentLeague.name}} Standings</th>
+              <th colspan="4">2018 Fantasy SX: Main League Standings</th>
             </tr>
             <tr>
               <th>Position</th>
@@ -23,7 +23,7 @@
             </tr>
           </tfoot>
           <tbody>
-            <tr v-for="(user, index) in standings">
+            <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
               <td>{{user.weeklyteams[0].username}}</td>
@@ -60,6 +60,9 @@ import { mapGetters } from 'vuex';
           return aPoints - bPoints;
         })
       },
+      newstandings: function() {
+
+      },
       ...mapGetters([
         'getUserData'
       ])
@@ -86,6 +89,13 @@ import { mapGetters } from 'vuex';
           return user.totalpoints - this.standings[0].totalpoints;
         }
         return '-'
+      },
+      IsMe: function (user) {
+        if (user.weeklyteams[0].username == this.getUserData.username) {
+          console.log("username", this.getUserData.username)
+          return true;
+        }
+        return false;
       }
     }
   }
@@ -137,5 +147,10 @@ body {
   }
   .leaderboard-main {
     margin-top: 25px;
+  }
+  .Me {
+    background-color: rgba(255, 233, 120, .7);
+    color: #d24a00;
+    font-weight: 600;
   }
 </style>
