@@ -213,6 +213,8 @@ app.post('/login', async (req, res) => {
       console.log("stats", Stats)
       var model = MyTeamVMCreator.Create({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats, CurrentWeek: currentWeek})
       res.json(model);
+    }).catch(e => {
+      console.log(e)
     })
   })
 
