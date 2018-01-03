@@ -29,7 +29,7 @@
             <div class="field">
               <label class="label">Password: </label>
               <div class="control has-icons-left">
-                <input type="password" class="input" v-bind:class="{ 'is-danger': blankPassword }" id="reg-password" v-model="password" placeholder="Password" required>
+                <input type="password" class="input" v-bind:class="{ 'is-danger': blankPassword }" v-model="password" placeholder="Password" required>
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock"></i>
                 </span>
