@@ -98,7 +98,6 @@ import axios from 'axios';
               this.setUserData({ userData: data.data })
               console.log("getUserData", this.getUserData)
               this.setRegisterModal({ show: false })
-              this.setLoggedIn({ loggedIn: true })
               console.log(this.$store.state);
             } else {
               this.errorMessage.push(data.data.ErrorMessage);
