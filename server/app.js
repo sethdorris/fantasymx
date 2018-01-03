@@ -82,6 +82,7 @@ app.post('/register', async (req, res) => {
     if (!userExists) {
       var hashedPw = await scrypt.hash(req.body.password);
       var createdId = await knex("users").returning("id").insert({ username: req.body.username, password: hashedPw, email: req.body.email })
+      req.session.userId = createdId;
       return res.json({ username: req.body.username, userId: createdId[0], accounttype: 0 })
     }
     return res.json(userExists);
