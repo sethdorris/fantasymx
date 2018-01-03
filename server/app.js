@@ -83,6 +83,7 @@ app.post('/register', async (req, res) => {
       var hashedPw = await scrypt.hash(req.body.password);
       var createdId = await knex("users").returning("id").insert({ username: req.body.username, password: hashedPw, email: req.body.email })
       req.session.userId = createdId;
+      console.log("Here is the session Id", req.session.userId);
       return res.json({ username: req.body.username, userId: createdId[0], accounttype: 0 })
     }
     return res.json(userExists);
@@ -202,7 +203,7 @@ app.post('/login', async (req, res) => {
     var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];
-    console.log("req session id: ", req.session.Userid)
+    console.log("req session id: ", req.session.userId)
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
     var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentWeek]).then(data => { return data.rows })
     var p3 = pool.query(api.getRaceResultStatsForCurrentYear, [seasonEnd, seasonStart]).then(data => { return data.rows })
