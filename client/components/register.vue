@@ -110,9 +110,8 @@ import axios from 'axios';
                   this.invalidEmail = true;
                 }
               })
-              grecaptcha.reset();
+              grecaptcha.reset(1);
             }
-            grecaptcha.reset();
             this.username = '';
             this.email = '';
             this.password = ''
@@ -120,7 +119,7 @@ import axios from 'axios';
           })
           .catch(e => {
             this.errorMessage.push(e.response.data.error);
-            grecaptcha.reset();
+            grecaptcha.reset(1);
             this.username = '';
             this.email = '';
             this.password = ''
