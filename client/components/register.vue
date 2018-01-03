@@ -110,6 +110,7 @@ import axios from 'axios';
                   this.invalidEmail = true;
                 }
               })
+              grecaptcha.reset();
             }
             grecaptcha.reset();
             this.username = '';
