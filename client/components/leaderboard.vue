@@ -71,6 +71,7 @@ import { mapGetters } from 'vuex';
       console.log("environment", process.env.NODE_ENV)
       axios.get('/MainLeagueStandings')
       .then(data => {
+        console.log("MainLeague Standings", data.data)
         this.mainLeagueUsers = data.data;
         this.mainLeagueUsers.forEach((user) => {
           user.totalpoints = 0

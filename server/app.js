@@ -38,7 +38,9 @@ var dbConnectionConfig = require('./server-config');
 console.log("Development Environment: ", process.env.NODE_ENV)
 console.log("IsDevelopment", IsDevelopment)
 
-var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
+//CHANGE THIS FOR PRODUCTION
+
+var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.development;
 console.log("Database Connection", dbConnection)
 
 var knex = Knex({
@@ -86,6 +88,7 @@ app.post('/register', async (req, res) => {
       console.log("Here is the session Id", req.session.userId);
       return res.json({ username: req.body.username, userId: createdId[0], accounttype: 0 })
     }
+
     return res.json(userExists);
   } catch (e) {
     //log e
