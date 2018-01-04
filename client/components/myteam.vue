@@ -195,7 +195,7 @@ import _remove from 'lodash/remove';
       sortByPrice() {
         if (this.CostSortByAsc) {
           this.CostSortByAsc = false;
-          this.paginatedRiders = this.paginatedRiders.sort((a, b) => {
+          this.availableRiders = this.availableRiders.sort((a, b) => {
             if (a.cost > b.cost) {
               return -1
             }
@@ -206,7 +206,7 @@ import _remove from 'lodash/remove';
           })
         } else {
           this.CostSortByAsc = true;
-          this.paginatedRiders = this.paginatedRiders.sort((a, b) => {
+          this.availableRiders = this.availableRiders.sort((a, b) => {
             if (a.cost > b.cost) {
               return 1
             }
