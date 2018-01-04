@@ -3,7 +3,7 @@
     <nav class="navbar">
        <div class="navbar-brand">
         <div class="navbar-item">
-          //ALPHA TEST//
+        </div>
         </div>
         <div class="navbar-burger burger" data-target="navMenu">
           <span></span>
@@ -97,6 +97,7 @@
         }
       },
       created() {
+        console.log("src", this.logosrc)
         axios.get('/loginrefresh').then(data => {
           console.log(data.data)
           if (typeof data.data.username != 'undefined') {

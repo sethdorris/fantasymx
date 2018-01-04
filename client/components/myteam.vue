@@ -271,8 +271,9 @@ import _remove from 'lodash/remove';
   border: none;
 }
 .myteam-table {
-  background-color: rgba(255, 255, 255, .8);
-  color: #7b7b7b;
+  background-color: rgba(255, 255, 255, 1);
+  color: black;
+  font-family: 'Courier';
   box-shadow: 1px 1px 10px #222;
 }
 .myteam-table thead, tfoot {
