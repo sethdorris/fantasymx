@@ -269,11 +269,11 @@ import _remove from 'lodash/remove';
 }
 .myteam-table table td {
   border: none;
+  font-family: 'Courier';
 }
 .myteam-table {
   background-color: rgba(255, 255, 255, 1);
   color: black;
-  font-family: 'Courier';
   box-shadow: 1px 1px 10px #222;
 }
 .myteam-table thead, tfoot {
