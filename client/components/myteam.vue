@@ -182,6 +182,7 @@ import _remove from 'lodash/remove';
         }
         this.availableRiders.push(racer)
         this.$set(this.selectedriders, selectedRacerIndex, openSpace)
+        this.sortByPrice();
         console.log("My new team", this.selectedriders)
       },
       addRacer(racer) {
