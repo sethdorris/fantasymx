@@ -308,6 +308,7 @@ app.post('/login', async (req, res) => {
     Promise.all([p1, p2]).then(([results, info]) => {
       if (returnObj.info.B == 'Session Complete') {
         returnObj.raceFinished = true;
+        //SAVE TO DB
         return returnObj;
       }
       if (results.S.indexOf("450SX Main") < 0) {

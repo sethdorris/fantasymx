@@ -108,7 +108,7 @@ import _remove from 'lodash/remove';
         currentweek: 0,
         selectedriders: [],
         availableRiders: [],
-        CostSortByAsc: true,
+        CostSortByAsc: false,
         page: 1,
         isLoading: false,
         showSaveMessage: false,
