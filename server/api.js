@@ -74,32 +74,32 @@ exports.getLatestRaceResult = '';
 // WHERE wt.leagueid = 1
 // ORDER BY wt.userid`;
 
-exports.getMainLeagueTotalStandings = `WITH riders_json AS (
-SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS WeeklyTeams
-FROM
-(SELECT weekly_team.userid, users.username, name, raceresults.place, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
-FROM riders
-INNER JOIN weekly_team
-ON riders.riderid = weekly_team.riderid
-INNER JOIN users
-ON weekly_team.userid = users.id
-INNER JOIN raceresults
-ON riders.riderid = raceresults.riderid) AS json_rows
-WHERE json_rows.leagueid = 1
-GROUP BY userid)
-SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
-FROM weekly_team AS wt
-INNER JOIN riders_json
-ON riders_json.userid = wt.userid
-INNER JOIN users
-ON users.id = wt.userid
-GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
+// exports.getMainLeagueTotalStandings = `WITH riders_json AS (
+// SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS WeeklyTeams
+// FROM
+// (SELECT weekly_team.userid, users.username, name, raceresults.place, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
+// FROM riders
+// INNER JOIN weekly_team
+// ON riders.riderid = weekly_team.riderid
+// INNER JOIN users
+// ON weekly_team.userid = users.id
+// INNER JOIN raceresults
+// ON riders.riderid = raceresults.riderid) AS json_rows
+// WHERE json_rows.leagueid = 1
+// GROUP BY userid)
+// SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
+// FROM weekly_team AS wt
+// INNER JOIN riders_json
+// ON riders_json.userid = wt.userid
+// INNER JOIN users
+// ON users.id = wt.userid
+// GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
 
-// exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, ARRAY_AGG(wt.season_weeksid) AS season_weeks, ARRAY_AGG(raceresults.weekid) AS raceweeks, ARRAY_AGG(raceresults.seasonid) as raceseasons, ARRAY_AGG(raceresults.place) AS places, p.id AS userid, p.username FROM users AS p
-// LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
-// LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
-// left outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid
-// GROUP BY p.id`
+exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, ARRAY_AGG(wt.season_weeksid) AS season_weeks, ARRAY_AGG(raceresults.weekid) AS raceweeks, ARRAY_AGG(raceresults.seasonid) as raceseasons, ARRAY_AGG(raceresults.place) AS places, p.id AS userid, p.username FROM users AS p
+LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
+LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
+left outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid
+GROUP BY p.id`
 
 exports.getMainLeagueLeader = `SELECT DISTINCT(wt.id) AS weeklyteamid, wt.riderid, wt.userid, wt.season_weeksid, r.name, r.avatar_url, r.active, rr.place, s.currentseason, s.season_name, wt.leagueid  FROM weekly_team AS wt
 JOIN riders AS r ON r.riderid = wt.riderid
