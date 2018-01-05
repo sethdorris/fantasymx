@@ -255,6 +255,7 @@ import _remove from 'lodash/remove';
         this.currentweek = data.data.CurrentWeek;
         console.log(this.currentweek);
         this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.cost });
+        this.availableRiders = this.availableRiders.filter(rider => { return rider.active })
         this.selectedriders = data.data.CurrentTeam;
       })
     },
