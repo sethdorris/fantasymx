@@ -26,8 +26,8 @@
             <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
-              <td>{{user.weeklyteams[0].username}}</td>
-              <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
+              <td><!-- {{user.weeklyteams[0].username}} --> {{user.username}}</td>
+              <td v-bind:class="{ 'pointsback': index > 0 }"><!-- {{ pointsbehind(user) }} --> -</td>
             </tr>
           </tbody>
         </table>
@@ -69,18 +69,30 @@ import { mapGetters } from 'vuex';
     },
     created() {
       console.log("environment", process.env.NODE_ENV)
+      //when it is week 2
+      // axios.get('/MainLeagueStandings')
+      // .then(data => {
+      //   console.log("MainLeague Standings", data.data)
+      //   var prevUsername = '';
+      //   this.mainLeagueUsers = data.data;
+      //   this.mainLeagueUsers.forEach((user) => {
+      //     user.totalpoints = 0
+      //     user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
+      //     user.weeklyteams.sort((a, b) => {
+      //       return a - b;
+      //     })
+      //   })
+      //   this.doneLoading = true;
+      // })
       axios.get('/MainLeagueStandings')
       .then(data => {
-        console.log("MainLeague Standings", data.data)
+        console.log(data)
         this.mainLeagueUsers = data.data;
-        this.mainLeagueUsers.forEach((user) => {
-          user.totalpoints = 0
-          user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
-          user.weeklyteams.sort((a, b) => {
-            return a - b;
-          })
+        this.mainLeagueUsers.forEach(user => {
+          user.weeklyteams = [{ place: 0 }]
         })
         this.doneLoading = true;
+        console.log(this.mainLeagueUsers)
       })
     },
     methods: {

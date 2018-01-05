@@ -95,11 +95,11 @@ exports.getLatestRaceResult = '';
 // ON users.id = wt.userid
 // GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
 
-exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, ARRAY_AGG(wt.season_weeksid) AS season_weeks, ARRAY_AGG(raceresults.weekid) AS raceweeks, ARRAY_AGG(raceresults.seasonid) as raceseasons, ARRAY_AGG(raceresults.place) AS places, p.id AS userid, p.username FROM users AS p
+exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(p.username) AS username, ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, wt.season_weeksid AS season_weeks, raceresults.weekid AS raceweeks, raceresults.seasonid as raceseasons, ARRAY_AGG(raceresults.place) AS places FROM users AS p
 LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
 LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
-left outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid
-GROUP BY p.id`
+LEFT outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid AND raceresults.riderid = riders.riderid
+GROUP BY p.id, season_weeks, raceweeks, raceseasons `
 
 exports.getMainLeagueLeader = `SELECT DISTINCT(wt.id) AS weeklyteamid, wt.riderid, wt.userid, wt.season_weeksid, r.name, r.avatar_url, r.active, rr.place, s.currentseason, s.season_name, wt.leagueid  FROM weekly_team AS wt
 JOIN riders AS r ON r.riderid = wt.riderid
@@ -188,7 +188,7 @@ exports.GetCurrentWeek = function () {
 exports.GetCurrentWeekForTest =  function () {
   var currentdate = Date.now();
   if (currentdate < new Date(2018, 08, 06, 03)) {
-    return 10
+    return 1
   }
   if (currentdate < new Date(2017, 08, 13, 03)) {
     return 2
@@ -239,6 +239,10 @@ exports.GetCurrentWeekForTest =  function () {
     return 17
   }
 }
+
+exports.getUserStart = `
+SELECT username FROM users
+WHERE username != 'seth'`
 
 
 

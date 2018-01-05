@@ -38,9 +38,7 @@ var dbConnectionConfig = require('./server-config');
 console.log("Development Environment: ", process.env.NODE_ENV)
 console.log("IsDevelopment", IsDevelopment)
 
-//CHANGE THIS FOR PRODUCTION
-
-var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.development;
+var dbConnection = IsDevelopment ? dbConnectionConfig.development : dbConnectionConfig.production;
 console.log("Database Connection", dbConnection)
 
 var knex = Knex({
@@ -88,7 +86,6 @@ app.post('/register', async (req, res) => {
       console.log("Here is the session Id", req.session.userId);
       return res.json({ username: req.body.username, userId: createdId[0], accounttype: 0 })
     }
-
     return res.json(userExists);
   } catch (e) {
     //log e
@@ -173,7 +170,11 @@ app.post('/login', async (req, res) => {
   })
 
   app.get('/MainLeagueStandings', function (req, res) {
-    pool.query(api.getMainLeagueTotalStandings)
+    // pool.query(api.getMainLeagueTotalStandings)
+    // .then(data => {
+    //   res.send(data.rows)
+    // })
+    pool.query(api.getUserStart)
     .then(data => {
       res.send(data.rows)
     })
@@ -311,7 +312,6 @@ app.post('/login', async (req, res) => {
     Promise.all([p1, p2]).then(([results, info]) => {
       if (returnObj.info.B == 'Session Complete') {
         returnObj.raceFinished = true;
-        //SAVE TO DB
         return returnObj;
       }
       if (results.S.indexOf("450SX Main") < 0) {
