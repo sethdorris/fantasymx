@@ -6,9 +6,10 @@ exports.Create = function (racedata, leaguedata) {
       console.log(rider)
       var riderplace = _find(racedata.raceData.B, o => { return o.F.indexOf(rider.name) > -1 })
       console.log("rider place", riderplace)
-      if (riderplace != undefined && riderplace <= 22) {
+      if (riderplace != undefined && riderplace.A <= 22) {
         var place = riderplace.A;
-        rider.points = pointstable.place;
+        rider.points = pointstable[place];
+        console.log("Points Table", pointstable[place])
       } else {
         rider.points = 0;
       }

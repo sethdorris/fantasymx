@@ -1,5 +1,9 @@
 <template>
   <div>
+  <div v-if="!isLive">
+    <h1 class="h1">Stat Tracker will be live 5 minutes before the 450 main begins.</h1>
+  </div>
+  <div v-if="isLive">
     <div class="flex-center fl live-header" v-if="!isLoading">
       <div class="live-header-box">
         <div>Session Event: <span class="text-highlight fl-right">{{raceData.raceData.S}}</span></div>
@@ -38,6 +42,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 <script>
 import axios from 'axios';
@@ -48,7 +53,8 @@ import { mapGetters } from 'vuex';
         leagueData: [],
         raceData: [],
         isLoading: true,
-        ws: null
+        ws: null,
+        isLive: false
       }
     },
     computed: {
@@ -57,7 +63,7 @@ import { mapGetters } from 'vuex';
       ]),
       standings: function() {
         return this.leagueData.sort((a, b) => {
-          return a.total - b.total;
+          return b.total - a.total;
         })
       }
     },
@@ -66,25 +72,27 @@ import { mapGetters } from 'vuex';
       // this.ws = process.env.NODE_ENV == 'production'
       //   ? new WebSocket("ws://localhost:3000/tracker")
       //   : new WebSocket("wss://fantasysx.herokuapp.com/tracker");
-      this.ws = new WebSocket("ws://localhost:3000/tracker");
+      if (this.isLive) {
+        this.ws = new WebSocket("wss://localhost:3000/tracker");
 
-      var v = this;
-      this.ws.onmessage = function (e) {
-        var data = JSON.parse(e.data);
-        v.isLoading = false;
-        v.leagueData = data.LeagueData;
-        v.raceData = data.RaceData;
-        console.log(data)
-      }
-      this.ws.onerror = function (e) {
-        console.log("Error", e)
+        var v = this;
+        this.ws.onmessage = function (e) {
+          var data = JSON.parse(e.data);
+          v.isLoading = false;
+          v.leagueData = data.LeagueData;
+          v.raceData = data.RaceData;
+          console.log(data)
+        }
+        this.ws.onerror = function (e) {
+          console.log("Error", e)
+        }
       }
     },
     methods:  {
       pointsbehind: function(user) {
         var objIndex = this.leagueData.indexOf(user);
         if (objIndex != 0) {
-          return user.total - this.leagueData[0].total;
+          return this.leagueData[0].total - user.total;
         }
         return '-'
       }
@@ -138,5 +146,12 @@ import { mapGetters } from 'vuex';
   }
   .table-live tr:hover {
     background: rgba(255, 233, 120, .2);
+  }
+  .h1 {
+    text-align:center;
+    margin-top:5rem;
+    color: #fffc7f;
+    font-weight: 800;
+    font-size: 24pt;
   }
 </style>

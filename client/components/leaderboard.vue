@@ -23,11 +23,14 @@
             </tr>
           </tfoot>
           <tbody>
-            <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
+            <!-- <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
-              <td><!-- {{user.weeklyteams[0].username}} --> {{user.username}}</td>
-              <td v-bind:class="{ 'pointsback': index > 0 }"><!-- {{ pointsbehind(user) }} --> -</td>
+              <td>{{user.weeklyteams[0].username}}</td>
+              <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
+            </tr> -->
+            <tr>
+              <td colspan="4">The Leaderboard will open following Week 1 Results!</td>
             </tr>
           </tbody>
         </table>
@@ -51,15 +54,15 @@ import { mapGetters } from 'vuex';
       }
     },
     computed: {
-      standings: function() {
-        return this.mainLeagueUsers.sort((a, b) => {
-          var aPoints = 0;
-          var bPoints = 0;
-          a.weeklyteams.forEach(team => { aPoints += team.place })
-          b.weeklyteams.forEach(team => { bPoints += team.place })
-          return aPoints - bPoints;
-        })
-      },
+      // standings: function() {
+      //   return this.mainLeagueUsers.sort((a, b) => {
+      //     var aPoints = 0;
+      //     var bPoints = 0;
+      //     a.weeklyteams.forEach(team => { aPoints += team.place })
+      //     b.weeklyteams.forEach(team => { bPoints += team.place })
+      //     return aPoints - bPoints;
+      //   })
+      // },
       newstandings: function() {
 
       },
@@ -68,32 +71,20 @@ import { mapGetters } from 'vuex';
       ])
     },
     created() {
-      console.log("environment", process.env.NODE_ENV)
-      //when it is week 2
+      // console.log("environment", process.env.NODE_ENV)
       // axios.get('/MainLeagueStandings')
       // .then(data => {
       //   console.log("MainLeague Standings", data.data)
-      //   var prevUsername = '';
       //   this.mainLeagueUsers = data.data;
       //   this.mainLeagueUsers.forEach((user) => {
-      //     user.totalpoints = 0
+      //     user.totalpoints = user.
       //     user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
       //     user.weeklyteams.sort((a, b) => {
       //       return a - b;
       //     })
       //   })
-      //   this.doneLoading = true;
-      // })
-      axios.get('/MainLeagueStandings')
-      .then(data => {
-        console.log(data)
-        this.mainLeagueUsers = data.data;
-        this.mainLeagueUsers.forEach(user => {
-          user.weeklyteams = [{ place: 0 }]
-        })
         this.doneLoading = true;
-        console.log(this.mainLeagueUsers)
-      })
+      // })
     },
     methods: {
       pointsbehind: function(user) {

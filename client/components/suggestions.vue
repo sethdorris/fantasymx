@@ -3,15 +3,11 @@
       <section>
         <div class="field">
           <div class="control">
-            <label>Are you a registered user?</label>
-            <label class="radio">
+            Are you a registered user?
               <input type="radio" name="Registered" value="true" v-model="Registered">
               Yes
-            </label>
-            <label class="radio">
               <input type="radio" name="Registered" value="false" v-model="Registered">
               No
-            </label>
           </div>
         </div>
         <div class="field">
@@ -105,5 +101,8 @@ import axios from 'axios';
     justify-content: center;
     margin-top: 3rem;
     color: white;
+  }
+  section {
+    width: 100%;
   }
 </style>

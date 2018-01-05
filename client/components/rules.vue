@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <div class="">
-      <p>Rules</p>
+      <p class="rules-title">FAQ</p>
       <div class="tab">
         <input id="tab-one" type="checkbox" name="tabs">
         <label for="tab-one">How does scoring work?</label>
         <div class="tab-content">
-          <p>Right now, scoring is set by racer finish. If a selected racer for that week finishes in first, that racer is awarded 1 point. If a racer finishes in fourth, that racer is awarded 4 points. The lower the point total the better score.</p>
+          <p>Right now, scoring is set by the 2018 Supercross Points Revision. If a selected racer for that week finishes in first, that racer is awarded 26 points. If a racer finishes in fourth, that racer is awarded 19 points. The greater the point total the better score. The 2018 Points table can be found here https://www.supercrosslive.com/2018-points. </p>
         </div>
       </div>
       <div class="tab">
@@ -18,6 +18,13 @@
           <p>Users may only SAVE a roster if ALL 4 roster slots have a racer chosen. The SAVE button is disabled if an OPEN SLOT still exists for a weekly lineup.</p>
           <p>Each user begins each week with $10,000 salary cap to spend on filling out their weekly lineup, and that cap room is used to select racers for their week's lineup from the available racers pool.
             The selected racer's cost, once selected, will be deducted from the current week's available salary cap. You are NOT REQUIRED to utilize your entire cap space each week.</p>
+        </div>
+      </div>
+      <div class="tab">
+        <input id="tab-four" type="checkbox" name="tabs">
+        <label for="tab-four">When do rosters lock?</label>
+        <div class="tab-content">
+          <p>Rosters will currently "lock" 5 minutes before the scheduled televised event. This is NOT 5 minutes before the 450 main, this is before the entire event begins. At that time, MyTeam will be loaded for the following week's race.</p>
         </div>
       </div>
       <div class="tab">
@@ -34,6 +41,11 @@
 <style>
 h1 {
   text-align: center;
+}
+.rules-title {
+  font-size:18pt;
+  color: white;
+  font-weight:800;
 }
 /* Acordeon styles */
 .tab {
@@ -72,7 +84,7 @@ label {
 }
 /* :checked */
 input:checked ~ .tab-content {
-  max-height: 10em;
+  max-height: 20em;
 }
 /* Icon */
 label::after {
