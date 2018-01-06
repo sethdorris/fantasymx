@@ -111,7 +111,7 @@ body {
   min-height: 100vh;
   background:
     linear-gradient(to bottom right, rgba(251, 109, 8, .8)0%, rgba(204, 66, 0, 1)100%),
-    url('https://images.pexels.com/photos/37527/sports-games-fun-holiday-37527.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb');
+    url('https://static1.squarespace.com/static/565cb668e4b09e25856888ee/565cd3ade4b0c668da751789/56819b9e841ababe41554bc2/1454944530380/?format=1500w');
   background-size: cover;
   background-position:center;
   background-repeat: no-repeat;
