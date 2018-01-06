@@ -132,6 +132,8 @@ INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid
 
 exports.GetCurrentWeek = function () {
   var currentdate = Date.now();
+  console.log("current date", currentdate)
+  console.log("time", new Date(2018, 00, 06, 19, 55))
   if (currentdate < new Date(2018, 00, 06, 19, 55)) {
     return 1
   }

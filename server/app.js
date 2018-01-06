@@ -205,6 +205,7 @@ app.post('/login', async (req, res) => {
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
     var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
+    console.log("currentWeek", currentWeek)
     var myCurrentTeam = [];
     var allAvail = [];
     console.log("req session id: ", req.session.userId)
