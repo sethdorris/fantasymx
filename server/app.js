@@ -270,6 +270,7 @@ app.post('/login', async (req, res) => {
       return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
           var model = StatTrackerVMCreator.Create(results, league);
+          console.log("league", league)
           console.log("MODDDDDEL", model)
           wss.clients.forEach(client => {
             client.send(JSON.stringify(model))
