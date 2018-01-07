@@ -63,9 +63,11 @@ import { mapGetters } from 'vuex';
         return this.mainLeagueUsers.sort((a, b) => {
           var aPoints = 0;
           var bPoints = 0;
-          a.weeklyteams.forEach(team => { aPoints += team.place })
-          b.weeklyteams.forEach(team => { bPoints += team.place })
-          return aPoints - bPoints;
+          if (typeof a.weeklyteams != 'undefined' && typeof b.weeklyteams != 'undefined') {
+            a.weeklyteams.forEach(team => { aPoints += team.place })
+            b.weeklyteams.forEach(team => { bPoints += team.place })
+            return aPoints - bPoints;
+          }
         })
       },
       newstandings: function() {
