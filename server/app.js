@@ -173,7 +173,10 @@ app.post('/login', async (req, res) => {
     pool.query(api.getMainLeagueTotalStandings)
     .then(data => {
       console.log("rows", data)
-      res.send(data.rows)
+      var returnedData = data.rows.filter(item => {
+        return item.weekly_ids.length > 3
+      })
+      res.send(returnedData)
     })
   })
 
