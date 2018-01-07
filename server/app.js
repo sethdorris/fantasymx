@@ -172,6 +172,7 @@ app.post('/login', async (req, res) => {
   app.get('/MainLeagueStandings', function (req, res) {
     pool.query(api.getMainLeagueTotalStandings)
     .then(data => {
+      console.log("rows", data)
       res.send(data.rows)
     })
   })
