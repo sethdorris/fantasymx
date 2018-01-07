@@ -30,18 +30,15 @@
             </tr>
           </tfoot>
           <tbody>
-            <!-- <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
+            <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
               <td>{{user.weeklyteams[0].username}}</td>
               <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
-            </tr> -->
-            <tr>
-              <td colspan="4">The Leaderboard will open following Week 1 Results!</td>
             </tr>
           </tbody>
         </table>
-        <p style="color:white;margin-top:2rem;">Thank you for testing Salarycap SX</p>
+        <p style="color:white;margin-top:2rem;text-align:center;">Thank you for testing Salarycap SX</p>
         <div v-if="!doneLoading">
           <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
         </div>
@@ -62,15 +59,15 @@ import { mapGetters } from 'vuex';
       }
     },
     computed: {
-      // standings: function() {
-      //   return this.mainLeagueUsers.sort((a, b) => {
-      //     var aPoints = 0;
-      //     var bPoints = 0;
-      //     a.weeklyteams.forEach(team => { aPoints += team.place })
-      //     b.weeklyteams.forEach(team => { bPoints += team.place })
-      //     return aPoints - bPoints;
-      //   })
-      // },
+      standings: function() {
+        return this.mainLeagueUsers.sort((a, b) => {
+          var aPoints = 0;
+          var bPoints = 0;
+          a.weeklyteams.forEach(team => { aPoints += team.place })
+          b.weeklyteams.forEach(team => { bPoints += team.place })
+          return aPoints - bPoints;
+        })
+      },
       newstandings: function() {
 
       },
@@ -79,20 +76,18 @@ import { mapGetters } from 'vuex';
       ])
     },
     created() {
-      // console.log("environment", process.env.NODE_ENV)
-      // axios.get('/MainLeagueStandings')
-      // .then(data => {
-      //   console.log("MainLeague Standings", data.data)
-      //   this.mainLeagueUsers = data.data;
-      //   this.mainLeagueUsers.forEach((user) => {
-      //     user.totalpoints = user.
-      //     user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
-      //     user.weeklyteams.sort((a, b) => {
-      //       return a - b;
-      //     })
-      //   })
+      axios.get('/MainLeagueStandings')
+      .then(data => {
+        this.mainLeagueUsers = data.data;
+        this.mainLeagueUsers.forEach((user) => {
+          user.totalpoints = user.
+          user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
+          user.weeklyteams.sort((a, b) => {
+            return a - b;
+          })
+        })
         this.doneLoading = true;
-      // })
+      })
     },
     methods: {
       pointsbehind: function(user) {
