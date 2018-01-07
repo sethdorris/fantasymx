@@ -61,7 +61,7 @@ import { mapGetters } from 'vuex';
     computed: {
       standings: function() {
         return this.mainLeagueUsers.sort((a, b) => {
-          return a.totalpoints - b.totalpoints;
+          return b.totalpoints - a.totalpoints;
         })
       },
       newstandings: function() {
