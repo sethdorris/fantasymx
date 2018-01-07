@@ -375,6 +375,8 @@ app.post('/login', async (req, res) => {
       returnObj.raceData = results;
       returnObj.raceDetails = info;
       return returnObj;
+    }).catch(err => {
+      console.log("error with api", err)
     })
   }
 
