@@ -81,11 +81,15 @@ import { mapGetters } from 'vuex';
         console.log("league standings", data.data)
         this.mainLeagueUsers = data.data;
         this.mainLeagueUsers.forEach((user) => {
-          user.totalpoints = user.
-          user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
-          user.weeklyteams.sort((a, b) => {
-            return a - b;
-          })
+          if (user.weeklyteams != typeof undefined) {
+            user.totalpoints = 0;
+            user.weeklyteams.forEach(wt => { user.totalpoints += wt.points })
+            user.weeklyteams.sort((a, b) => {
+              return a - b;
+            })
+          } else {
+            user.totalpoints = 0;
+          }
         })
         this.doneLoading = true;
       })

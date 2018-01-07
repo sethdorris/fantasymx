@@ -95,7 +95,7 @@ exports.getLatestRaceResult = '';
 // ON users.id = wt.userid
 // GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
 
-exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(p.username) AS username, ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, wt.season_weeksid AS season_weeks, raceresults.weekid AS raceweeks, raceresults.seasonid as raceseasons, ARRAY_AGG(raceresults.place) AS places FROM users AS p
+exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(p.username) AS username, ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, wt.season_weeksid AS season_weeks, raceresults.weekid AS raceweeks, raceresults.seasonid as raceseasons, ARRAY_AGG(raceresults.points) AS points FROM users AS p
 LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
 LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
 LEFT outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid AND raceresults.riderid = riders.riderid
