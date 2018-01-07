@@ -105,6 +105,7 @@ import { mapGetters } from 'vuex';
         return '-'
       },
       IsMe: function (user) {
+        //Check for empty users
         if (user.weeklyteams[0].username == this.getUserData.username) {
           console.log("username", this.getUserData.username)
           return true;
