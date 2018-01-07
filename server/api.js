@@ -77,7 +77,7 @@ exports.getLatestRaceResult = '';
 exports.getMainLeagueTotalStandings = `WITH riders_json AS (
 SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS WeeklyTeams
 FROM
-(SELECT weekly_team.userid, users.username, name, raceresults.place, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
+(SELECT weekly_team.userid, users.username, name, raceresults.points, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
 FROM riders
 INNER JOIN weekly_team
 ON riders.riderid = weekly_team.riderid
