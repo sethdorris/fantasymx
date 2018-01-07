@@ -12,7 +12,7 @@
         <table class="leaderboard-table" v-if="doneLoading">
           <thead>
             <tr class="title">
-              <th colspan="4">2018 Fantasy SX: Main League Standings</th>
+              <th colspan="4">2018 Fantasy SX: Main League Standings Thru Week 1</th>
             </tr>
             <tr>
               <th>Position</th>
@@ -61,13 +61,7 @@ import { mapGetters } from 'vuex';
     computed: {
       standings: function() {
         return this.mainLeagueUsers.sort((a, b) => {
-          var aPoints = 0;
-          var bPoints = 0;
-          if (typeof a.weeklyteams != 'undefined' && typeof b.weeklyteams != 'undefined') {
-            a.weeklyteams.forEach(team => { aPoints += team.place })
-            b.weeklyteams.forEach(team => { bPoints += team.place })
-            return aPoints - bPoints;
-          }
+          return a.totalpoints - b.totalpoints;
         })
       },
       newstandings: function() {
