@@ -2,6 +2,13 @@
   <div>
     <div class="columns leaderboard">
       <div class="column is-half is-offset-one-quarter">
+        <p style="color:white;text-align:center;font-size:16pt;">
+          This site is currently in pre-alpha test.
+        </p>
+        <p style="color:white;margin-bottom:2rem;">
+          Server slowdown and minor bugs may be experienced. Please report bugs and your suggestions
+          for improvements using the Suggestions link. We will work quickly to correct all issues.
+        </p>
         <table class="leaderboard-table" v-if="doneLoading">
           <thead>
             <tr class="title">
@@ -34,6 +41,7 @@
             </tr>
           </tbody>
         </table>
+        <p style="color:white;margin-top:2rem;">Thank you for testing Salarycap SX</p>
         <div v-if="!doneLoading">
           <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
         </div>
