@@ -266,7 +266,7 @@ app.post('/login', async (req, res) => {
     //Send current week's team to only the connected client;
     function nextPoll() {
       var p1 = MockAPIPolling(indexOfMock).then(apires => { return apires; })
-      var p2 = pool.query(api.MainLeagueStatTrackerData, [currentWeek]).then(data => { return data.rows })
+      var p2 = pool.query(api.MainLeagueStatTrackerData, [1]).then(data => { return data.rows })
       return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
           var model = StatTrackerVMCreator.Create(results, league);
