@@ -170,11 +170,7 @@ app.post('/login', async (req, res) => {
   })
 
   app.get('/MainLeagueStandings', function (req, res) {
-    // pool.query(api.getMainLeagueTotalStandings)
-    // .then(data => {
-    //   res.send(data.rows)
-    // })
-    pool.query(api.getUserStart)
+    pool.query(api.getMainLeagueTotalStandings)
     .then(data => {
       res.send(data.rows)
     })
