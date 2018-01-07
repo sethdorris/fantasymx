@@ -210,7 +210,7 @@ app.post('/login', async (req, res) => {
     var allAvail = [];
     console.log("req session id: ", req.session.userId)
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
-    var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [req.session.userId, currentWeek]).then(data => { return data.rows })
+    var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [parseInt(req.session.userId), currentWeek]).then(data => { return data.rows })
     var p3 = pool.query(api.getRaceResultStatsForCurrentYear, [seasonEnd, seasonStart]).then(data => { return data.rows })
     Promise.all([p1, p2, p3]).then(([AvailRiders, CurrentWeekTeam, Stats]) => {
       console.log("all avail", AvailRiders);
