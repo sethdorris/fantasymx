@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex';
         raceData: [],
         isLoading: true,
         ws: null,
-        isLive: false
+        isLive: true
       }
     },
     computed: {
@@ -73,7 +73,7 @@ import { mapGetters } from 'vuex';
       //   ? new WebSocket("ws://localhost:3000/tracker")
       //   : new WebSocket("wss://fantasysx.herokuapp.com/tracker");
       if (this.isLive) {
-        this.ws = new WebSocket("wss://localhost:3000/tracker");
+        this.ws = new WebSocket("wss://fantasysx.herokuapp.com:3000/tracker");
 
         var v = this;
         this.ws.onmessage = function (e) {
