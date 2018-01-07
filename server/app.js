@@ -337,12 +337,14 @@ app.post('/login', async (req, res) => {
 
   function MockAPIPolling(index) {
     console.log("hit")
-    var p1 = Promise.try(function () {
-      return mockAPI.GetRaceResults(index);
-    }).then(results => { return results });
-    var p2 = Promise.try(function () {
-      return mockAPI.GetRaceData(index);
-    }).then(results => { return results });
+    // var p1 = Promise.try(function () {
+    //   return mockAPI.GetRaceResults(index);
+    // }).then(results => { return results });
+    // var p2 = Promise.try(function () {
+    //   return mockAPI.GetRaceData(index);
+    // }).then(results => { return results });
+    var p1 = fetch('http://live.amasupercross.com/xml/sx/RaceResults.json').then(results => { return results.json() });
+    var p2 = fetch('http://live.amasupercross.com/xml/sx/RaceData.json').then(data => { return data.json(); }).catch(err => console.log("error with data", err));
     return Promise.all([p1, p2]).then(([results, info]) => {
       console.log("Mock Results", results)
       console.log("Mock Data", info);
