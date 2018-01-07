@@ -350,7 +350,7 @@ app.post('/login', async (req, res) => {
       console.log("Mock Data", info);
       if (info.B == 'Session Complete' && !returnObj.lastBroadcast) {
         returnObj.raceFinished = true;
-        returnObj.broadcast = false;
+        returnObj.broadcast = true;
         returnObj.lastBroadcast = true;
         returnObj.raceDetails = info;
         return returnObj;
