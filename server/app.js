@@ -196,12 +196,11 @@ app.post('/login', async (req, res) => {
 
   app.get('/CurrentMyTeamModel', function (req, res) {
     //For development added a year for the future season. In production, remove that +1
-    var seasonEndYear = new Date().getFullYear() + 1;
+    var seasonEndYear = new Date().getFullYear();
     var seasonStartYear = seasonEndYear - 1;
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
     var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
-    console.log("currentWeek", currentWeek)
     var myCurrentTeam = [];
     var allAvail = [];
     console.log("req session id: ", req.session.userId)
