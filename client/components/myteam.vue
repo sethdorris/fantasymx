@@ -76,6 +76,7 @@
               </a>
             </td>
             <td>${{rider.cost}}</td>
+            <td>{{rider.priceChange}}</td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
             <td>{{rider.highestFinish}}</td>
