@@ -18,7 +18,7 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 `;
 
 exports.getAllAvailableRiders = `
-SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS currentcost, price_history.cost AS lastprice FROM riders
+SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS currentcost, price_history.price AS lastprice FROM riders
 JOIN price_history ON riders.riderid = price_history.riderid
 `;
 
