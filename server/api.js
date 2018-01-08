@@ -21,7 +21,7 @@ exports.getAllAvailableRiders = `
 SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS currentcost, price_history.cost AS lastprice FROM riders
 JOIN price_history ON riders.riderid = price_history.riderid
 WHERE season_weekid = (
-	SELECT MAX(season_weekid) FROM price_history
+	SELECT MAX(season_weeksid) FROM price_history
 ) AND riders.active = true
 `;
 
