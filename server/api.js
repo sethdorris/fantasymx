@@ -74,32 +74,32 @@ exports.getLatestRaceResult = '';
 // WHERE wt.leagueid = 1
 // ORDER BY wt.userid`;
 
-// exports.getMainLeagueTotalStandings = `WITH riders_json AS (
-// SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS WeeklyTeams
-// FROM
-// (SELECT weekly_team.userid, users.username, name, raceresults.place, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
-// FROM riders
-// INNER JOIN weekly_team
-// ON riders.riderid = weekly_team.riderid
-// INNER JOIN users
-// ON weekly_team.userid = users.id
-// INNER JOIN raceresults
-// ON riders.riderid = raceresults.riderid) AS json_rows
-// WHERE json_rows.leagueid = 1
-// GROUP BY userid)
-// SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
-// FROM weekly_team AS wt
-// INNER JOIN riders_json
-// ON riders_json.userid = wt.userid
-// INNER JOIN users
-// ON users.id = wt.userid
-// GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
+exports.getMainLeagueTotalStandings = `WITH riders_json AS (
+SELECT userid, ARRAY_AGG(row_to_json(json_rows)) AS WeeklyTeams
+FROM
+(SELECT weekly_team.userid, users.username, name, raceresults.points, weekly_team.season_weeksid, weekly_team.seasonid, weekly_team.leagueid
+FROM riders
+INNER JOIN weekly_team
+ON riders.riderid = weekly_team.riderid
+INNER JOIN users
+ON weekly_team.userid = users.id
+INNER JOIN raceresults
+ON riders.riderid = raceresults.riderid) AS json_rows
+WHERE json_rows.leagueid = 1
+GROUP BY userid)
+SELECT wt.userid, riders_json.WeeklyTeams::jsonb[]
+FROM weekly_team AS wt
+INNER JOIN riders_json
+ON riders_json.userid = wt.userid
+INNER JOIN users
+ON users.id = wt.userid
+GROUP BY wt.userid, riders_json.WeeklyTeams::jsonb[]`
 
-exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(p.username) AS username, ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, wt.season_weeksid AS season_weeks, raceresults.weekid AS raceweeks, raceresults.seasonid as raceseasons, ARRAY_AGG(raceresults.place) AS places FROM users AS p
-LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
-LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
-LEFT outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid AND raceresults.riderid = riders.riderid
-GROUP BY p.id, season_weeks, raceweeks, raceseasons `
+// exports.getMainLeagueTotalStandings = `SELECT ARRAY_AGG(p.username) AS username, ARRAY_AGG(wt.id) AS weekly_ids, ARRAY_AGG(wt.riderid) AS selectedracerids, ARRAY_AGG(riders.name) AS selectedracers, wt.season_weeksid AS season_weeks, raceresults.weekid AS raceweeks, raceresults.seasonid as raceseasons, ARRAY_AGG(raceresults.points) AS points FROM users AS p
+// LEFT OUTER JOIN (SELECT * FROM weekly_team ) AS wt ON (wt.userid = p.id)
+// LEFT OUTER JOIN riders ON (wt.riderid = riders.riderid)
+// LEFT outer JOIN raceresults ON wt.seasonid = raceresults.seasonid AND raceresults.weekid = wt.season_weeksid AND raceresults.riderid = riders.riderid
+// GROUP BY p.id, season_weeks, raceweeks, raceseasons `
 
 exports.getMainLeagueLeader = `SELECT DISTINCT(wt.id) AS weeklyteamid, wt.riderid, wt.userid, wt.season_weeksid, r.name, r.avatar_url, r.active, rr.place, s.currentseason, s.season_name, wt.leagueid  FROM weekly_team AS wt
 JOIN riders AS r ON r.riderid = wt.riderid
@@ -116,7 +116,6 @@ GROUP BY riders.riderid, riders.name`;
 exports.getRaceResultStatsForCurrentYear = `SELECT riders.riderid, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
 JOIN riders ON raceresults.riderid = riders.riderid
 JOIN seasons ON raceresults.seasonid = seasons.seasonid
-WHERE seasons.end_date < $1 AND seasons.start_date > $2
 GROUP BY riders.riderid, riders.name`
 
 exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
@@ -132,7 +131,9 @@ INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid
 
 exports.GetCurrentWeek = function () {
   var currentdate = Date.now();
-  if (currentdate < new Date(2018, 00, 06, 03)) {
+  console.log("current date", currentdate)
+  console.log("time", new Date(2018, 00, 06, 19, 55).getTime())
+  if (Date.now() < new Date(2018, 00, 06, 19, 55).getTime()) {
     return 1
   }
   if (currentdate < new Date(2018, 00, 13, 03)) {
@@ -187,7 +188,7 @@ exports.GetCurrentWeek = function () {
 
 exports.GetCurrentWeekForTest =  function () {
   var currentdate = Date.now();
-  if (currentdate < new Date(2018, 08, 06, 03)) {
+  if (currentdate < new Date(2018, 08, 06, 1900)) {
     return 1
   }
   if (currentdate < new Date(2017, 08, 13, 03)) {

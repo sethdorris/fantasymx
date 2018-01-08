@@ -2,10 +2,17 @@
   <div>
     <div class="columns leaderboard">
       <div class="column is-half is-offset-one-quarter">
+        <p style="color:white;text-align:center;font-size:16pt;">
+          This site is currently in pre-alpha test.
+        </p>
+        <p style="color:white;margin-bottom:2rem;">
+          Server slowdown and minor bugs may be experienced. Please report bugs and your suggestions
+          for improvements using the Suggestions link. We will work quickly to correct all issues.
+        </p>
         <table class="leaderboard-table" v-if="doneLoading">
           <thead>
             <tr class="title">
-              <th colspan="4">2018 Fantasy SX: Main League Standings</th>
+              <th colspan="4">2018 Fantasy SX: Main League Standings Thru Week 1</th>
             </tr>
             <tr>
               <th>Position</th>
@@ -23,17 +30,15 @@
             </tr>
           </tfoot>
           <tbody>
-            <!-- <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
+            <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
               <td>{{user.weeklyteams[0].username}}</td>
               <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
-            </tr> -->
-            <tr>
-              <td colspan="4">The Leaderboard will open following Week 1 Results!</td>
             </tr>
           </tbody>
         </table>
+        <p style="color:white;margin-top:2rem;text-align:center;">Thank you for testing Salarycap SX</p>
         <div v-if="!doneLoading">
           <p>"This data doesn't fetch itself.. Loading Race Tracker."</p>
         </div>
@@ -54,15 +59,11 @@ import { mapGetters } from 'vuex';
       }
     },
     computed: {
-      // standings: function() {
-      //   return this.mainLeagueUsers.sort((a, b) => {
-      //     var aPoints = 0;
-      //     var bPoints = 0;
-      //     a.weeklyteams.forEach(team => { aPoints += team.place })
-      //     b.weeklyteams.forEach(team => { bPoints += team.place })
-      //     return aPoints - bPoints;
-      //   })
-      // },
+      standings: function() {
+        return this.mainLeagueUsers.sort((a, b) => {
+          return b.totalpoints - a.totalpoints;
+        })
+      },
       newstandings: function() {
 
       },
@@ -71,20 +72,19 @@ import { mapGetters } from 'vuex';
       ])
     },
     created() {
-      // console.log("environment", process.env.NODE_ENV)
-      // axios.get('/MainLeagueStandings')
-      // .then(data => {
-      //   console.log("MainLeague Standings", data.data)
-      //   this.mainLeagueUsers = data.data;
-      //   this.mainLeagueUsers.forEach((user) => {
-      //     user.totalpoints = user.
-      //     user.weeklyteams.forEach(wt => { user.totalpoints += wt.place })
-      //     user.weeklyteams.sort((a, b) => {
-      //       return a - b;
-      //     })
-      //   })
+      axios.get('/MainLeagueStandings')
+      .then(data => {
+        console.log("league standings", data.data)
+        this.mainLeagueUsers = data.data;
+        this.mainLeagueUsers.forEach((user) => {
+            user.totalpoints = 0;
+            user.weeklyteams.forEach(wt => { user.totalpoints += wt.points })
+            user.weeklyteams.sort((a, b) => {
+              return a - b;
+            })
+        })
         this.doneLoading = true;
-      // })
+      })
     },
     methods: {
       pointsbehind: function(user) {
@@ -95,6 +95,7 @@ import { mapGetters } from 'vuex';
         return '-'
       },
       IsMe: function (user) {
+        //Check for empty users
         if (user.weeklyteams[0].username == this.getUserData.username) {
           console.log("username", this.getUserData.username)
           return true;
@@ -111,7 +112,7 @@ body {
   min-height: 100vh;
   background:
     linear-gradient(to bottom right, rgba(251, 109, 8, .8)0%, rgba(204, 66, 0, 1)100%),
-    url('https://images.pexels.com/photos/37527/sports-games-fun-holiday-37527.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb');
+    url('https://static1.squarespace.com/static/565cb668e4b09e25856888ee/565cd3ade4b0c668da751789/56819b9e841ababe41554bc2/1454944530380/?format=1500w');
   background-size: cover;
   background-position:center;
   background-repeat: no-repeat;
