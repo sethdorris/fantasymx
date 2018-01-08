@@ -66,7 +66,7 @@
           </tr>
           <tr v-for="rider in paginatedRiders">
             <td>
-              <a href="#!" v-if="showSelect && rider.currentcost <= dollars" @click="addRacer(rider)">
+              <a href="#!" v-if="showSelect && rider.cost <= dollars" @click="addRacer(rider)">
                 <span class="icon plus-icon">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </span>
@@ -156,9 +156,9 @@ import _remove from 'lodash/remove';
       },
       showSelect() {
         var openSlots = this.selectedriders.some((rider) => {return rider.name == "OPEN SLOT"});
-        var lowestCostAvailable = _sortBy(this.availableRiders, o => { return o.currentcost });
+        var lowestCostAvailable = _sortBy(this.availableRiders, o => { return o.cost });
         console.log("showSelect", lowestCostAvailable[0])
-        if ((this.dollars >= lowestCostAvailable[0].currentcost) && openSlots) {
+        if ((this.dollars >= lowestCostAvailable[0].cost) && openSlots) {
           return true;
         }
         return false;
@@ -197,10 +197,10 @@ import _remove from 'lodash/remove';
         if (this.CostSortByAsc) {
           this.CostSortByAsc = false;
           this.availableRiders = this.availableRiders.sort((a, b) => {
-            if (a.currentcost > b.currentcost) {
+            if (a.cost > b.cost) {
               return -1
             }
-            if (a.currentcost < b.currentcost) {
+            if (a.cost < b.cost) {
               return 1
             }
             return 0
@@ -208,10 +208,10 @@ import _remove from 'lodash/remove';
         } else {
           this.CostSortByAsc = true;
           this.availableRiders = this.availableRiders.sort((a, b) => {
-            if (a.currentcost > b.currentcost) {
+            if (a.cost > b.cost) {
               return 1
             }
-            if (a.currentcost < b.currentcost) {
+            if (a.cost < b.cost) {
               return -1
             }
             return 0
@@ -254,7 +254,7 @@ import _remove from 'lodash/remove';
         console.log("data", data.data);
         this.currentweek = data.data.CurrentWeek;
         console.log(this.currentweek);
-        this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.currentcost });
+        this.availableRiders = _sortBy(data.data.AvailableRiders, o => { return o.cost });
         this.availableRiders = this.availableRiders.filter(rider => { return rider.active })
         this.selectedriders = data.data.CurrentTeam;
       })
