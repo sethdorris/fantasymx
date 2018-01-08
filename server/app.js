@@ -200,6 +200,7 @@ app.post('/login', async (req, res) => {
     var seasonStartYear = seasonEndYear - 1;
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
+    console.log(seasonStart)
     var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];

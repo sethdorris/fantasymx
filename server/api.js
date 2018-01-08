@@ -116,7 +116,6 @@ GROUP BY riders.riderid, riders.name`;
 exports.getRaceResultStatsForCurrentYear = `SELECT riders.riderid, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
 JOIN riders ON raceresults.riderid = riders.riderid
 JOIN seasons ON raceresults.seasonid = seasons.seasonid
-WHERE seasons.end_date < $1 AND seasons.start_date > $2
 GROUP BY riders.riderid, riders.name`
 
 exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
