@@ -20,7 +20,7 @@ exports.Create = function (data) {
             highestFinish: riderStat.min,
             lowestFinish: riderStat.max,
             averageFinish: riderStat.round,
-            priceChange: (rider.currentcost - rider.lastprice) / rider.lastprice
+            priceChange: ((rider.currentcost - rider.lastprice) / rider.lastprice).toFixed(2)
           })
         }
       })
@@ -32,7 +32,7 @@ exports.Create = function (data) {
           rider.highestFinish = riderStat.min,
           rider.lowestFinish = riderStat.max,
           rider.averageFinish = riderStat.round
-          rider.priceChange = (rider.currentcost - rider.lastprice) / rider.lastprice
+          rider.priceChange = ((rider.currentcost - rider.lastprice) / rider.lastprice).toFixed(2)
         }
       })
     })

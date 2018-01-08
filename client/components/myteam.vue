@@ -21,6 +21,7 @@
                 <i class="fa fa-caret-down" v-else aria-hidden="true"></i>
               </span>
             </th>
+            <th>Price Change</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -32,6 +33,7 @@
           <tr>
             <th>Action</th>
             <th>Price</th>
+            <th>Price Change</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -49,6 +51,7 @@
               </a>
             </td>
             <td>${{racer.cost}}</td>
+            <td>{{racer.priceChange}}%</td>
             <td>{{racer.name}}</td>
             <td>{{racer.rider_number}}</td>
             <td>{{racer.highestFinish}}</td>
