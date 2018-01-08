@@ -18,8 +18,8 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 `;
 
 exports.getAllAvailableRiders = `
-SELECT * FROM riders
-ORDER BY name
+SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS currentcost, price_history.cost AS lastprice FROM riders
+JOIN price_history ON riders.riderid = price_history.riderid
 `;
 
 exports.GetUsersLeagues = `SELECT DISTINCT(leagueid), leagues.name FROM league_users

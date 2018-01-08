@@ -19,7 +19,8 @@ exports.Create = function (data) {
             rider_number: rider.rider_number,
             highestFinish: riderStat.min,
             lowestFinish: riderStat.max,
-            averageFinish: riderStat.round
+            averageFinish: riderStat.round,
+            priceChange: (rider.currentcost - rider.lastprice) / rider.lastprice
           })
         }
       })
@@ -31,6 +32,7 @@ exports.Create = function (data) {
           rider.highestFinish = riderStat.min,
           rider.lowestFinish = riderStat.max,
           rider.averageFinish = riderStat.round
+          rider.priceChange = (rider.currentcost - rider.lastprice) / rider.lastprice
         }
       })
     })
