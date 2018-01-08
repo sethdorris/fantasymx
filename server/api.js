@@ -18,10 +18,10 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 `;
 
 exports.getAllAvailableRiders = `
-SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS currentcost, price_history.cost AS lastprice FROM riders
+SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS cost, price_history.cost AS lastprice FROM riders
 JOIN price_history ON riders.riderid = price_history.riderid
 WHERE season_weekid = (
-	SELECT MAX(season_weeksid) FROM price_history
+	SELECT MAX(season_weekid) FROM price_history
 ) AND riders.active = true
 `;
 
@@ -121,9 +121,10 @@ JOIN riders ON raceresults.riderid = riders.riderid
 JOIN seasons ON raceresults.seasonid = seasons.seasonid
 GROUP BY riders.riderid, riders.name`
 
-exports.getMainLeagueTeamByWeekAndUserId = `SELECT * FROM weekly_team
-JOIN riders ON weekly_team.riderid = riders.riderid
-WHERE userid = $1 AND season_weeksid = $2 AND leagueid = 1`
+exports.getMainLeagueTeamByWeekAndUserId = `SELECT wt.id, wt.userid, wt.riderid, wt.season_weeksid, wt.points, wt.last_transaction, riders.name, riders.avatar_url, riders.cost as currentcost, riders.rider_number, riders.active, price_history.cost as lastprice  FROM weekly_team AS wt
+JOIN riders ON wt.riderid = riders.riderid
+JOIN price_history ON riders.riderid = price_history.riderid
+WHERE userid = $1 AND wt.season_weeksid = $2 AND leagueid = 1`
 
 exports.saveTeam = `
 UPDATE weekly_team SET riderid = $2 WHERE id = $1;

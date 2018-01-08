@@ -15,13 +15,12 @@
         <thead>
           <tr>
             <th>Action</th>
-            <th @click="sortByPrice">Price
+            <th @click="sortByPrice">Price (% Change)
               <span class="icon">
                 <i class="fa fa-caret-up" v-if="CostSortByAsc" aria-hidden="true"></i>
                 <i class="fa fa-caret-down" v-else aria-hidden="true"></i>
               </span>
             </th>
-            <th>Price Change</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -32,8 +31,7 @@
         <tfoot>
           <tr>
             <th>Action</th>
-            <th>Price</th>
-            <th>Price Change</th>
+            <th>Price (% Change)</th>
             <th>Racer Name</th>
             <th>Racer Number</th>
             <th>Highest Finish</th>
@@ -50,8 +48,9 @@
                 </span>
               </a>
             </td>
-            <td>${{racer.cost}}</td>
-            <td>{{racer.priceChange}}%</td>
+            <td>${{racer.currentcost}}
+              <span v-bind:class="{ up: racer.priceChange > 0, down: racer.priceChange < 0 }">( {{racer.priceChange }} )</span>
+            </td>
             <td>{{racer.name}}</td>
             <td>{{racer.rider_number}}</td>
             <td>{{racer.highestFinish}}</td>
@@ -75,8 +74,9 @@
                 </span>
               </a>
             </td>
-            <td>${{rider.cost}}</td>
-            <td>{{rider.priceChange}}%</td>
+            <td>${{rider.cost}}
+              <span v-bind:class="{ up: rider.priceChange > 0, down: rider.priceChange < 0 }">( {{rider.priceChange }} )</span>
+            </td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
             <td>{{rider.highestFinish}}</td>
@@ -126,7 +126,7 @@ import _remove from 'lodash/remove';
       dollars() {
         var total = 10000;
         this.selectedriders.forEach(rider => {
-          total -= rider.cost;
+          total -= rider.currentcost;
         })
         return total;
       },

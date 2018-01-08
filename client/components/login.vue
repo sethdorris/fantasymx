@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <div id="login-recaptcha"></div>
+        <!-- <div id="login-recaptcha"></div> -->
         <div class="errorMessage" v-if="errorMessage != ''">
           {{ errorMessage }}
         </div>

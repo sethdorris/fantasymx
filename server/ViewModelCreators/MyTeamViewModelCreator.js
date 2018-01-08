@@ -27,13 +27,14 @@ exports.Create = function (data) {
     })
 
     data.CurrentTeam.forEach(rider => {
+      console.log("RIDDDDER", rider)
       data.Stats.forEach(riderStat => {
         if (rider.riderid == riderStat.riderid) {
           rider.highestFinish = riderStat.min,
           rider.lowestFinish = riderStat.max,
           rider.averageFinish = riderStat.round
-          rider.priceChange = ((rider.currentcost - rider.lastprice) / rider.lastprice * 100).toFixed(2)
         }
+        rider.priceChange = ((rider.cost - rider.lastprice) / rider.lastprice * 100).toFixed(2)
       })
     })
 
@@ -46,6 +47,7 @@ exports.Create = function (data) {
           active: rider.active,
           avatar_url: rider.avatar_url,
           cost: rider.currentcost,
+          priceChange: ((rider.currentcost - rider.lastprice) / rider.lastprice * 100).toFixed(2),
           riderid: rider.riderid,
           name: rider.name,
           rider_number: rider.rider_number,

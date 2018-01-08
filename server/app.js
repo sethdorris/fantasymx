@@ -121,12 +121,12 @@ app.get('/loginrefresh', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   let user;
-  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
-    , { method: "POST" })
-  var data = await captchaResponse.json();
-  if (!data.success) {
-    return res.status(401).send({ error: "Recaptcha Failed" })
-  }
+  // var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
+  //   , { method: "POST" })
+  // var data = await captchaResponse.json();
+  // if (!data.success) {
+  //   return res.status(401).send({ error: "Recaptcha Failed" })
+  // }
   try {
     var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
     user = userQuery.rows[0];
@@ -206,14 +206,15 @@ app.post('/login', async (req, res) => {
     var allAvail = [];
     console.log("req session id: ", req.session.userId)
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
+    //Might need to edit this query and join on price history
     var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [parseInt(req.session.userId), currentWeek]).then(data => { return data.rows })
     var p3 = pool.query(api.getRaceResultStatsForCurrentYear).then(data => { return data.rows })
-    Promise.all([p1, p2, p3]).then(([AvailRiders, CurrentWeekTeam, Stats]) => {
+    return Promise.all([p1, p2, p3]).then(([AvailRiders, CurrentWeekTeam, Stats]) => {
       console.log("all avail", AvailRiders);
       console.log("currentTeam", CurrentWeekTeam);
       console.log("stats", Stats)
       var model = MyTeamVMCreator.Create({AvailableRiders: AvailRiders, CurrentTeam: CurrentWeekTeam, Stats: Stats, CurrentWeek: currentWeek})
-      res.json(model);
+      return res.json(model);
     }).catch(e => {
       console.log(e)
     })
