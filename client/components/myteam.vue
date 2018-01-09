@@ -52,7 +52,7 @@
               <span v-bind:class="{ up: racer.priceChange > 0, down: racer.priceChange < 0 }">
                 <i class="fa fa-arrow-up" v-if="racer.priceChange > 0" aria-hidden="true"></i>
                 <i class="fa fa-arrow-down" v-if="racer.priceChange < 0" aria-hidden="true"></i>
-                ({{racer.priceChange}})
+                ({{racer.priceChange}}%)
               </span>
             </td>
             <td>{{racer.name}}</td>
@@ -82,7 +82,7 @@
               <span v-bind:class="{ up: rider.priceChange > 0, down: rider.priceChange < 0 }">
                 <i class="fa fa-arrow-up" v-if="rider.priceChange > 0" aria-hidden="true"></i>
                 <i class="fa fa-arrow-down" v-if="rider.priceChange < 0" aria-hidden="true"></i>
-                ({{rider.priceChange }})
+                ({{rider.priceChange }}%)
               </span>
             </td>
             <td>{{rider.name}}</td>
@@ -277,6 +277,17 @@ import _remove from 'lodash/remove';
   }
 </script>
 <style>
+.fa {
+  vertical-align: inherit !important;
+}
+.up {
+  color: red;
+  margin-left:5px;
+}
+.down {
+  color: #44d15f;
+  margin-left: 5px;
+}
 .successful-save {
   text-align: center;
   color: #00d1b2;
