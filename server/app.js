@@ -200,11 +200,10 @@ app.post('/login', async (req, res) => {
     var seasonStartYear = seasonEndYear - 1;
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
-    console.log(seasonStart)
+    //For Roster Lock Don't use the stat tracker current week;
     var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
     var myCurrentTeam = [];
     var allAvail = [];
-    console.log("req session id: ", req.session.userId)
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });
     //Might need to edit this query and join on price history
     var p2 = pool.query(api.getMainLeagueTeamByWeekAndUserId, [parseInt(req.session.userId), currentWeek]).then(data => { return data.rows })
@@ -258,17 +257,15 @@ app.post('/login', async (req, res) => {
   })
 
   app.ws('/tracker', function(ws, req) {
-    var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
+    var currentWeek = api.GetCurrentStatTrackerWeek();
     var indexOfMock = 0;
     //Send current week's team to only the connected client;
     function nextPoll() {
-      var p1 = MockAPIPolling(indexOfMock).then(apires => { return apires; })
-      var p2 = pool.query(api.MainLeagueStatTrackerData, [2]).then(data => { return data.rows })
+      var p1 = LiveAPIPolling().then(apires => { return apires; })
+      var p2 = pool.query(api.MainLeagueStatTrackerData, [currentWeek]).then(data => { return data.rows })
       return Promise.all([p1, p2]).then(([results, league]) => {
         if (returnObj.broadcast) {
           var model = StatTrackerVMCreator.Create(results, league);
-          console.log("league", league)
-          console.log("MODDDDDEL", model)
           wss.clients.forEach(client => {
             client.send(JSON.stringify(model))
           })
@@ -305,42 +302,7 @@ app.post('/login', async (req, res) => {
     return pool.query(api.getCurrentWeeksRiders, [userid]);
   }
 
-  function APIPolling() {
-    var p1 = fetch('http://live.amasupercross.com/xml/sx/RaceResults.json').then(results => { return results.json() });
-    var p2 = fetch('http://live.amasupercross.com/xml/sx/RaceData.json').then(data => { return data.json(); }).catch(err => console.log("error with data", err));
-    Promise.all([p1, p2]).then(([results, info]) => {
-      if (returnObj.info.B == 'Session Complete') {
-        returnObj.raceFinished = true;
-        return returnObj;
-      }
-      if (results.S.indexOf("450SX Main") < 0) {
-        return returnObj;
-      }
-      if (returnObj.raceData == '') {
-        returnObj.raceData = results;
-        returnObj.raceStarted = true;
-        returnObj.broadcast = true;
-        return returnObj;
-      }
-      if (returnObj.raceData == results) {
-        returnObj.raceData = results;
-        returnObj.raceStarted = true;
-        returnObj.broadcast = false;
-        return returnObj;
-      }
-      returnObj.raceData = results;
-      return returnObj;
-    })
-  }
-
-  function MockAPIPolling(index) {
-    console.log("hit")
-    // var p1 = Promise.try(function () {
-    //   return mockAPI.GetRaceResults(index);
-    // }).then(results => { return results });
-    // var p2 = Promise.try(function () {
-    //   return mockAPI.GetRaceData(index);
-    // }).then(results => { return results });
+  function LiveAPIPolling() {
     var p1 = fetch('http://live.amasupercross.com/xml/sx/RaceResults.json').then(results => { return results.json() });
     var p2 = fetch('http://live.amasupercross.com/xml/sx/RaceData.json').then(data => { return data.json(); }).catch(err => console.log("error with data", err));
     return Promise.all([p1, p2]).then(([results, info]) => {

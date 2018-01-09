@@ -133,59 +133,110 @@ UPDATE weekly_team SET riderid = $2 WHERE id = $1;
 exports.createRosterSlots = `
 INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid) VALUES (nextval('weekly_team_id_seq'), $1, 1, 1, $3, $2);`
 
-exports.GetCurrentWeek = function () {
-  var currentdate = Date.now();
-  console.log("current date", currentdate)
-  console.log("time", new Date(2018, 00, 06, 19, 55).getTime())
-  if (Date.now() < new Date(2018, 00, 06, 19, 55).getTime()) {
+exports.GetCurrentMyTeamWeek = function () {
+	if (Date.now() < new Date(2018, 00, 06, 19, 59).getTime()) {
+		return 1
+	}
+	if (Date.now() < new Date(2018, 00, 13, 17, 59).getTime()) {
+		return 2
+	}
+	if (Date.now() < new Date(2018, 00, 20, 19, 59).getTime()) {
+		return 3
+	}
+	if (Date.now() < new Date(2018, 00, 27, 17, 59).getTime()) {
+		return 4
+	}
+	if (Date.now() < new Date(2018, 01, 03, 16, 59).getTime()) {
+		return 5
+	}
+	if (Date.now() < new Date(2018, 01, 10, 19, 59).getTime()) {
+		return 6
+	}
+	if (Date.now() < new Date(2018, 01, 17, 17, 59).getTime()) {
+		return 7
+	}
+	if (Date.now() < new Date(2018, 01, 24, 16, 59).getTime()) {
+		return 8
+	}
+	if (Date.now() < new Date(2018, 02, 03, 16, 59).getTime()) {
+		return 9
+	}
+	if (Date.now() < new Date(2018, 02, 10, 16, 59).getTime()) {
+		return 10
+	}
+	if (Date.now() < new Date(2018, 02, 17, 16, 59).getTime()) {
+		return 11
+	}
+	if (Date.now() < new Date(2018, 02, 24, 15, 59).getTime()) {
+		return 12
+	}
+	if (Date.now() < new Date(2018, 03, 07, 18, 59).getTime()) {
+		return 13
+	}
+	if (Date.now() < new Date(2018, 03, 14, 16, 59).getTime()) {
+		return 14
+	}
+	if (Date.now() < new Date(2018, 03, 21, 11, 59).getTime()) {
+		return 15
+	}
+	if (Date.now() < new Date(2018, 03, 28, 13, 29).getTime()) {
+		return 16
+	}
+	if (Date.now() < new Date(2018, 04, 05, 18, 59).getTime()) {
+		return 17
+	}
+}
+
+exports.GetCurrentStatTrackerWeek = function () {
+  if (Date.now() < new Date(2018, 00, 06, 23).getTime()) {
     return 1
   }
-  if (currentdate < new Date(2018, 00, 13, 03)) {
+  if (currentdate < new Date(2018, 00, 13, 23)) {
     return 2
   }
-  if (currentdate < new Date(2018, 00, 20, 03)) {
+  if (currentdate < new Date(2018, 00, 20, 23)) {
     return 3
   }
-  if (currentdate < new Date(2018, 00, 27, 03)) {
+  if (currentdate < new Date(2018, 00, 27, 23)) {
     return 4
   }
-  if (currentdate < new Date(2018, 01, 3, 03)) {
+  if (currentdate < new Date(2018, 01, 3, 23)) {
     return 5
   }
-  if (currentdate < new Date(2018, 01, 10, 03)) {
+  if (currentdate < new Date(2018, 01, 10, 23)) {
     return 6
   }
-  if (currentdate < new Date(2018, 01, 17, 03)) {
+  if (currentdate < new Date(2018, 01, 17, 23)) {
     return 7
   }
-  if (currentdate < new Date(2018, 01, 24, 03)) {
+  if (currentdate < new Date(2018, 01, 24, 23)) {
     return 8
   }
-  if (currentdate < new Date(2018, 02, 03, 03)) {
+  if (currentdate < new Date(2018, 02, 03, 23)) {
     return 9
   }
-  if (currentdate < new Date(2018, 02, 10, 03)) {
+  if (currentdate < new Date(2018, 02, 10, 23)) {
     return 10
   }
-  if (currentdate < new Date(2018, 02, 17, 03)) {
+  if (currentdate < new Date(2018, 02, 17, 23)) {
     return 11
   }
-  if (currentdate < new Date(2018, 02, 24, 03)) {
+  if (currentdate < new Date(2018, 02, 24, 23)) {
     return 12
   }
-  if (currentdate < new Date(2018, 03, 07, 03)) {
+  if (currentdate < new Date(2018, 03, 07, 23)) {
     return 13
   }
-  if (currentdate < new Date(2018, 03, 14, 03)) {
+  if (currentdate < new Date(2018, 03, 14, 23)) {
     return 14
   }
-  if (currentdate < new Date(2018, 03, 21, 03)) {
+  if (currentdate < new Date(2018, 03, 21, 23)) {
     return 15
   }
-  if (currentdate < new Date(2018, 03, 28, 03)) {
+  if (currentdate < new Date(2018, 03, 28, 23)) {
     return 16
   }
-  if (currentdate < new Date(2018, 04, 05, 03)) {
+  if (currentdate < new Date(2018, 04, 05, 23)) {
     return 17
   }
 }
