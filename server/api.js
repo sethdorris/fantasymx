@@ -18,7 +18,7 @@ GROUP BY wt.userid, riders_json.riders::jsonb[]
 `;
 
 exports.getAllAvailableRiders = `
-SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS cost, price_history.cost AS lastprice FROM riders
+SELECT riders.riderid, riders.name, riders.avatar_url, riders.rider_number, riders.active, riders.cost AS cost, price_history.price AS lastprice FROM riders
 JOIN price_history ON riders.riderid = price_history.riderid
 WHERE season_weekid = (
 	SELECT MAX(season_weekid) FROM price_history
@@ -121,7 +121,7 @@ JOIN riders ON raceresults.riderid = riders.riderid
 JOIN seasons ON raceresults.seasonid = seasons.seasonid
 GROUP BY riders.riderid, riders.name`
 
-exports.getMainLeagueTeamByWeekAndUserId = `SELECT wt.id, wt.userid, wt.riderid, wt.season_weeksid, wt.points, wt.last_transaction, riders.name, riders.avatar_url, riders.cost as currentcost, riders.rider_number, riders.active, price_history.cost as lastprice  FROM weekly_team AS wt
+exports.getMainLeagueTeamByWeekAndUserId = `SELECT wt.id, wt.userid, wt.riderid, wt.season_weeksid, wt.points, wt.last_transaction, riders.name, riders.avatar_url, riders.cost as cost, riders.rider_number, riders.active, price_history.price as lastprice  FROM weekly_team AS wt
 JOIN riders ON wt.riderid = riders.riderid
 JOIN price_history ON riders.riderid = price_history.riderid
 WHERE userid = $1 AND wt.season_weeksid = $2 AND leagueid = 1`
@@ -192,10 +192,10 @@ exports.GetCurrentWeek = function () {
 
 exports.GetCurrentWeekForTest =  function () {
   var currentdate = Date.now();
-  if (currentdate < new Date(2018, 08, 06, 1900)) {
+	if (Date.now() < new Date(2018, 00, 06, 19, 55).getTime()) {
     return 1
   }
-  if (currentdate < new Date(2017, 08, 13, 03)) {
+  if (Date.now() < new Date(2018, 00, 13, 19, 55).getTime()) {
     return 2
   }
   if (currentdate < new Date(2017, 08, 20, 03)) {

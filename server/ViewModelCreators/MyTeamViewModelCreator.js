@@ -13,14 +13,14 @@ exports.Create = function (data) {
             id: rider.id,
             active: rider.active,
             avatar_url: rider.avatar_url,
-            cost: rider.currentcost,
+            cost: rider.cost,
             riderid: rider.riderid,
             name: rider.name,
             rider_number: rider.rider_number,
             highestFinish: riderStat.min,
             lowestFinish: riderStat.max,
             averageFinish: riderStat.round,
-            priceChange: ((rider.currentcost - rider.lastprice) / rider.lastprice * 100).toFixed(2)
+            priceChange: ((rider.cost - rider.lastprice) / rider.lastprice * 100).toFixed(2)
           })
         }
       })
@@ -46,8 +46,8 @@ exports.Create = function (data) {
           id: rider.id,
           active: rider.active,
           avatar_url: rider.avatar_url,
-          cost: rider.currentcost,
-          priceChange: ((rider.currentcost - rider.lastprice) / rider.lastprice * 100).toFixed(2),
+          cost: rider.cost,
+          priceChange: ((rider.cost - rider.lastprice) / rider.lastprice * 100).toFixed(2),
           riderid: rider.riderid,
           name: rider.name,
           rider_number: rider.rider_number,

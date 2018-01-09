@@ -74,16 +74,6 @@ OWNER to postgres;
 -- Table: public.users
 -- DROP TABLE public.users;
 
-CREATE TABLE public.users
-(
-id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
-email character varying(200) COLLATE pg_catalog."default" NOT NULL,
-username character varying(200) COLLATE pg_catalog."default" NOT NULL,
-password character varying(200) COLLATE pg_catalog."default" NOT NULL,
-CONSTRAINT users_pkey PRIMARY KEY (id),
-CONSTRAINT add UNIQUE (username),
-CONSTRAINT users_email_key UNIQUE (email)
-)
 WITH (
 OIDS = FALSE
 )

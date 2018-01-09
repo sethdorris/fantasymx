@@ -48,8 +48,12 @@
                 </span>
               </a>
             </td>
-            <td>${{racer.currentcost}}
-              <span v-bind:class="{ up: racer.priceChange > 0, down: racer.priceChange < 0 }">( {{racer.priceChange }} )</span>
+            <td>${{racer.cost}}
+              <span v-bind:class="{ up: racer.priceChange > 0, down: racer.priceChange < 0 }">
+                <i class="fa fa-arrow-up" v-if="racer.priceChange > 0" aria-hidden="true"></i>
+                <i class="fa fa-arrow-down" v-if="racer.priceChange < 0" aria-hidden="true"></i>
+                ({{racer.priceChange}})
+              </span>
             </td>
             <td>{{racer.name}}</td>
             <td>{{racer.rider_number}}</td>
@@ -75,7 +79,11 @@
               </a>
             </td>
             <td>${{rider.cost}}
-              <span v-bind:class="{ up: rider.priceChange > 0, down: rider.priceChange < 0 }">( {{rider.priceChange }} )</span>
+              <span v-bind:class="{ up: rider.priceChange > 0, down: rider.priceChange < 0 }">
+                <i class="fa fa-arrow-up" v-if="rider.priceChange > 0" aria-hidden="true"></i>
+                <i class="fa fa-arrow-down" v-if="rider.priceChange < 0" aria-hidden="true"></i>
+                ({{rider.priceChange }})
+              </span>
             </td>
             <td>{{rider.name}}</td>
             <td>{{rider.rider_number}}</td>
@@ -126,7 +134,7 @@ import _remove from 'lodash/remove';
       dollars() {
         var total = 10000;
         this.selectedriders.forEach(rider => {
-          total -= rider.currentcost;
+          total -= rider.cost;
         })
         return total;
       },

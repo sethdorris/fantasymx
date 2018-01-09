@@ -121,12 +121,12 @@ app.get('/loginrefresh', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   let user;
-  // var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
-  //   , { method: "POST" })
-  // var data = await captchaResponse.json();
-  // if (!data.success) {
-  //   return res.status(401).send({ error: "Recaptcha Failed" })
-  // }
+  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
+    , { method: "POST" })
+  var data = await captchaResponse.json();
+  if (!data.success) {
+    return res.status(401).send({ error: "Recaptcha Failed" })
+  }
   try {
     var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
     user = userQuery.rows[0];
