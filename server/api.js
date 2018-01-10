@@ -133,6 +133,15 @@ UPDATE weekly_team SET riderid = $2 WHERE id = $1;
 exports.createRosterSlots = `
 INSERT INTO weekly_team (id, userid, seasonid, leagueid, riderid, season_weeksid) VALUES (nextval('weekly_team_id_seq'), $1, 1, 1, $3, $2);`
 
+exports.SaveResults = function (raceResults, week) {
+	var statement = "";
+	raceResults.forEach(racer => {
+		var line = `INSERT INTO raceresults (seasonid, weekid, riderid, place, points) VALUES (1, ${week}, ${racer.id}, ${racer.place}, ${racer.points}); \n`;
+		statement += line;
+	})
+	return statement;
+}
+
 exports.GetCurrentMyTeamWeek = function () {
 	if (Date.now() < new Date(2018, 00, 06, 19, 59).getTime()) {
 		return 1
@@ -237,6 +246,60 @@ exports.GetCurrentStatTrackerWeek = function () {
     return 16
   }
   if (currentdate < new Date(2018, 04, 05, 23)) {
+    return 17
+  }
+}
+
+exports.GetCurrentWeekForCron = function () {
+  if (Date.now() < new Date(2018, 00, 12, 23).getTime()) {
+    return 1
+  }
+  if (currentdate < new Date(2018, 00, 19, 23)) {
+    return 2
+  }
+  if (currentdate < new Date(2018, 00, 26, 23)) {
+    return 3
+  }
+  if (currentdate < new Date(2018, 01, 02, 23)) {
+    return 4
+  }
+  if (currentdate < new Date(2018, 01, 09, 23)) {
+    return 5
+  }
+  if (currentdate < new Date(2018, 01, 16, 23)) {
+    return 6
+  }
+  if (currentdate < new Date(2018, 01, 23, 23)) {
+    return 7
+  }
+  if (currentdate < new Date(2018, 02, 02, 23)) {
+    return 8
+  }
+  if (currentdate < new Date(2018, 02, 09, 23)) {
+    return 9
+  }
+  if (currentdate < new Date(2018, 02, 16, 23)) {
+    return 10
+  }
+  if (currentdate < new Date(2018, 02, 23, 23)) {
+    return 11
+  }
+  if (currentdate < new Date(2018, 03, 06, 23)) {
+    return 12
+  }
+  if (currentdate < new Date(2018, 03, 13, 23)) {
+    return 13
+  }
+  if (currentdate < new Date(2018, 03, 20, 23)) {
+    return 14
+  }
+  if (currentdate < new Date(2018, 03, 27, 23)) {
+    return 15
+  }
+  if (currentdate < new Date(2018, 04, 04, 23)) {
+    return 16
+  }
+  if (currentdate < new Date(2018, 04, 11, 23)) {
     return 17
   }
 }

@@ -17,6 +17,8 @@ var api  = require('./api');
 var MyTeamVMCreator = require('./ViewModelCreators/MyTeamViewModelCreator');
 var StatTrackerVMCreator = require('./ViewModelCreators/StatTrackerVMCreator');
 var fetch = require('node-fetch');
+var CronJob = require("cron").CronJob;
+
 
 if (IsDevelopment) {
   var https = require("https");
@@ -64,6 +66,25 @@ app.use(session({
 }))
 app.use(bodyParser.json());
 app.use("/build", express.static(path.join(__dirname, "..", "build")));
+
+//Weekly job that saves race results.
+var SaveRaceResults = new CronJob('00 00 23 * 0-4 6', () => {
+    fetch('http://live.amasupercross.com/xml/sx/RaceResults.json')
+    .then(res => {
+      return res.json();
+    })
+    .then(async (results) => {
+      console.log("JSON", results);
+      var arrayNames = StatTrackerVMCreator.GetRacerNamesInRaceResults(results.B);
+      var racerRecords = await knex.select("riderid").from("riders").whereIn("name", arrayNames);
+      console.log("racer records", racerRecords)
+      var week = api.GetCurrentWeekForCron();
+      var raceResultsObjects = StatTrackerVMCreator.GetRaceResultsObjects(racerRecords, results.B);
+      var sql = api.SaveResults(raceResultsObjects, 5);
+      console.log("sql", sql)
+      pool.query(sql);
+    })
+}, true, 'America/Denver');
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, "..", "index.html"))
@@ -121,14 +142,15 @@ app.get('/loginrefresh', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   let user;
-  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
-    , { method: "POST" })
-  var data = await captchaResponse.json();
-  if (!data.success) {
-    return res.status(401).send({ error: "Recaptcha Failed" })
-  }
+  // var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
+  //   , { method: "POST" })
+  // var data = await captchaResponse.json();
+  // if (!data.success) {
+  //   return res.status(401).send({ error: "Recaptcha Failed" })
+  // }
   try {
     var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
+    console.log("knex test", rows);
     user = userQuery.rows[0];
     if (userQuery.rows.length == 0) {
       return res.status(401).send({ error: "User does not exist" })
@@ -201,7 +223,7 @@ app.post('/login', async (req, res) => {
     var seasonEnd = `${seasonEndYear}-12-31`;
     var seasonStart = `${seasonStartYear}-12-31`;
     //For Roster Lock Don't use the stat tracker current week;
-    var currentWeek = IsDevelopment ? api.GetCurrentWeekForTest() : api.GetCurrentWeek();
+    var currentWeek = api.GetCurrentMyTeamWeek();
     var myCurrentTeam = [];
     var allAvail = [];
     var p1 = pool.query(api.getAllAvailableRiders).then((data) => { return data.rows });

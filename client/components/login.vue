@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <div id="login-recaptcha"></div>
+        <!-- <div id="login-recaptcha"></div> -->
         <div class="errorMessage" v-if="errorMessage != ''">
           {{ errorMessage }}
         </div>
@@ -68,11 +68,12 @@
           this.isLoading = true;
           axios.post('/login', {
             username: this.username,
-            password: this.password,
-            captcha: grecaptcha.getResponse()
+            password: this.password
+            // captcha: grecaptcha.getResponse()
           }).then(data => {
             this.isLoading = false;
-            grecaptcha.reset();
+            // grecaptcha.reset();
+            console.log(data)
             this.username = '';
             this.password = '';
             this.setUserData({ userData: data.data })

@@ -23,6 +23,33 @@ exports.Create = function (racedata, leaguedata) {
   return { RaceData: racedata, LeagueData: leaguedata }
 }
 
+exports.GetRacerNamesInRaceResults = function (racerarray) {
+  var results = []
+  racerarray.forEach(racer => {
+    results.push(racer.F.slice(0, -1))
+  })
+  return results;
+}
+
+exports.GetRaceResultsObjects = function (racerIdArray, resultsArray) {
+  var results = []
+  console.log("racerIdArray", racerIdArray);
+  console.log("resultsArray", resultsArray);
+  resultsArray.forEach((racer, index) => {
+    if (racerIdArray[index]) {
+        var racerObj = {
+          id: racerIdArray[index].riderid,
+          name: racer.F.slice(0, -1),
+          place: racer.A,
+          points: pointstable[racer.A]
+        }
+        results.push(racerObj);
+      }
+  })
+  console.log("statrackervm 47", results)
+  return results;
+}
+
 var pointstable = {
   1: 26,
   2: 23,
