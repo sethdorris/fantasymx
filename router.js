@@ -10,6 +10,7 @@ import myaccount from './client/components/myaccount.vue';
 import createleague from './client/components/CreateLeague.vue';
 import joinleague from './client/components/joinleague.vue';
 import deleteaccount from './client/components/deleteaccount.vue';
+import viewuser from './client/components/viewuser.vue';
 
 Vue.use(Router)
 
@@ -24,6 +25,7 @@ export function createRouter () {
       { path: "/live", component: stattracker },
       { path: "/suggestions", component: suggestions },
       { path: "/home", component: home },
+      { path: "/user/:id", component: viewuser },
       { path: "/myaccount", component: myaccount,
         children: [
           { path: 'createleague', component: createleague },

@@ -33,7 +33,7 @@
             <tr v-for="(user, index) in standings" v-bind:class="{ 'Me': IsMe(user) }">
               <td>{{ index + 1 }}.</td>
               <td>{{user.totalpoints}}</td>
-              <td>{{user.weeklyteams[0].username}}</td>
+              <td><router-link :to="`/user/${user.userid}`">{{user.weeklyteams[0].username}}</router-link></td>
               <td v-bind:class="{ 'pointsback': index > 0 }">{{ pointsbehind(user) }}</td>
             </tr>
           </tbody>
@@ -127,6 +127,10 @@ body {
   color: #7b7b7b;
   box-shadow: 1px 1px 10px #222;
 }
+.leaderboard-table td > a {
+  color: #7b7b7b;
+  font-size: 12pt;
+}
 .leaderboard-table thead th, tfoot th {
   color: #fff;
   font-size: 12pt;
@@ -155,7 +159,9 @@ body {
   }
   .Me {
     background-color: rgba(255, 233, 120, .7);
-    color: #d24a00;
+  }
+  .Me td > a {
+    color: #d24a00 !important;
     font-weight: 600;
   }
 </style>
