@@ -150,7 +150,7 @@ import _remove from 'lodash/remove';
           console.log(this.availableRiders.slice(0, 10));
           return this.availableRiders.slice(0, 10);
         } else {
-          var beginSlice = this.page * 10 - 9;
+          var beginSlice = this.page * 10 - 10;
           var endSlice = beginSlice + 10;
           console.log(this.availableRiders)
           console.log(this.availableRiders.slice(beginSlice, endSlice))
