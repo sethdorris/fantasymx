@@ -95,13 +95,13 @@
       </table>
       <div class="custom-pagination">
         <div>
-          <a class="pagination-previous" @click="page--" v-bind:class="{ 'hide-pagination-button' : hidePrevious }">Previous</a>
+          <a class="pagination-previous" @click="page--" v-bind:class="{ 'hide-pagination-button' : hidePrevious }"><i class="fa fa-arrow-left"></i>Previous</a>
         </div>
         <div>
           <a class="pagination-number">{{page}}/{{paginationPages}}</a>
         </div>
         <div>
-          <a class="pagination-next" @click="page++" v-bind:class="{ 'hide-pagination-button' : hideNext }">Next page</a>
+          <a class="pagination-next" @click="page++" v-bind:class="{ 'hide-pagination-button' : hideNext }">Next page <i class="fa fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
@@ -280,6 +280,12 @@ import _remove from 'lodash/remove';
 .fa {
   vertical-align: inherit !important;
 }
+.pagination-next i {
+  margin-left: 2rem;
+}
+.pagination-previous i {
+  margin-right: 2rem;
+}
 .up {
   color: red;
   margin-left:5px;
@@ -295,6 +301,16 @@ import _remove from 'lodash/remove';
 .myteam-table table td {
   border: none;
   font-family: 'Courier';
+}
+.pagination-next, .pagination-previous {
+  background: linear-gradient(rgba(255, 233, 10, .7)0%, rgb(246, 255, 109));
+  color: #cd4401;
+  font-weight: 900;
+  width: 10rem;
+  border: 1px solid #595959;
+}
+div.custom-pagination div {
+  margin-top: 2rem;
 }
 .myteam-table {
   background-color: rgba(255, 255, 255, 1);

@@ -76,7 +76,7 @@ var SaveRaceResults = new CronJob('00 00 23 * 0-4 6', () => {
     .then(async (results) => {
       console.log("JSON", results);
       var arrayNames = StatTrackerVMCreator.GetRacerNamesInRaceResults(results.B);
-      var racerRecords = await knex.select("riderid").from("riders").whereIn("name", arrayNames);
+      var racerRecords = await knex.select("riderid", "cost").from("riders").whereIn("name", arrayNames);
       console.log("racer records", racerRecords)
       var week = api.GetCurrentWeekForCron();
       var raceResultsObjects = StatTrackerVMCreator.GetRaceResultsObjects(racerRecords, results.B);

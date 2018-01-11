@@ -37,6 +37,7 @@ exports.GetRaceResultsObjects = function (racerIdArray, resultsArray) {
   console.log("resultsArray", resultsArray);
   resultsArray.forEach((racer, index) => {
     if (racerIdArray[index]) {
+      var score = pointstable[racer.A];
         var racerObj = {
           id: racerIdArray[index].riderid,
           name: racer.F.slice(0, -1),
