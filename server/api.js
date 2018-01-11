@@ -110,7 +110,14 @@ JOIN (SELECT MAX(seasonid) AS currentseason, season_name FROM seasons GROUP BY s
 JOIN (SELECT season_weeksid, seasonid FROM season_weeks) AS wn ON wt.season_weeksid = wn.season_weeksid
 JOIN raceresults AS rr ON wt.riderid = rr.riderid
 WHERE wt.leagueid = $1
-ORDER BY wt.userid`
+ORDER BY wt.userid`;
+
+exports.getUsersWeeklyTeams = `SELECT weekly_team.id, weekly_team.leagueid, weekly_team.season_weeksid, riders.riderid, riders.name, riders.avatar_url, riders.cost as currentcost, riders.rider_number, riders.active, price_history.price as previous_price, price_history.season_weekid, raceresults.place, raceresults.points FROM weekly_team
+JOIN riders ON weekly_team.riderid = riders.riderid
+JOIN price_history ON weekly_team.riderid = price_history.riderid
+LEFT OUTER JOIN raceresults ON weekly_team.riderid = raceresults.riderid AND weekly_team.season_weeksid = raceresults.weekid
+WHERE price_history.season_weekid >= 1 AND price_history.season_weekid <= $1
+AND weekly_team.userid = $2`
 
 exports.getAllRaceResults = `SELECT riders.riderid, riders.rider_number, riders.name, ROUND(AVG(place),2), MAX(place), MIN(place) FROM raceresults
 JOIN riders ON raceresults.riderid = riders.riderid
@@ -192,6 +199,60 @@ exports.GetCurrentMyTeamWeek = function () {
 		return 16
 	}
 	if (Date.now() < new Date(2018, 04, 05, 18, 59).getTime()) {
+		return 17
+	}
+}
+
+exports.GetUsersTeamWeeks = function () {
+	if (Date.now() < new Date(2018, 00, 13, 17, 59).getTime() && Date.now() > new Date(2018, 00, 06, 19, 59)) {
+		return 1
+	}
+	if (Date.now() < new Date(2018, 00, 20, 19, 59).getTime() && Date.now() > new Date(2018, 00, 13, 17, 59)) {
+		return 2
+	}
+	if (Date.now() < new Date(2018, 00, 27, 17, 59).getTime() && Date.now() > new Date(2018, 00, 20, 19, 59)) {
+		return 3
+	}
+	if (Date.now() < new Date(2018, 01, 03, 16, 59).getTime() && Date.now() > new Date(2018, 00, 27, 17, 59)) {
+		return 4
+	}
+	if (Date.now() < new Date(2018, 01, 10, 19, 59).getTime() && Date.now() > new Date(2018, 01, 03, 16, 59)) {
+		return 5
+	}
+	if (Date.now() < new Date(2018, 01, 17, 17, 59).getTime() && Date.now() > new Date(2018, 01, 10, 19, 59)) {
+		return 6
+	}
+	if (Date.now() < new Date(2018, 01, 24, 17, 59).getTime() && Date.now() > new Date(2018, 01, 17, 17, 59)) {
+		return 7
+	}
+	if (Date.now() < new Date(2018, 02, 03, 16, 59).getTime() && Date.now() > new Date(2018, 01, 24, 17, 59)) {
+		return 8
+	}
+	if (Date.now() < new Date(2018, 02, 10, 16, 59).getTime() && Date.now() > new Date(2018, 02, 03, 16, 59)) {
+		return 9
+	}
+	if (Date.now() < new Date(2018, 02, 17, 16, 59).getTime() && Date.now() > new Date(2018, 02, 10, 16, 59)) {
+		return 10
+	}
+	if (Date.now() < new Date(2018, 02, 24, 15, 59).getTime() && Date.now() > new Date(2018, 02, 17, 16, 59)) {
+		return 12
+	}
+	if (Date.now() < new Date(2018, 03, 07, 18, 59).getTime() && Date.now() > new Date(2018, 02, 24, 15, 59)) {
+		return 12
+	}
+	if (Date.now() < new Date(2018, 03, 14, 16, 59).getTime()&& Date.now() > new Date(2018, 03, 07, 18, 59)) {
+		return 13
+	}
+	if (Date.now() < new Date(2018, 03, 21, 11, 59).getTime() && Date.now() > new Date(2018, 03, 14, 16, 59)) {
+		return 14
+	}
+	if (Date.now() < new Date(2018, 03, 28, 13, 29).getTime() && Date.now() > new Date(2018, 03, 21, 11, 59)) {
+		return 15
+	}
+	if (Date.now() < new Date(2018, 04, 05, 18, 59).getTime() && Date.now() > new Date(2018, 03, 28, 13, 29)) {
+		return 16
+	}
+	if (Date.now() < new Date(2018, 12, 31, 17, 59).getTime() && Date.now() > new Date(2018, 04, 05, 18, 59)) {
 		return 17
 	}
 }

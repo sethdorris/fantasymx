@@ -142,15 +142,14 @@ app.get('/loginrefresh', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   let user;
-  // var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
-  //   , { method: "POST" })
-  // var data = await captchaResponse.json();
-  // if (!data.success) {
-  //   return res.status(401).send({ error: "Recaptcha Failed" })
-  // }
+  var captchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6LcSfDIUAAAAAHPG4nE1_P3v7QMw_ebraIrcyhbs&response=${req.body.captcha}`
+    , { method: "POST" })
+  var data = await captchaResponse.json();
+  if (!data.success) {
+    return res.status(401).send({ error: "Recaptcha Failed" })
+  }
   try {
     var userQuery = await pool.query('SELECT * FROM users WHERE LOWER(username) = LOWER($1)', [req.body.username]);
-    console.log("knex test", rows);
     user = userQuery.rows[0];
     if (userQuery.rows.length == 0) {
       return res.status(401).send({ error: "User does not exist" })
@@ -181,15 +180,15 @@ app.post('/login', async (req, res) => {
     });
   })
 
-  app.get('/StatTracker', function (req, res) {
-   fetch('http://live.amasupercross.com/xml/sx/RaceResults.json')
-    .then(apires => {
-      return apires.json();
-    })
-    .then(data => {
-     res.send(data)
-    })
-  })
+  // app.get('/StatTracker', function (req, res) {
+  //  fetch('http://live.amasupercross.com/xml/sx/RaceResults.json')
+  //   .then(apires => {
+  //     return apires.json();
+  //   })
+  //   .then(data => {
+  //    res.send(data)
+  //   })
+  // })
 
   app.get('/MainLeagueStandings', function (req, res) {
     pool.query(api.getMainLeagueTotalStandings)
@@ -241,6 +240,13 @@ app.post('/login', async (req, res) => {
     })
   })
 
+  app.post('/GetUserTeams', async (req, res) => {
+    var userid = req.body.userid;
+    var week = api.GetUsersTeamWeeks();
+    var teams = await pool.query(api.getUsersWeeklyTeams, [week, userid]);
+    return res.json(teams.rows);
+  })
+
   app.get('/myteam', (req, res) => {
     res.redirect(301, '/')
   })
@@ -280,7 +286,6 @@ app.post('/login', async (req, res) => {
 
   app.ws('/tracker', function(ws, req) {
     var currentWeek = api.GetCurrentStatTrackerWeek();
-    var indexOfMock = 0;
     //Send current week's team to only the connected client;
     function nextPoll() {
       var p1 = LiveAPIPolling().then(apires => { return apires; })
@@ -293,7 +298,6 @@ app.post('/login', async (req, res) => {
           })
         }
         if (!returnObj.raceFinished) {
-          indexOfMock++;
           return setTimeout(nextPoll, 5000)
         }
       })

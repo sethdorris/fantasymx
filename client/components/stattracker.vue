@@ -86,6 +86,10 @@ import { mapGetters } from 'vuex';
         this.ws.onerror = function (e) {
           console.log("Error", e)
         }
+        //ping the server every 20 seconds to prevent Idle connection loss
+        setInterval(() => {
+            this.ws.send("Hi Server. Please keep my connection.");
+        }, 20000)
       }
     },
     methods:  {

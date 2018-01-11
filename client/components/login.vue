@@ -68,11 +68,11 @@
           this.isLoading = true;
           axios.post('/login', {
             username: this.username,
-            password: this.password
-            // captcha: grecaptcha.getResponse()
+            password: this.password,
+            captcha: grecaptcha.getResponse()
           }).then(data => {
             this.isLoading = false;
-            // grecaptcha.reset();
+            grecaptcha.reset();
             console.log(data)
             this.username = '';
             this.password = '';
